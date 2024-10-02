@@ -13,35 +13,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.wearabouts.ui.theme.WearAboutsTheme
 
+import com.wearabouts.ui.login.Login
+import com.wearabouts.ui.home.Home
+import com.wearabouts.ui.donation.Donation
+
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             WearAboutsTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                val navController = rememberNavController()
+                Scaffold(modifier = Modifier.fillMaxSize()) {
+                    NavHost(navController = navController, startDestination = "login") {
+                        composable("login") { Login(navController) }
+                        composable("donation") { Donation().Template(navController) }
+                        composable("home") { Home().Template(navController) }
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    WearAboutsTheme {
-        Greeting("Android")
     }
 }
