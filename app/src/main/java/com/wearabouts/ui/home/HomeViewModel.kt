@@ -18,7 +18,7 @@ class HomeViewModel : ViewModel() {
 
     private fun fetchClothingItems() {
         // Simulate fetching data from a repsitory
-        viewModelScope.launch {o
+        viewModelScope.launch {
             val items = listOf(
                 ClothingItem(1, "T-Shirt", "url_to_image_1", 19.99),
                 ClothingItem(2, "Jeans", "url_to_image_2", 49.99),
