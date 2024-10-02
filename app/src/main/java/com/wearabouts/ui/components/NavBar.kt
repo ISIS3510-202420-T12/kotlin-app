@@ -31,84 +31,82 @@ import com.wearabouts.ui.theme.NavbarBgColor
 @Composable
 fun NavBar(navController: NavController, modifier: Modifier = Modifier) {
 
-    BottomAppBar(
+    Box(
         modifier = modifier
-            .background(Color.Black)
+            .width(330.dp)
+            .height(165.dp)
             .padding(16.dp)
+            .padding(bottom = 50.dp)
+            .clip(RoundedCornerShape(60.dp))
+            .background(NavbarBgColor)
     ) {
-        Box(
+        Row(
             modifier = Modifier
                 .fillMaxSize()
-                .background(NavbarBgColor)
-                .clip(RoundedCornerShape(30.dp))
+                .padding(start = 10.dp, end = 10.dp),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
+            IconButton(
+                onClick = { navController.navigate("Home") },
+                modifier = Modifier
+                    .size(56.dp)
             ) {
-                IconButton(
-                    onClick = { navController.navigate("Home") },
-                    modifier = Modifier
-                        .size(60.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.home),
-                        contentDescription = "Home",
-                        modifier = Modifier.size(30.dp),
-                        tint = IconColor
-                    )
-                }
-                IconButton(
-                    onClick = { navController.navigate("donation") },
-                    modifier = Modifier
-                        .size(56.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.donate),
-                        contentDescription = "Donation",
-                        modifier = Modifier.size(24.dp),
-                        tint = IconColor
-                    )
-                }
-                IconButton(
-                    onClick = { navController.navigate("donation") },
-                    modifier = Modifier
-                        .size(56.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.donate),
-                        contentDescription = "Donation",
-                        modifier = Modifier.size(24.dp),
-                        tint = IconColor
-                    )
-                }
-                IconButton(
-                    onClick = { navController.navigate("donation") },
-                    modifier = Modifier
-                        .size(56.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.donate),
-                        contentDescription = "Donation",
-                        modifier = Modifier.size(24.dp),
-                        tint = IconColor
-                    )
-                }
-                IconButton(
-                    onClick = { navController.navigate("donation") },
-                    modifier = Modifier
-                        .size(56.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.donate),
-                        contentDescription = "Donation",
-                        modifier = Modifier.size(24.dp),
-                        tint = IconColor
-                    )
-                }
+                Icon(
+                    painter = painterResource(id = R.drawable.home),
+                    contentDescription = "Home",
+                    modifier = Modifier.size(24.dp),
+                    tint = IconColor
+                )
+            }
+            IconButton(
+                onClick = { navController.navigate("Home") },
+                modifier = Modifier
+                    .size(56.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.tags),
+                    contentDescription = "Tags",
+                    modifier = Modifier.size(24.dp),
+                    tint = IconColor
+                )
+            }
+            IconButton(
+                onClick = { navController.navigate("donation") },
+                modifier = Modifier
+                    .size(56.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.donate),
+                    contentDescription = "Donation",
+                    modifier = Modifier.size(24.dp),
+                    tint = IconColor
+                )
+            }
+            IconButton(
+                onClick = { navController.navigate("Home") },
+                modifier = Modifier
+                    .size(56.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.heart),
+                    contentDescription = "Favourites",
+                    modifier = Modifier.size(24.dp),
+                    tint = IconColor
+                )
+            }
+            IconButton(
+                onClick = { navController.navigate("Home") },
+                modifier = Modifier
+                    .size(56.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.profile),
+                    contentDescription = "Profile Icon",
+                    modifier = Modifier.size(35.dp),
+                    tint = Color.Unspecified
+                )
             }
         }
-        
     }
 }
