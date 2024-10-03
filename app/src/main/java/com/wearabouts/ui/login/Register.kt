@@ -10,6 +10,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.sp
+import androidx.compose.material3.ButtonDefaults
+import com.wearabouts.ui.theme.Primary
+import com.wearabouts.ui.theme.Poppins
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.graphics.painterResource
 
 @Composable
 fun Register(navController: NavController, viewModel: RegisterViewModel = viewModel()) {
@@ -19,13 +29,18 @@ fun Register(navController: NavController, viewModel: RegisterViewModel = viewMo
 
     Box(
         modifier = Modifier
-            .fillMaxSize(), 
+            .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
+        Image(
+            painter = painterResource(id = R.drawable.images),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize()
+        )
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .fillMaxWidth(), 
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TextField(
@@ -38,13 +53,27 @@ fun Register(navController: NavController, viewModel: RegisterViewModel = viewMo
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Password") },
+                visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()
             )
             Button(
                 onClick = { viewModel.register(username, password) },
-                modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Primary,
+                    contentColor = Color.White
+                )
             ) {
-                Text("Register")
+                Text(
+                    "Register",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontFamily = Poppins,
+                        textAlign = TextAlign.Center
+                    )
+                )
             }
 
             when (registerState) {

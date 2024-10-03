@@ -9,6 +9,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import com.wearabouts.ui.theme.Poppins
+import com.wearabouts.ui.theme.Primary
+import androidx.compose.ui.graphics.painterResource
 
 @Composable
 fun Login(navController: NavController, viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
@@ -16,17 +25,18 @@ fun Login(navController: NavController, viewModel: LoginViewModel = androidx.lif
     var password by remember { mutableStateOf("") }
     val loginState by viewModel.loginState.collectAsState()
 
-    // Cambio en la línea 9: Añadir Box para centrar el contenido
     Box(
-        modifier = Modifier
-            .fillMaxSize(), // Hacer que el Box ocupe toda la pantalla
-        contentAlignment = Alignment.Center // Centrar el contenido dentro del Box
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
+        Image(
+            painter = painterResource(id = R.drawable.images),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize()
+        )
         Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(), // Llenar todo el ancho disponible dentro del Box
-            horizontalAlignment = Alignment.CenterHorizontally // Centrar los elementos horizontalmente
+            modifier = Modifier.padding(16.dp).fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TextField(
                 value = username,
@@ -38,20 +48,44 @@ fun Login(navController: NavController, viewModel: LoginViewModel = androidx.lif
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Password") },
+                visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()
             )
+
             Button(
                 onClick = { viewModel.login(username, password) },
-                modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+                modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Primary,
+                    contentColor = Color.White
+                )
             ) {
-                Text("Login")
+                Text(
+                    "Login",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontFamily = Poppins,
+                        textAlign = TextAlign.Center
+                    )
+                )
             }
 
             Button(
                 onClick = { navController.navigate("register") },
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Primary,
+                    contentColor = Color.White
+                )
             ) {
-                Text("Go to Register")
+                Text(
+                    "Register",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontFamily = Poppins,
+                        textAlign = TextAlign.Center
+                    )
+                )
             }
 
             when (loginState) {
