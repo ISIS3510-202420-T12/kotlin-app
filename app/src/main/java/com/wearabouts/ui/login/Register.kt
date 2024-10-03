@@ -19,7 +19,10 @@ import androidx.compose.material3.ButtonDefaults
 import com.wearabouts.ui.theme.Primary
 import com.wearabouts.ui.theme.Poppins
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.graphics.painterResource
+
+import com.wearabouts.R
+import androidx.compose.ui.res.painterResource
+import androidx.compose.foundation.Image
 
 @Composable
 fun Register(navController: NavController, viewModel: RegisterViewModel = viewModel()) {

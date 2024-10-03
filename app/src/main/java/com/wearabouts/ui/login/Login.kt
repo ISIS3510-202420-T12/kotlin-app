@@ -17,7 +17,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import com.wearabouts.ui.theme.Poppins
 import com.wearabouts.ui.theme.Primary
-import androidx.compose.ui.graphics.painterResource
+
+import com.wearabouts.R
+import androidx.compose.ui.res.painterResource
+import androidx.compose.foundation.Image
 
 @Composable
 fun Login(navController: NavController, viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
