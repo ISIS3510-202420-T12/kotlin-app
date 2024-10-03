@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.wearabouts.ui.theme.WearAboutsTheme
 
 import com.wearabouts.ui.login.Login
+import com.wearabouts.ui.login.Register
 import com.wearabouts.ui.home.Home
 import com.wearabouts.ui.donation.Donation
 
@@ -33,6 +34,7 @@ class MainActivity : ComponentActivity() {
                         composable("login") { Login(navController) }
                         composable("donation") { Donation().Template(navController) }
                         composable("home") { Home().Template(navController) }
+                        composable("register") { Register(navController) }
                     }
                 }
             }

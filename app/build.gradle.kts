@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -51,6 +52,11 @@ android {
 
 dependencies {
     val nav_version = "2.8.1"
+
+    // Firebase Authentication
+    implementation("com.google.firebase:firebase-auth:22.1.1")
+    // Firebase Realtime Database
+    implementation("com.google.firebase:firebase-database:20.2.2")
 
     // Jetpack Compose integration
     implementation("androidx.navigation:navigation-compose:$nav_version")
