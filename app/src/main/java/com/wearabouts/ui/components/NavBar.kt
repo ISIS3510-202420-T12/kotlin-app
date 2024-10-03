@@ -24,7 +24,7 @@ import androidx.navigation.NavController
 
 // Colors
 import com.wearabouts.ui.theme.IconColor
-import com.wearabouts.ui.theme.NavbarBgColor
+import com.wearabouts.ui.theme.Primary
 
 // Website to convert SVG to Drawable: https://svg2vector.com/
 
@@ -38,7 +38,7 @@ fun NavBar(navController: NavController, modifier: Modifier = Modifier) {
             .padding(16.dp)
             .padding(bottom = 50.dp)
             .clip(RoundedCornerShape(60.dp))
-            .background(NavbarBgColor)
+            .background(Primary)
     ) {
         Row(
             modifier = Modifier
