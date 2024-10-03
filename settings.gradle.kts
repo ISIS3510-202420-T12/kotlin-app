@@ -1,3 +1,15 @@
+import java.util.Properties
+
+// Load local.properties file
+val localProperties = Properties()
+val localPropertiesFile = rootDir.resolve("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
+// Get the MapBox token from local.properties
+val mapboxToken = localProperties.getProperty("MAPBOX_DOWNLOADS_TOKEN")
+
 pluginManagement {
     repositories {
         google {
@@ -22,8 +34,8 @@ dependencyResolutionManagement {
             url = uri("https://api.mapbox.com/downloads/v2/releases/maven")
             // Do not change the username below. It should always be "mapbox" (not your username).
             credentials.username = "mapbox"
-            // Use the secret token stored in gradle.properties as the password
-            credentials.password = providers.gradleProperty("MAPBOX_DOWNLOADS_TOKEN").get()
+            // Use the secret token
+            credentials.password = mapboxToken
             
             authentication.create<BasicAuthentication>("basic")
         }
