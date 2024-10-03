@@ -14,6 +14,7 @@ import com.wearabouts.models.ClothingItem
 import androidx.compose.runtime.Composable
 
 import androidx.compose.material3.Text
+import coil.compose.rememberAsyncImagePainter
 
 @Composable
 fun ClothingItemCard(item: ClothingItem) {
@@ -23,10 +24,10 @@ fun ClothingItemCard(item: ClothingItem) {
             .padding(8.dp)
     ) {
         Image(
-            painter = rememberImagePainter(item.imageUrl),
+            painter = rememberAsyncImagePainter(item.imageUrl),
             contentDescription = item.name,
             modifier = Modifier
-                .height(20.dp)
+                .height(150.dp)
                 .fillMaxWidth(),
             contentScale = ContentScale.Crop
         )
