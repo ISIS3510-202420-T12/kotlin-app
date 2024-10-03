@@ -74,6 +74,10 @@ dependencies {
     // Coil for image loading
     implementation("io.coil-kt:coil-compose:2.1.0")
 
+    // MapBox API accesss
+    implementation("com.mapbox.maps:android:11.0.0")
+    implementation("com.mapbox.extension:maps-compose:11.0.0")
+
     // Other core dependencies
     implementation("com.google.android.material:material:1.5.0")
     implementation(libs.androidx.core.ktx)
