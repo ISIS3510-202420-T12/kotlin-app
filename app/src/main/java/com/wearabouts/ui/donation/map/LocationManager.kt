@@ -14,51 +14,30 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-// private const val LOCATION_PERMISSION_REQUEST_CODE = 1
-
-// class LocationManager {
-
-//     private lateinit var fusedLocationClient: FusedLocationProviderClient
-
-//     @SuppressLint("MissingPermission")
-//     fun getUserLocation(context: Context, onLocationReceived: (Location?) -> Unit) {
-//         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-        
-//         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-//             ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//             // Request permissions if not granted
-//             ActivityCompat.requestPermissions(context as Activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
-//             return
-//         }
-    
-//         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-//             onLocationReceived(location)
-//         }
-//     }
-
-// }
-
 class LocationManager {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     @SuppressLint("MissingPermission")
-    suspend fun getUserLocation(context: Context): Location? {
+    fun getUserLocation(
+        context: Context,
+        onSuccess: (Location?) -> Unit,
+        onFailure: () -> Unit
+    ) {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // Request permissions if not granted
             ActivityCompat.requestPermissions(context as Activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
-            return null
+            onFailure()
+            return
         }
 
-        return suspendCancellableCoroutine { continuation ->
-            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                continuation.resume(location)
-            }.addOnFailureListener { exception ->
-                continuation.resumeWithException(exception)
-            }
+        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+            onSuccess(location)
+        }.addOnFailureListener {
+            onFailure()
         }
     }
 

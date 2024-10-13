@@ -33,6 +33,7 @@ class Donation : BaseContentPage() {
         val context = LocalContext.current
         val locationManager = LocationManager()
         var userLocation by remember { mutableStateOf<Location?>(null) }
+        var locationStatus by remember { mutableStateOf("Obtaining location...") }
         val coroutineScope = rememberCoroutineScope()
 
         // Track permission state
@@ -62,21 +63,18 @@ class Donation : BaseContentPage() {
         // Re-trigger location fetching when permission state changes
         LaunchedEffect(hasLocationPermission) {
             if (hasLocationPermission) {
-                coroutineScope.launch {
-                    userLocation = locationManager.getUserLocation(context)
-                }
-            }
-        }
-
-        // Check for permission and request if not granted
-        LaunchedEffect(Unit) {
-            if (!hasLocationPermission) {
-                // Request permission (this is a simplified example, you might need to handle the permission request result)
-                // In a real app, you should use ActivityResultContracts.RequestPermission
-                // to handle the permission request and result properly.
-                // For simplicity, we assume the permission is granted after the request.
-                // You should replace this with proper permission handling logic.
-                hasLocationPermission = true // Simulate permission granted
+                locationManager.getUserLocation(
+                    context,
+                    onSuccess = { location ->
+                        userLocation = location
+                        locationStatus = "Location: lat -> ${location?.latitude} | long -> ${location?.longitude}"
+                    },
+                    onFailure = {
+                        locationStatus = "Location permission denied"
+                    }
+                )
+            } else {
+                locationStatus = "Location permission denied"
             }
         }
 
@@ -86,11 +84,7 @@ class Donation : BaseContentPage() {
                 .padding(top=16.dp),
             contentAlignment = Alignment.Center,
         ) {
-            if (userLocation != null) {
-                Text("Location: lat -> ${userLocation!!.latitude} | long -> ${userLocation!!.longitude}")
-            } else {
-                Text("Obtaining location...")
-            }
+            Text(locationStatus)
         }
     
     }
