@@ -2,6 +2,7 @@ package com.wearabouts.ui.donation
 
 import com.wearabouts.ui.base.BaseContentPage
 import com.wearabouts.ui.donation.map.LocationManager
+import com.wearabouts.ui.donation.map.MapManager
 
 import androidx.appcompat.app.AppCompatActivity
 
@@ -24,6 +25,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import android.content.Context
 
 class Donation : BaseContentPage() {
 
@@ -32,19 +34,10 @@ class Donation : BaseContentPage() {
 
         val context = LocalContext.current
         val locationManager = LocationManager()
+        val mapManager = MapManager()
         var userLocation by remember { mutableStateOf<Location?>(null) }
         var locationStatus by remember { mutableStateOf("Obtaining location...") }
-        val coroutineScope = rememberCoroutineScope()
-
-        // Track permission state
-        var hasLocationPermission by remember {
-            mutableStateOf(
-                ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
-            )
-        }
+        var hasLocationPermission by remember { mutableStateOf(false) }
 
         // Permission launcher
         val permissionLauncher = rememberLauncherForActivityResult(
@@ -53,26 +46,25 @@ class Donation : BaseContentPage() {
             hasLocationPermission = isGranted
         }
 
-        // Request permission if not granted
+        // Check and request permission if not granted
         LaunchedEffect(Unit) {
-            if (!hasLocationPermission) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            } else {
+                hasLocationPermission = true
             }
         }
 
-        // Re-trigger location fetching when permission state changes
+        // Fetch location when permission is granted
         LaunchedEffect(hasLocationPermission) {
             if (hasLocationPermission) {
-                locationManager.getUserLocation(
-                    context,
-                    onSuccess = { location ->
-                        userLocation = location
-                        locationStatus = "Location: lat -> ${location?.latitude} | long -> ${location?.longitude}"
-                    },
-                    onFailure = {
-                        locationStatus = "Location permission denied"
-                    }
-                )
+                fetchLocation(locationManager, context, onSuccess = { location ->
+                    userLocation = location
+                    locationStatus = "Location: lat -> ${location?.latitude} | long -> ${location?.longitude}"
+                    // mapManager.showMap(location?.latitude ?: 0.0, location?.longitude ?: 0.0)
+                }, onFailure = {
+                    locationStatus = "Failed to obtain location"
+                })
             } else {
                 locationStatus = "Location permission denied"
             }
@@ -88,4 +80,18 @@ class Donation : BaseContentPage() {
         }
     
     }
+
+    private fun fetchLocation(
+        locationManager: LocationManager,
+        context: Context,
+        onSuccess: (Location?) -> Unit,
+        onFailure: () -> Unit
+    ) {
+        locationManager.getUserLocation(
+            context,
+            onSuccess = onSuccess,
+            onFailure = onFailure
+        )
+    }
+
 }

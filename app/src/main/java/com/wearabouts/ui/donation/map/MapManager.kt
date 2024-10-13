@@ -40,11 +40,11 @@ class MapManager {
 
     @OptIn(MapboxExperimental::class)
     @Composable
-    fun createMap() {
+    fun showMap(lat: Double, long: Double) {
 
         val mapViewportState = rememberMapViewportState {
             setCameraOptions {
-                center(Point.fromLngLat(77.594566, 12.971599))
+                center(Point.fromLngLat(lat, long))
                 zoom(1.0)
                 pitch(0.0)
             }
@@ -54,7 +54,7 @@ class MapManager {
             delay(200)
             mapViewportState.flyTo(
                 cameraOptions = cameraOptions {
-                    center(Point.fromLngLat(77.594566, 12.971599))
+                    center(Point.fromLngLat(lat, long))
                     zoom(10.0)
                 },
                 animationOptions = MapAnimationOptions.mapAnimationOptions { duration(5000) },
