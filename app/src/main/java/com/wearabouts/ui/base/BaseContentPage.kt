@@ -8,16 +8,22 @@ import androidx.navigation.NavController
 import com.wearabouts.ui.components.NavBar
 import com.wearabouts.ui.components.Header
 
+// To highlight current page
+import androidx.navigation.compose.currentBackStackEntryAsState
+
 abstract class BaseContentPage {
 
     @Composable
     fun Template(navController: NavController) {
+        val navBackStackEntry = navController.currentBackStackEntryAsState()
+        val currentRoute = navBackStackEntry.value?.destination?.route ?: ""
+
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxSize()) {
                 Header()
                 Content()
             }
-            NavBar(navController, modifier = Modifier.align(Alignment.BottomCenter))
+            NavBar(navController, currentRoute, modifier = Modifier.align(Alignment.BottomCenter))
         }
     }
 
