@@ -40,11 +40,12 @@ class MapManager {
 
     @OptIn(MapboxExperimental::class)
     @Composable
-    fun showMap(lat: Double, long: Double) {
+    fun showMap(long: Double, lat: Double) {
+        // 77.594566, 12.971599
 
         val mapViewportState = rememberMapViewportState {
             setCameraOptions {
-                center(Point.fromLngLat(lat, long))
+                center(Point.fromLngLat(long, lat))
                 zoom(1.0)
                 pitch(0.0)
             }
@@ -54,7 +55,7 @@ class MapManager {
             delay(200)
             mapViewportState.flyTo(
                 cameraOptions = cameraOptions {
-                    center(Point.fromLngLat(lat, long))
+                    center(Point.fromLngLat(long, lat))
                     zoom(10.0)
                 },
                 animationOptions = MapAnimationOptions.mapAnimationOptions { duration(5000) },
@@ -77,44 +78,26 @@ class MapManager {
             mutableStateOf(ScaleBarSettings { enabled = false })
         }
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Box(
+        Box() {
+            MapboxMap(
                 modifier = Modifier
-                    .width(330.dp)
-                    .height(80.dp)
-                    .padding(16.dp)
-                    .clip(RoundedCornerShape(60.dp))
-                    .background(Primary),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Search here for donation places",
-                    color = Font
-                )
-            }
-
-            Box() {
-                MapboxMap(
-                    modifier = Modifier.fillMaxSize(),
-                    mapInitOptionsFactory = { context ->
-                        MapInitOptions(
-                            context = context,
-                            styleUri = "mapbox://styles/mapbox/dark-v11",
-                        )
-                    },
-                    mapViewportState = mapViewportState,
-                    compassSettings = compassSettings,
-                    scaleBarSettings = scaleBarSetting,
-                    gesturesSettings = mapBoxUiSettings,
-                    attributionSettings = AttributionSettings {
-                        enabled = false
-                    },
-                )
-            }
+                    .height(400.dp)
+                    .width(330.dp),
+                mapInitOptionsFactory = { context ->
+                    MapInitOptions(
+                        context = context,
+                        styleUri = "mapbox://styles/mapbox/standard-satellite",
+                        // Styles: "mapbox://styles/mapbox/dark-v11", "mapbox://styles/mapbox/standard", "mapbox://styles/mapbox/standard-satellite"
+                    )
+                },
+                mapViewportState = mapViewportState,
+                compassSettings = compassSettings,
+                scaleBarSettings = scaleBarSetting,
+                gesturesSettings = mapBoxUiSettings,
+                attributionSettings = AttributionSettings {
+                    enabled = false
+                },
+            )
         }
     }
 }

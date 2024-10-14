@@ -1,23 +1,26 @@
 package com.wearabouts.ui.donation
 
+// Components
 import com.wearabouts.ui.base.BaseContentPage
 import com.wearabouts.ui.donation.map.LocationManager
 import com.wearabouts.ui.donation.map.MapManager
 
-import androidx.appcompat.app.AppCompatActivity
-
+// Material
 import androidx.compose.material3.Text
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.background
-
-import androidx.compose.runtime.*
-
+// Styles
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.shape.RoundedCornerShape
 
+// Map
+import androidx.compose.runtime.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.platform.LocalContext
 import android.location.Location
 import kotlinx.coroutines.launch
 import androidx.core.content.ContextCompat
@@ -27,7 +30,24 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import android.content.Context
 
+// Colors
+import com.wearabouts.ui.theme.Primary
+import com.wearabouts.ui.theme.Font
+
 class Donation : BaseContentPage() {
+
+    private fun fetchLocation(
+        locationManager: LocationManager,
+        context: Context,
+        onSuccess: (Location?) -> Unit,
+        onFailure: () -> Unit
+    ) {
+        locationManager.getUserLocation(
+            context,
+            onSuccess = onSuccess,
+            onFailure = onFailure
+        )
+    }
 
     @Composable
     override fun Content() {
@@ -60,8 +80,7 @@ class Donation : BaseContentPage() {
             if (hasLocationPermission) {
                 fetchLocation(locationManager, context, onSuccess = { location ->
                     userLocation = location
-                    locationStatus = "Location: lat -> ${location?.latitude} | long -> ${location?.longitude}"
-                    // mapManager.showMap(location?.latitude ?: 0.0, location?.longitude ?: 0.0)
+                    locationStatus = "Location: long -> ${userLocation!!.longitude} | lat -> ${userLocation!!.latitude}"
                 }, onFailure = {
                     locationStatus = "Failed to obtain location"
                 })
@@ -76,22 +95,30 @@ class Donation : BaseContentPage() {
                 .padding(top=16.dp),
             contentAlignment = Alignment.Center,
         ) {
-            Text(locationStatus)
+            if (userLocation != null) {
+
+                Box(
+                    modifier = Modifier
+                        .width(330.dp)
+                        .height(80.dp)
+                        .padding(16.dp)
+                        .clip(RoundedCornerShape(60.dp))
+                        .background(Primary),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Search here for donation places",
+                        color = Font
+                    )
+                }
+
+                mapManager.showMap(userLocation!!.longitude, userLocation!!.latitude)
+
+            } else {
+                Text(locationStatus)
+            }
         }
     
-    }
-
-    private fun fetchLocation(
-        locationManager: LocationManager,
-        context: Context,
-        onSuccess: (Location?) -> Unit,
-        onFailure: () -> Unit
-    ) {
-        locationManager.getUserLocation(
-            context,
-            onSuccess = onSuccess,
-            onFailure = onFailure
-        )
     }
 
 }
