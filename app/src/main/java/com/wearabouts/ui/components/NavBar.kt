@@ -33,10 +33,10 @@ fun NavBar(navController: NavController, modifier: Modifier = Modifier) {
 
     Box(
         modifier = modifier
-            .width(330.dp)
-            .height(165.dp)
+            .width(350.dp)
+            .height(125.dp)
             .padding(16.dp)
-            .padding(bottom = 50.dp)
+            .padding(bottom = 25.dp)
             .clip(RoundedCornerShape(60.dp))
             .background(Primary)
     ) {
@@ -48,7 +48,7 @@ fun NavBar(navController: NavController, modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
-                onClick = { navController.navigate("Home") },
+                onClick = { navController.navigate("home") },
                 modifier = Modifier
                     .size(56.dp)
             ) {
@@ -60,14 +60,14 @@ fun NavBar(navController: NavController, modifier: Modifier = Modifier) {
                 )
             }
             IconButton(
-                onClick = { navController.navigate("Home") },
+                onClick = { navController.navigate("tags") },
                 modifier = Modifier
                     .size(56.dp)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.tags),
                     contentDescription = "Tags",
-                    modifier = Modifier.size(24.dp),
+                    modifier = Modifier.size(27.dp),
                     tint = IconColor
                 )
             }
@@ -79,31 +79,31 @@ fun NavBar(navController: NavController, modifier: Modifier = Modifier) {
                 Icon(
                     painter = painterResource(id = R.drawable.donate),
                     contentDescription = "Donation",
-                    modifier = Modifier.size(24.dp),
+                    modifier = Modifier.size(27.dp),
                     tint = IconColor
                 )
             }
             IconButton(
-                onClick = { navController.navigate("Home") },
+                onClick = { navController.navigate("favourites") },
                 modifier = Modifier
                     .size(56.dp)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.heart),
                     contentDescription = "Favourites",
-                    modifier = Modifier.size(24.dp),
+                    modifier = Modifier.size(25.dp),
                     tint = IconColor
                 )
             }
             IconButton(
-                onClick = { navController.navigate("Home") },
+                onClick = { navController.navigate("profile") },
                 modifier = Modifier
                     .size(56.dp)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.profile),
                     contentDescription = "Profile Icon",
-                    modifier = Modifier.size(35.dp),
+                    modifier = Modifier.size(40.dp),
                     tint = Color.Unspecified
                 )
             }

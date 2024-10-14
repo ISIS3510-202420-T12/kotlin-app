@@ -97,22 +97,33 @@ class Donation : BaseContentPage() {
         ) {
             if (userLocation != null) {
 
-                Box(
-                    modifier = Modifier
-                        .width(330.dp)
-                        .height(80.dp)
-                        .padding(16.dp)
-                        .clip(RoundedCornerShape(60.dp))
-                        .background(Primary),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Search here for donation places",
-                        color = Font
-                    )
-                }
+                Column(
 
-                mapManager.showMap(userLocation!!.longitude, userLocation!!.latitude)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 50.dp, bottom = 50.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+
+                ) {
+
+                    Box(
+                        modifier = Modifier
+                            .width(330.dp)
+                            .height(80.dp)
+                            .padding(16.dp)
+                            .clip(RoundedCornerShape(60.dp))
+                            .background(Primary),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Search here for donation places",
+                            color = Font
+                        )
+                    }
+
+                    mapManager.showMap(userLocation!!.longitude, userLocation!!.latitude)
+
+                }
 
             } else {
                 Text(locationStatus)

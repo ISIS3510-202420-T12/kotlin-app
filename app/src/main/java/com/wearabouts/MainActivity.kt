@@ -35,6 +35,11 @@ class MainActivity : ComponentActivity() {
                         composable("donation") { Donation().Template(navController) }
                         composable("home") { Home().Template(navController) }
                         composable("register") { Register(navController) }
+
+                        // Unimplemented
+                        composable("tags") { Home().Template(navController) }
+                        composable("favourites") { Home().Template(navController) }
+                        composable("profile") { Home().Template(navController) }
                     }
                 }
             }
