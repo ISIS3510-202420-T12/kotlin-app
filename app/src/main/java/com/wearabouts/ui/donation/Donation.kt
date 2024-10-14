@@ -126,7 +126,7 @@ class Donation : BaseContentPage() {
                 }
 
             } else {
-                Text(locationStatus)
+                // Text(locationStatus)
             }
         }
     

@@ -38,13 +38,15 @@ fun NavBar(navController: NavController, currentRoute: String, modifier: Modifie
 
     Box(
         modifier = modifier
-            .width(350.dp)
-            .height(125.dp)
+            .width(420.dp) // 350.dp
+            .height(155.dp) // 125.dp
             .padding(16.dp)
             .padding(bottom = 25.dp)
+            .border(border = BorderStroke(15.dp, Color.White), shape = CircleShape)
             .clip(RoundedCornerShape(60.dp))
             .background(Primary)
     ) {
+
         Row(
             modifier = Modifier
                 .fillMaxSize()
@@ -128,8 +130,5 @@ fun NavBar(navController: NavController, currentRoute: String, modifier: Modifie
                 }
             }
         }
-
-
-
     }
 }
