@@ -29,6 +29,7 @@ import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import android.content.Context
+import android.app.Activity
 
 // Colors
 import com.wearabouts.ui.theme.Primary
@@ -55,15 +56,30 @@ class Donation : BaseContentPage() {
         val context = LocalContext.current
         val locationManager = LocationManager()
         val mapManager = MapManager()
+        
         var userLocation by remember { mutableStateOf<Location?>(null) }
         var locationStatus by remember { mutableStateOf("Obtaining location...") }
         var hasLocationPermission by remember { mutableStateOf(false) }
+        var isLocationEnabled by remember { mutableStateOf(false) }
 
         // Permission launcher
         val permissionLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             hasLocationPermission = isGranted
+        }
+
+        // Location settings launcher
+        val locationSettingsLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.StartIntentSenderForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // Location settings are satisfied
+                isLocationEnabled = true
+            } else {
+                // Location settings are not satisfied
+                locationStatus = "Location settings are not enabled"
+            }
         }
 
         // Check and request permission if not granted
@@ -126,10 +142,8 @@ class Donation : BaseContentPage() {
                 }
 
             } else {
-                // Text(locationStatus)
+                Text(locationStatus)
             }
         }
-    
     }
-
 }
