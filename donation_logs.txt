@@ -1,0 +1,5 @@
+--------- beginning of main
+10-22 20:33:58.708  5104  5104 D Donation: Checking location value
+10-22 20:33:58.708  5104  5104 D Donation:     Location not obtained yet
+10-22 20:33:58.769  5104  5104 D Donation: Checking location value
+10-22 20:33:58.769  5104  5104 D Donation:     Location not obtained yet
