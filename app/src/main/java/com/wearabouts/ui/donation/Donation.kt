@@ -17,8 +17,11 @@ import androidx.compose.foundation.background
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.shape.RoundedCornerShape
 
+// Compose
+import androidx.compose.runtime.*
+
 // Map
-// import androidx.compose.runtime.*
+// 
 // import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.LocalContext
 import android.location.Location
@@ -71,14 +74,10 @@ class Donation : BaseContentPage() {
 
     @Composable
     override fun Content() {
-
         val context = LocalContext.current
         val locationManager = LocationManager()
 
-        
-
-        
-    
+        locationManager.request()
     }
 
 }
