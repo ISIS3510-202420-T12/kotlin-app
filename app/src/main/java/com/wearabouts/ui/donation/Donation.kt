@@ -17,12 +17,9 @@ import androidx.compose.foundation.background
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.shape.RoundedCornerShape
 
-// Compose
-import androidx.compose.runtime.*
-
 // Map
-// 
-// import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.LocalContext
 import android.location.Location
 import kotlinx.coroutines.launch
@@ -32,6 +29,7 @@ import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import android.content.Context
+import android.app.Activity
 
 // Colors
 import com.wearabouts.ui.theme.Primary
@@ -39,17 +37,49 @@ import com.wearabouts.ui.theme.Font
 
 class Donation : BaseContentPage() {
 
-    fun ContentView(userLocation: Location) {
+    private fun fetchLocation(
+        locationManager: LocationManager,
+        context: Context,
+        onSuccess: (Location?) -> Unit,
+        onFailure: () -> Unit
+    ) {
+        locationManager.getUserLocation(
+            context,
+            onSuccess = onSuccess,
+            onFailure = onFailure
+        )
+    }
+
+    @Composable
+    override fun Content() {
+
+        val context = LocalContext.current
+        val locationManager = LocationManager()
         val mapManager = MapManager()
+        
         var userLocation by remember { mutableStateOf<Location?>(null) }
         var locationStatus by remember { mutableStateOf("Obtaining location...") }
         var hasLocationPermission by remember { mutableStateOf(false) }
+        var isLocationEnabled by remember { mutableStateOf(false) }
 
         // Permission launcher
         val permissionLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             hasLocationPermission = isGranted
+        }
+
+        // Location settings launcher
+        val locationSettingsLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.StartIntentSenderForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // Location settings are satisfied
+                isLocationEnabled = true
+            } else {
+                // Location settings are not satisfied
+                locationStatus = "Location settings are not enabled"
+            }
         }
 
         // Check and request permission if not granted
@@ -81,33 +111,39 @@ class Donation : BaseContentPage() {
                 .padding(top=16.dp),
             contentAlignment = Alignment.Center,
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 50.dp, bottom = 50.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+            if (userLocation != null) {
 
-                Box(
+                Column(
+
                     modifier = Modifier
-                        .width(330.dp)
-                        .height(80.dp)
-                        .padding(16.dp)
-                        .clip(RoundedCornerShape(60.dp))
-                        .background(Primary),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "Search here for donation places", color = Font)
-                }
+                        .fillMaxSize()
+                        .padding(top = 50.dp, bottom = 50.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
 
-                mapManager.showMap(userLocation!!.longitude, userLocation!!.latitude)
+                ) {
+
+                    Box(
+                        modifier = Modifier
+                            .width(330.dp)
+                            .height(80.dp)
+                            .padding(16.dp)
+                            .clip(RoundedCornerShape(60.dp))
+                            .background(Primary),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Search here for donation places",
+                            color = Font
+                        )
+                    }
+
+                    mapManager.showMap(userLocation!!.longitude, userLocation!!.latitude)
 
                 }
 
             } else {
-                // Text(locationStatus)
+                Text(locationStatus)
             }
         }
-    
     }
 }

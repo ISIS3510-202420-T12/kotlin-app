@@ -1,47 +1,98 @@
 package com.wearabouts.ui.donation.map
 
+// Android management
 import android.Manifest
 import android.app.Activity
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import androidx.core.app.ActivityCompat
+import android.content.IntentSender
+
+// Google play services for permission
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
+// To request turn on location
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.LocationSettingsResponse
+import com.google.android.gms.location.SettingsClient
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.CommonStatusCodes
 
 class LocationManager {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-    @SuppressLint("MissingPermission")
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1
+        private const val LOCATION_SETTINGS_REQUEST_CODE = 2
+    }
+
     fun getUserLocation(
         context: Context,
         onSuccess: (Location?) -> Unit,
         onFailure: () -> Unit
     ) {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-
+        // Check and request location permissions
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // Request permissions if not granted
             ActivityCompat.requestPermissions(context as Activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
             onFailure()
             return
         }
 
-        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-            onSuccess(location)
-        }.addOnFailureListener {
+        // Check and request to enable location services
+        requestLocationSettings(context, onSuccess = {
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                onSuccess(location)
+            }.addOnFailureListener {
+                onFailure()
+            }
+        }, onFailure = {
             onFailure()
+        })
+    }
+
+    fun requestLocationSettings(
+        context: Context,
+        onSuccess: () -> Unit,
+        onFailure: () -> Unit
+    ) {
+        val locationRequest = LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+
+        val client: SettingsClient = LocationServices.getSettingsClient(context)
+        val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
+
+        task.addOnSuccessListener { response ->
+            val states = response.locationSettingsStates
+            if (states.isLocationPresent) {
+                onSuccess()
+            } else {
+                onFailure()
+            }
+        }.addOnFailureListener { exception ->
+            if (exception is ResolvableApiException) {
+                try {
+                    exception.startResolutionForResult(context as Activity, LOCATION_SETTINGS_REQUEST_CODE)
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    onFailure()
+                }
+            } else {
+                onFailure()
+            }
         }
     }
 
-    companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 1
-    }
+    
+
 }
