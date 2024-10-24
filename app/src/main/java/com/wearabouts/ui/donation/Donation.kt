@@ -69,24 +69,16 @@ class Donation : BaseContentPage() {
             hasLocationPermission = isGranted
         }
 
-        // Location settings launcher
-        val locationSettingsLauncher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.StartIntentSenderForResult()
-        ) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                // Location settings are satisfied
-                isLocationEnabled = true
-            } else {
-                // Location settings are not satisfied
-                locationStatus = "Location settings are not enabled"
-            }
-        }
-
         // Check and request permission if not granted
         LaunchedEffect(Unit) {
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            val fineLocationPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+            val coarseLocationPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+
+            if (fineLocationPermission != PackageManager.PERMISSION_GRANTED) {
+                // Request permission for precise location
                 permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
             } else {
+                // Permission is already given
                 hasLocationPermission = true
             }
         }
@@ -94,14 +86,26 @@ class Donation : BaseContentPage() {
         // Fetch location when permission is granted
         LaunchedEffect(hasLocationPermission) {
             if (hasLocationPermission) {
+                // Check if location settings are enabled
+                locationManager.requestLocationSettings(context, onSuccess = {
+                    isLocationEnabled = true
+                }, onFailure = {
+                    locationStatus = "Failed to request the user to enable location"
+                })
+            } else {
+                locationStatus = "Location permission denied"
+            }
+        }
+
+        // Fetch location when location settings are enabled
+        LaunchedEffect(isLocationEnabled) {
+            if (isLocationEnabled) {
                 fetchLocation(locationManager, context, onSuccess = { location ->
                     userLocation = location
                     locationStatus = "Location: long -> ${userLocation!!.longitude} | lat -> ${userLocation!!.latitude}"
                 }, onFailure = {
                     locationStatus = "Failed to obtain location"
                 })
-            } else {
-                locationStatus = "Location permission denied"
             }
         }
 
