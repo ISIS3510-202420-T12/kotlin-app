@@ -4,6 +4,7 @@ package com.wearabouts.ui.donation.map
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.location.LocationManager
 import android.content.pm.PackageManager
 import android.location.Location
 import androidx.core.app.ActivityCompat
@@ -23,7 +24,7 @@ import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 
-class LocationManager {
+class LocationService {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
@@ -93,6 +94,10 @@ class LocationManager {
         }
     }
 
-    
+    fun isLocationEnabled(context: Context): Boolean {
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || 
+               locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+    }
 
 }

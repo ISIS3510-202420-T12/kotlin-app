@@ -1,8 +1,11 @@
 package com.wearabouts.ui.donation
 
+// Debugging
+import android.util.Log
+
 // Components
 import com.wearabouts.ui.base.BaseContentPage
-import com.wearabouts.ui.donation.map.LocationManager
+import com.wearabouts.ui.donation.map.LocationService
 import com.wearabouts.ui.donation.map.MapManager
 
 // Material
@@ -38,12 +41,12 @@ import com.wearabouts.ui.theme.Font
 class Donation : BaseContentPage() {
 
     private fun fetchLocation(
-        locationManager: LocationManager,
+        locationService: LocationService,
         context: Context,
         onSuccess: (Location?) -> Unit,
         onFailure: () -> Unit
     ) {
-        locationManager.getUserLocation(
+        locationService.getUserLocation(
             context,
             onSuccess = onSuccess,
             onFailure = onFailure
@@ -54,7 +57,7 @@ class Donation : BaseContentPage() {
     override fun Content() {
 
         val context = LocalContext.current
-        val locationManager = LocationManager()
+        val locationService = LocationService()
         val mapManager = MapManager()
         
         var userLocation by remember { mutableStateOf<Location?>(null) }
@@ -64,9 +67,10 @@ class Donation : BaseContentPage() {
 
         // Permission launcher
         val permissionLauncher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            hasLocationPermission = isGranted
+            contract = ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            hasLocationPermission = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                                    permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
         }
 
         // Check and request permission if not granted
@@ -76,7 +80,12 @@ class Donation : BaseContentPage() {
 
             if (fineLocationPermission != PackageManager.PERMISSION_GRANTED) {
                 // Request permission for precise location
-                permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                permissionLauncher.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
+                )
             } else {
                 // Permission is already given
                 hasLocationPermission = true
@@ -87,11 +96,12 @@ class Donation : BaseContentPage() {
         LaunchedEffect(hasLocationPermission) {
             if (hasLocationPermission) {
                 // Check if location settings are enabled
-                locationManager.requestLocationSettings(context, onSuccess = {
+                locationService.requestLocationSettings(context, onSuccess = {
                     isLocationEnabled = true
                 }, onFailure = {
                     locationStatus = "Failed to request the user to enable location"
                 })
+                isLocationEnabled = locationService.isLocationEnabled(context)
             } else {
                 locationStatus = "Location permission denied"
             }
@@ -100,7 +110,7 @@ class Donation : BaseContentPage() {
         // Fetch location when location settings are enabled
         LaunchedEffect(isLocationEnabled) {
             if (isLocationEnabled) {
-                fetchLocation(locationManager, context, onSuccess = { location ->
+                fetchLocation(locationService, context, onSuccess = { location ->
                     userLocation = location
                     locationStatus = "Location: long -> ${userLocation!!.longitude} | lat -> ${userLocation!!.latitude}"
                 }, onFailure = {
