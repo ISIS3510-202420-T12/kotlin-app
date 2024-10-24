@@ -1,0 +1,5 @@
+
+10-23 21:53:00.658  7162  7162 D Donation: LaunchedEffect(hasLocationPermission): change detected on hasLocationPermission, could be first time or after requesting permissions, value: true
+10-23 21:53:00.659  7162  7162 D Donation:     LaunchedEffect(hasLocationPermission): is location on after request: false
+10-23 21:53:00.677  7162  7162 D Donation: LaunchedEffect(hasLocationPermission): change detected on hasLocationPermission, could be first time or after requesting permissions, value: true
+10-23 21:53:00.678  7162  7162 D Donation:     LaunchedEffect(hasLocationPermission): is location on after request: false
