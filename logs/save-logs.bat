@@ -1,1 +1,1 @@
-adb logcat -s Donation > donation_logs.txt
+adb logcat -s Donation > logs/donation_logs.txt

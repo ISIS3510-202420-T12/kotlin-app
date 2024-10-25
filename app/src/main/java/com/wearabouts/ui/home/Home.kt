@@ -22,13 +22,20 @@ import com.wearabouts.ui.base.BaseContentPage
 import com.wearabouts.R
 import androidx.compose.material3.ButtonDefaults
 
+// Location
+import androidx.compose.ui.platform.LocalContext
 
 class Home : BaseContentPage() {
 
+    
+
     @Composable
     override fun Content() {
+        val context = LocalContext.current
         val homeViewModel: HomeViewModel = viewModel()
         val clothingItems by homeViewModel.clothingItems.collectAsState()
+
+        homeViewModel.getLocation()
 
         Column(modifier = Modifier.fillMaxSize()) {
 

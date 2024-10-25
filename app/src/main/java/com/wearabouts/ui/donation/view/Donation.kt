@@ -3,6 +3,7 @@ package com.wearabouts.ui.donation.view
 // Pop-ups
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import java.lang.Thread
 
 // Debugging
 import android.util.Log
@@ -65,10 +66,8 @@ class Donation : BaseContentPage() {
         val mapManager = MapManager()
         
         var userLocation by remember { mutableStateOf<Location?>(null) }
-        var locationStatus by remember { mutableStateOf("Obtaining location...") }
         var hasLocationPermission by remember { mutableStateOf(false) }
-        var isLocationEnabled by remember { mutableStateOf(false) }
-        var firstTimeRunning by remember { mutableStateOf(true) }
+        var isLocationEnabled = locationService.isLocationEnabled(context)
 
         // Permission launcher
         val permissionLauncher = rememberLauncherForActivityResult(
@@ -76,6 +75,8 @@ class Donation : BaseContentPage() {
         ) { permissions ->
             hasLocationPermission = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
                                     permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+            locationService.getUserLocation(context, onSuccess = { location -> }, onFailure = {})
+
         }
 
         // Check and request permission if not granted
@@ -83,15 +84,33 @@ class Donation : BaseContentPage() {
             val fineLocationPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
             val coarseLocationPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
 
-            if (fineLocationPermission != PackageManager.PERMISSION_GRANTED) {
+            if (fineLocationPermission != PackageManager.PERMISSION_GRANTED && coarseLocationPermission != PackageManager.PERMISSION_GRANTED) {
                 // Request permission for precise location
-                permissionLauncher.launch(
-                    arrayOf(
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    )
-                )
+                Toast.makeText(context, "Location permission is needed", Toast.LENGTH_LONG).show()
+                
+                // Create an AlertDialog
+                AlertDialog.Builder(context)
+                    .setMessage("We need the location permission (either precise or approximate) to display a map with nearby donation places")
+                    .setPositiveButton("OK") { _, _ ->
+                        navigate("home")
+                    }
+                    .show()
+                Log.d("Donation", "Permission ")
+            } else if (!isLocationEnabled) {
+                Log.d("Donation", "Location not enabled according to locationservice")
+                // Request permission to turn onlocation
+                // Show a Toast message
+                Toast.makeText(context, "We need the location to be activated", Toast.LENGTH_LONG).show()
+                
+                // Create an AlertDialog
+                AlertDialog.Builder(context)
+                    .setMessage("We need the location to be activated")
+                    .setPositiveButton("OK") { _, _ ->
+                        navigate("home")
+                    }
+                    .show()
             } else {
+                Log.d("Donation", "Permission already granted")
                 // Permission is already given
                 hasLocationPermission = true
             }
@@ -99,43 +118,38 @@ class Donation : BaseContentPage() {
 
         // Fetch location when permission is granted
         LaunchedEffect(hasLocationPermission) {
-            if (hasLocationPermission) {
+            Log.d("Donation", "LaunchedEffect(haslocationpermission): Checking location permission")
+            isLocationEnabled = locationService.isLocationEnabled(context)
+            if (hasLocationPermission && isLocationEnabled) {
+                Log.d("Donation", "LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only")
                 // Check if location settings are enabled
-                locationService.requestLocationSettings(context, onSuccess = {
-                    isLocationEnabled = true
-                }, onFailure = {
-                    locationStatus = "Failed to request the user to enable location"
-                })
-                isLocationEnabled = locationService.isLocationEnabled(context)
+                locationService.getLocationOnly(
+                    context,
+                    onSuccess = { location ->
+                        Log.d("Donation", "LaunchedEffect(haslocationpermission): Location received, location = $location")
+                        userLocation = location
+                    },
+                    onFailure = {
+                        Log.d("Donation", "LaunchedEffect(haslocationpermission): Location not received")
+                        // Show a Toast message
+                        Toast.makeText(context, "Location not received", Toast.LENGTH_LONG).show()
+                    }
+                )
+                // navigate("home")
+                // Thread.sleep(1000)
+                // navigate("donation")
             } else {
-                locationStatus = "Location permission denied"
-
-                if (!firstTimeRunning) {
-                    // Show a Toast message
-                    Toast.makeText(context, "We need the location to display a map with nearby donation places", Toast.LENGTH_LONG).show()
-                    
-                    // Create an AlertDialog
-                    AlertDialog.Builder(context)
-                        .setMessage("We need the location to display a map with nearby donation places")
-                        .setPositiveButton("OK") { _, _ ->
-                            navigate("home")
-                        }
-                        .show()
-                } else {
-                    firstTimeRunning = false
-                }
-            }
-        }
-
-        // Fetch location when location settings are enabled
-        LaunchedEffect(isLocationEnabled) {
-            if (isLocationEnabled) {
-                fetchLocation(locationService, context, onSuccess = { location ->
-                    userLocation = location
-                    locationStatus = "Location: long -> ${userLocation!!.longitude} | lat -> ${userLocation!!.latitude}"
-                }, onFailure = {
-                    locationStatus = "Failed to obtain location"
-                })
+                Log.d("Donation", "LaunchedEffect(haslocationpermission): Location permission denied or location not enabled")
+                // Show a Toast message
+                Toast.makeText(context, "Location permission is needed", Toast.LENGTH_LONG).show()
+                
+                // Create an AlertDialog
+                AlertDialog.Builder(context)
+                    .setMessage("We need the location permission (either precise or approximate) to display a map with nearby donation places")
+                    .setPositiveButton("OK") { _, _ ->
+                        navigate("home")
+                    }
+                    .show()
             }
         }
 
@@ -176,7 +190,7 @@ class Donation : BaseContentPage() {
                 }
 
             } else {
-                Text(locationStatus)
+                Text("Obtaining location...")
             }
         }
     }
