@@ -1,5 +1,8 @@
 package com.wearabouts.ui.donation.map
 
+// Debugging
+import android.util.Log
+
 // Android management
 import android.Manifest
 import android.app.Activity
@@ -31,6 +34,26 @@ class LocationService {
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
         private const val LOCATION_SETTINGS_REQUEST_CODE = 2
+    }
+
+    fun getLocationOnly(context: Context, onSuccess: (Location?) -> Unit, onFailure: () -> Unit) {
+        Log.d("Donation", "getLocationOnly: creating location request")
+
+        // Create location request
+        val locationRequest = LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            interval = 0
+            fastestInterval = 0
+            numUpdates = 1
+        }
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+            Log.d("Donation", "getLocationOnly: onSuccess result = $location")
+            onSuccess(location)
+        }.addOnFailureListener {
+            onFailure()
+        }
     }
 
     fun getUserLocation(
