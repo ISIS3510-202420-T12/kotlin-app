@@ -9,7 +9,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.wearabouts.R
 
-// Create a FontFamily for Poppins
+// FontFamily for Poppins
 val Poppins = FontFamily(
     Font(R.font.poppins_regular, FontWeight.Normal),
     Font(R.font.poppins_medium, FontWeight.Medium),
@@ -17,6 +17,11 @@ val Poppins = FontFamily(
     Font(R.font.poppins_light, FontWeight.Light),
     Font(R.font.poppins_italic, FontWeight.Normal, FontStyle.Italic),
     Font(R.font.poppins_extrabold, FontWeight.ExtraBold)
+)
+
+// Font family for Glorify-BW3J3
+val Glorify = FontFamily(
+    Font(R.font.glorify, FontWeight.Normal)
 )
 
 // Set of Material typography styles to start with
@@ -33,5 +38,4 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 22.sp
     )
-    // Add other text styles as needed
 )

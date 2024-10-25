@@ -31,11 +31,6 @@ class Home : BaseContentPage() {
         val clothingItems by homeViewModel.clothingItems.collectAsState()
 
         Column(modifier = Modifier.fillMaxSize()) {
-            Text(
-                text = "Marketplace",
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(16.dp)
-            )
 
             Row(
                 modifier = Modifier

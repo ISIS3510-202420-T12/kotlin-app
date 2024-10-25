@@ -52,6 +52,12 @@ android {
 
 dependencies {
     val nav_version = "2.8.1"
+    val activity_version = "1.9.2"
+    val play_location = "18.0.0"
+
+    // Permissions handling
+    implementation("androidx.activity:activity-ktx:$activity_version")
+    implementation("com.google.android.gms:play-services-location:$play_location")
 
     // Firebase Authentication
     implementation("com.google.firebase:firebase-auth:22.1.1")
