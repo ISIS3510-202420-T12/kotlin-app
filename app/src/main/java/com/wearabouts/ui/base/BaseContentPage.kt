@@ -15,8 +15,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 
 abstract class BaseContentPage {
 
+    var navController: NavController? = null
+
     @Composable
     fun Template(navController: NavController) {
+        this.navController = navController
         val navBackStackEntry = navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry.value?.destination?.route ?: ""
 
@@ -35,4 +38,9 @@ abstract class BaseContentPage {
 
     @Composable
     protected abstract fun Content()
+
+    fun navigate(route: String) {
+        navController?.navigate(route)
+    }
+
 }

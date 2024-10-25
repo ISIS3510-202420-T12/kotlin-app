@@ -16,7 +16,7 @@ import com.wearabouts.ui.theme.WearAboutsTheme
 import com.wearabouts.ui.login.Login
 import com.wearabouts.ui.login.Register
 import com.wearabouts.ui.home.Home
-import com.wearabouts.ui.donation.Donation
+import com.wearabouts.ui.donation.view.Donation
 
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable

@@ -1,4 +1,8 @@
-package com.wearabouts.ui.donation
+package com.wearabouts.ui.donation.view
+
+// Pop-ups
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 
 // Debugging
 import android.util.Log
@@ -64,6 +68,7 @@ class Donation : BaseContentPage() {
         var locationStatus by remember { mutableStateOf("Obtaining location...") }
         var hasLocationPermission by remember { mutableStateOf(false) }
         var isLocationEnabled by remember { mutableStateOf(false) }
+        var firstTimeRunning by remember { mutableStateOf(true) }
 
         // Permission launcher
         val permissionLauncher = rememberLauncherForActivityResult(
@@ -104,6 +109,21 @@ class Donation : BaseContentPage() {
                 isLocationEnabled = locationService.isLocationEnabled(context)
             } else {
                 locationStatus = "Location permission denied"
+
+                if (!firstTimeRunning) {
+                    // Show a Toast message
+                    Toast.makeText(context, "We need the location to display a map with nearby donation places", Toast.LENGTH_LONG).show()
+                    
+                    // Create an AlertDialog
+                    AlertDialog.Builder(context)
+                        .setMessage("We need the location to display a map with nearby donation places")
+                        .setPositiveButton("OK") { _, _ ->
+                            navigate("home")
+                        }
+                        .show()
+                } else {
+                    firstTimeRunning = false
+                }
             }
         }
 
