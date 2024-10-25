@@ -7,6 +7,28 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import com.wearabouts.models.ClothingItem
 
+// Location request
+import com.wearabouts.ui.donation.map.LocationService
+import androidx.compose.runtime.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.platform.LocalContext
+import android.location.Location
+import kotlinx.coroutines.launch
+import androidx.core.content.ContextCompat
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import android.content.Context
+import android.app.Activity
+import androidx.compose.runtime.Composable
+
+
+
+// Pop-ups
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+
 class HomeViewModel : ViewModel() {
 
     private val _clothingItems = MutableStateFlow<List<ClothingItem>>(emptyList())
@@ -14,6 +36,59 @@ class HomeViewModel : ViewModel() {
 
     init {
         fetchClothingItems()
+    }
+
+    @Composable
+    fun getLocation() {
+        val context = LocalContext.current
+        val locationService = LocationService()
+        var hasLocationPermission by remember { mutableStateOf(false) }
+
+        // Permission launcher
+        val permissionLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            hasLocationPermission = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                                    permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        }
+
+        // Check and request permission if not granted
+        LaunchedEffect(Unit) {
+            val fineLocationPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+            val coarseLocationPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+
+            if (fineLocationPermission != PackageManager.PERMISSION_GRANTED || coarseLocationPermission != PackageManager.PERMISSION_GRANTED) {
+                // Request permission for precise location
+                permissionLauncher.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
+                )
+            } else {
+                // Permission is already given
+                hasLocationPermission = true
+            }
+        }
+
+        // Fetch location when permission is granted
+        LaunchedEffect(hasLocationPermission) {
+            if (hasLocationPermission) {
+                // Check if location settings are enabled
+                locationService.requestLocationSettings(context, onSuccess = {}, onFailure = {})
+            } else {
+                // Show a Toast message
+                Toast.makeText(context, "We need the location permission (either precise or approximate) to display a map with nearby donation places", Toast.LENGTH_LONG).show()
+                
+                // Create an AlertDialog
+                AlertDialog.Builder(context)
+                    .setMessage("We need the location permission (either precise or approximate) to display a map with nearby donation places")
+                    .setPositiveButton("OK") { _, _ ->
+                        locationService.getUserLocation(context, onSuccess = { location -> }, onFailure = {})
+                    }
+                    .show()
+            }
+        }
     }
 
     private fun fetchClothingItems() {
