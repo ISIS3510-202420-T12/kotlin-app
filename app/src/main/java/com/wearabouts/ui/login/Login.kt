@@ -21,13 +21,19 @@ import com.wearabouts.ui.theme.Primary
 import com.wearabouts.R
 import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.Image
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun Login(navController: NavController, viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val loginState by viewModel.loginState.collectAsState()
+    val context = LocalContext.current
 
+    var showError by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+    
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -43,21 +49,47 @@ fun Login(navController: NavController, viewModel: LoginViewModel = androidx.lif
         ) {
             TextField(
                 value = username,
-                onValueChange = { username = it },
+                onValueChange = { 
+                    username = it 
+                    showError = false},
                 label = { Text("Username") },
                 modifier = Modifier.fillMaxWidth()
             )
             TextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = {
+                    password = it
+                    showError = false 
+                },
                 label = { Text("Password") },
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()
             )
 
             Button(
-                onClick = { viewModel.login(username, password) },
-                modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                onClick = {
+                    when {
+                        username.isEmpty() && password.isEmpty() -> {
+                            showError = true
+                            errorMessage = "Please enter username and password"
+                        }
+                        username.isEmpty() -> {
+                            showError = true
+                            errorMessage = "Please enter username"
+                        }
+                        password.isEmpty() -> {
+                            showError = true
+                            errorMessage = "Please enter password"
+                        }
+                        else -> {
+                            showError = false
+                            viewModel.login(username, password)
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Primary,
                     contentColor = Color.White
@@ -96,9 +128,24 @@ fun Login(navController: NavController, viewModel: LoginViewModel = androidx.lif
                 is LoginViewModel.LoginState.Success -> {
                     navController.navigate("home")
                 }
-                is LoginViewModel.LoginState.Error -> Text((loginState as LoginViewModel.LoginState.Error).message)
+                is LoginViewModel.LoginState.Error -> showErrorToast(context, (loginState as LoginViewModel.LoginState.Error).message)
                 else -> {}
             }
         }
     }
+}
+
+private fun showErrorToast(context: android.content.Context, message: String) {
+    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+}
+
+private fun formatErrorMessage(errorMessage: String?): String {
+    return when (errorMessage) {
+        "INVALID_CREDENTIALS" -> "Incorrect username or password, try again"
+        "INVALID_EMAIL" -> "Invalid email address, please check and try again"
+        "USER_DISABLED" -> "Your account has been disabled, contact support for assistance"
+        "USER_NOT_FOUND" -> "Account not found, please register or try again"
+        "NETWORK_REQUEST_FAILED" -> "Network error, please check your connection and try again"
+        else -> "An unexpected error occurred, please try again later" // Default fallback message
+    } ?: "Unknown error"
 }
