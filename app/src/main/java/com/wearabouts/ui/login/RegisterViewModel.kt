@@ -12,6 +12,13 @@ class RegisterViewModel : ViewModel() {
     val registerState: StateFlow<RegisterState> = _registerState
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
+    fun markErrorAsShown() {
+        val currentState = _registerState.value
+        if (currentState is RegisterState.Error) {
+            _registerState.value = currentState.copy(shown = true)
+        }
+    }
+
     fun register(username: String, password: String) {
         viewModelScope.launch {
             _registerState.value = RegisterState.Loading
@@ -27,10 +34,15 @@ class RegisterViewModel : ViewModel() {
         }
     }
 
+    fun resetState() {
+        _registerState.value = RegisterState.Idle
+    }
+
     sealed class RegisterState {
         object Idle : RegisterState()
         object Loading : RegisterState()
         object Success : RegisterState()
-        data class Error(val message: String) : RegisterState()
+        data class Error(val message: String, val shown: Boolean = false) : RegisterState()    
     }
 }
+
