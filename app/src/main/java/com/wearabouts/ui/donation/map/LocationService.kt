@@ -27,6 +27,10 @@ import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
+import android.os.Looper
+
 class LocationService {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -52,7 +56,15 @@ class LocationService {
             Log.d("Donation", "getLocationOnly: onSuccess result = $location")
             onSuccess(location)
         }.addOnFailureListener {
-            onFailure()
+            // Request location updates if lastLocation is null
+            fusedLocationClient.requestLocationUpdates(locationRequest, object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult) {
+                    fusedLocationClient.removeLocationUpdates(this)
+                    val newLocation = locationResult.lastLocation
+                    Log.d("Donation", "getLocationOnly: onSuccess result from updates = $newLocation")
+                    onSuccess(newLocation)
+                }
+            }, Looper.getMainLooper())
         }
     }
 

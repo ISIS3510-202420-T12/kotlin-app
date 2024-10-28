@@ -77,9 +77,6 @@ class HomeViewModel : ViewModel() {
                 // Check if location settings are enabled
                 locationService.requestLocationSettings(context, onSuccess = {}, onFailure = {})
             } else {
-                // Show a Toast message
-                Toast.makeText(context, "We need the location permission (either precise or approximate) to display a map with nearby donation places", Toast.LENGTH_LONG).show()
-                
                 // Create an AlertDialog
                 AlertDialog.Builder(context)
                     .setMessage("We need the location permission (either precise or approximate) to display a map with nearby donation places")

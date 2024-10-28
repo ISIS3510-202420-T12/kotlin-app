@@ -1,4 +1,4 @@
-package com.wearabouts.ui.donation.view
+package com.wearabouts.ui.donation
 
 // Pop-ups
 import android.widget.Toast
@@ -45,19 +45,6 @@ import com.wearabouts.ui.theme.Font
 
 class Donation : BaseContentPage() {
 
-    private fun fetchLocation(
-        locationService: LocationService,
-        context: Context,
-        onSuccess: (Location?) -> Unit,
-        onFailure: () -> Unit
-    ) {
-        locationService.getUserLocation(
-            context,
-            onSuccess = onSuccess,
-            onFailure = onFailure
-        )
-    }
-
     @Composable
     override fun Content() {
 
@@ -69,16 +56,6 @@ class Donation : BaseContentPage() {
         var hasLocationPermission by remember { mutableStateOf(false) }
         var isLocationEnabled = locationService.isLocationEnabled(context)
 
-        // Permission launcher
-        val permissionLauncher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.RequestMultiplePermissions()
-        ) { permissions ->
-            hasLocationPermission = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
-                                    permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
-            locationService.getUserLocation(context, onSuccess = { location -> }, onFailure = {})
-
-        }
-
         // Check and request permission if not granted
         LaunchedEffect(Unit) {
             val fineLocationPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -86,8 +63,7 @@ class Donation : BaseContentPage() {
 
             if (fineLocationPermission != PackageManager.PERMISSION_GRANTED && coarseLocationPermission != PackageManager.PERMISSION_GRANTED) {
                 // Request permission for precise location
-                Toast.makeText(context, "Location permission is needed", Toast.LENGTH_LONG).show()
-                
+                Log.d("Donation", "Needs permission permission, taking user to home! ")
                 // Create an AlertDialog
                 AlertDialog.Builder(context)
                     .setMessage("We need the location permission (either precise or approximate) to display a map with nearby donation places")
@@ -95,13 +71,9 @@ class Donation : BaseContentPage() {
                         navigate("home")
                     }
                     .show()
-                Log.d("Donation", "Permission ")
             } else if (!isLocationEnabled) {
-                Log.d("Donation", "Location not enabled according to locationservice")
                 // Request permission to turn onlocation
-                // Show a Toast message
-                Toast.makeText(context, "We need the location to be activated", Toast.LENGTH_LONG).show()
-                
+                Log.d("Donation", "Location not enabled according to locationservice, taking user to home!")
                 // Create an AlertDialog
                 AlertDialog.Builder(context)
                     .setMessage("We need the location to be activated")
@@ -110,7 +82,7 @@ class Donation : BaseContentPage() {
                     }
                     .show()
             } else {
-                Log.d("Donation", "Permission already granted")
+                Log.d("Donation", "Permission already granted!")
                 // Permission is already given
                 hasLocationPermission = true
             }
@@ -126,23 +98,14 @@ class Donation : BaseContentPage() {
                 locationService.getLocationOnly(
                     context,
                     onSuccess = { location ->
-                        Log.d("Donation", "LaunchedEffect(haslocationpermission): Location received, location = $location")
                         userLocation = location
                     },
                     onFailure = {
-                        Log.d("Donation", "LaunchedEffect(haslocationpermission): Location not received")
                         // Show a Toast message
                         Toast.makeText(context, "Location not received", Toast.LENGTH_LONG).show()
                     }
                 )
-                // navigate("home")
-                // Thread.sleep(1000)
-                // navigate("donation")
             } else {
-                Log.d("Donation", "LaunchedEffect(haslocationpermission): Location permission denied or location not enabled")
-                // Show a Toast message
-                Toast.makeText(context, "Location permission is needed", Toast.LENGTH_LONG).show()
-                
                 // Create an AlertDialog
                 AlertDialog.Builder(context)
                     .setMessage("We need the location permission (either precise or approximate) to display a map with nearby donation places")
