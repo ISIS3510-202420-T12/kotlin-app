@@ -14,19 +14,40 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Icon
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import com.wearabouts.ui.theme.Poppins
 import com.wearabouts.ui.theme.Primary
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.runtime.remember
+import androidx.compose.material3.CircularProgressIndicator
 
 import com.wearabouts.R
 import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.Image
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun Login(navController: NavController, viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var showError by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
+
+    val maxUsernameLength = 32
+    val maxPasswordLength = 20
     val loginState by viewModel.loginState.collectAsState()
+    val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -43,21 +64,67 @@ fun Login(navController: NavController, viewModel: LoginViewModel = androidx.lif
         ) {
             TextField(
                 value = username,
-                onValueChange = { username = it },
+                onValueChange = { newValue -> 
+                    if (newValue.length <= maxUsernameLength) {
+                        username = newValue
+                        showError = false
+                        viewModel.resetState()
+                    }
+                },
                 label = { Text("Username") },
-                modifier = Modifier.fillMaxWidth()
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                isError = username.length >= maxUsernameLength
             )
             TextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = { newValue ->
+                    if (newValue.length <= maxPasswordLength) {
+                        password = newValue
+                        showError = false
+                        viewModel.resetState()
+                    }
+                },
                 label = { Text("Password") },
-                visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth()
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                isError = password.length >= maxPasswordLength,
+                trailingIcon = {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            imageVector = if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                            contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                        )
+                    }
+                }
             )
 
             Button(
-                onClick = { viewModel.login(username, password) },
-                modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                onClick = {
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
+                    when {
+                        username.isEmpty() && password.isEmpty() -> {
+                            showError = true
+                            errorMessage = "Please enter username and password"
+                        }
+                        username.isEmpty() -> {
+                            showError = true
+                            errorMessage = "Please enter username"
+                        }
+                        password.isEmpty() -> {
+                            showError = true
+                            errorMessage = "Please enter password"
+                        }
+                        else -> {
+                            showError = false
+                            viewModel.login(username, password)
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Primary,
                     contentColor = Color.White
@@ -92,13 +159,34 @@ fun Login(navController: NavController, viewModel: LoginViewModel = androidx.lif
             }
 
             when (loginState) {
-                is LoginViewModel.LoginState.Loading -> Text("Loading...")
-                is LoginViewModel.LoginState.Success -> {
-                    navController.navigate("home")
+                is LoginViewModel.LoginState.Loading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(36.dp),
+                        color = Primary
+                    )
                 }
-                is LoginViewModel.LoginState.Error -> Text((loginState as LoginViewModel.LoginState.Error).message)
+                is LoginViewModel.LoginState.Success -> {
+                    LaunchedEffect(loginState) {
+                        if (loginState is LoginViewModel.LoginState.Success) {
+                            navController.navigate("home") {
+                                popUpTo("login") { inclusive = true }
+                            }
+                        }
+                    }                }
+                is LoginViewModel.LoginState.Error -> {
+                    LaunchedEffect(loginState) {
+                        if (loginState is LoginViewModel.LoginState.Error && !(loginState as LoginViewModel.LoginState.Error).shown) {
+                            showErrorToast(context, (loginState as LoginViewModel.LoginState.Error).message)
+                            viewModel.markErrorAsShown()
+                        }
+                    }
+                }
                 else -> {}
             }
         }
     }
+}
+
+private fun showErrorToast(context: android.content.Context, message: String) {
+    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }
