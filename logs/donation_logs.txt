@@ -1,186 +1,46 @@
 --------- beginning of main
-10-27 22:07:34.849  2801  2801 D Donation: Permission 
-10-27 22:07:34.849  2801  2801 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:07:34.850  2801  2801 D Donation: LaunchedEffect(haslocationpermission): Location permission denied or location not enabled
-10-27 22:07:40.647  2801  2801 D Donation: Permission already granted
-10-27 22:07:40.647  2801  2801 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:07:40.647  2801  2801 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:07:40.647  2801  2801 D Donation: getLocationOnly: creating location request
-10-27 22:07:40.656  2801  2801 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:07:40.656  2801  2801 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:07:40.656  2801  2801 D Donation: getLocationOnly: creating location request
-10-27 22:07:40.660  2801  2801 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:07:40.660  2801  2801 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:07:40.661  2801  2801 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:07:40.661  2801  2801 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:09:27.921  4190  4190 D Donation: Permission already granted
-10-27 22:09:27.922  4190  4190 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:09:27.922  4190  4190 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:09:27.922  4190  4190 D Donation: getLocationOnly: creating location request
-10-27 22:09:27.942  4190  4190 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:09:27.943  4190  4190 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:09:27.943  4190  4190 D Donation: getLocationOnly: creating location request
-10-27 22:09:27.945  4190  4190 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:09:27.945  4190  4190 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:09:27.966  4190  4190 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:09:27.966  4190  4190 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:20:03.733  5336  5336 D Donation: Location not enabled according to locationservice
-10-27 22:20:03.816  5336  5336 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:20:03.817  5336  5336 D Donation: LaunchedEffect(haslocationpermission): Location permission denied or location not enabled
-10-27 22:20:48.855  5336  5336 D Donation: Permission already granted
-10-27 22:20:48.855  5336  5336 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:20:48.855  5336  5336 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:20:48.856  5336  5336 D Donation: getLocationOnly: creating location request
-10-27 22:20:48.865  5336  5336 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:20:48.867  5336  5336 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:20:48.867  5336  5336 D Donation: getLocationOnly: creating location request
-10-27 22:20:48.873  5336  5336 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:20:48.873  5336  5336 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:20:48.876  5336  5336 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:20:48.876  5336  5336 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:20:49.971  5336  5336 D Donation: Permission already granted
-10-27 22:20:49.971  5336  5336 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:20:49.971  5336  5336 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:20:49.971  5336  5336 D Donation: getLocationOnly: creating location request
-10-27 22:20:49.982  5336  5336 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:20:49.982  5336  5336 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:20:49.982  5336  5336 D Donation: getLocationOnly: creating location request
-10-27 22:20:49.982  5336  5336 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:20:49.982  5336  5336 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:20:49.991  5336  5336 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:20:49.991  5336  5336 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:21:57.907  5336  5336 D Donation: Permission already granted
-10-27 22:21:57.907  5336  5336 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:21:57.908  5336  5336 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:21:57.908  5336  5336 D Donation: getLocationOnly: creating location request
-10-27 22:21:57.917  5336  5336 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:21:57.918  5336  5336 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:21:57.918  5336  5336 D Donation: getLocationOnly: creating location request
-10-27 22:21:57.918  5336  5336 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:21:57.918  5336  5336 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:21:57.922  5336  5336 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:21:57.923  5336  5336 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:27:07.729  9351  9351 D Donation: Permission already granted
-10-27 22:27:07.729  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:27:07.729  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:27:07.729  9351  9351 D Donation: getLocationOnly: creating location request
-10-27 22:27:07.747  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:27:07.747  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:27:07.747  9351  9351 D Donation: getLocationOnly: creating location request
-10-27 22:27:07.748  9351  9351 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:27:07.748  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:27:07.765  9351  9351 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:27:07.765  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:27:10.747  9351  9351 D Donation: Permission already granted
-10-27 22:27:10.747  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:27:10.748  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:27:10.748  9351  9351 D Donation: getLocationOnly: creating location request
-10-27 22:27:10.758  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:27:10.758  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:27:10.758  9351  9351 D Donation: getLocationOnly: creating location request
-10-27 22:27:10.759  9351  9351 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:27:10.759  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:27:10.761  9351  9351 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:27:10.761  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:27:14.284  9351  9351 D Donation: Permission already granted
-10-27 22:27:14.284  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:27:14.284  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:27:14.284  9351  9351 D Donation: getLocationOnly: creating location request
-10-27 22:27:14.292  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:27:14.293  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:27:14.293  9351  9351 D Donation: getLocationOnly: creating location request
-10-27 22:27:14.293  9351  9351 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:27:14.293  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:27:14.298  9351  9351 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:27:14.298  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:27:21.179  9351  9351 D Donation: Permission already granted
-10-27 22:27:21.179  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:27:21.180  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:27:21.180  9351  9351 D Donation: getLocationOnly: creating location request
-10-27 22:27:21.188  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:27:21.188  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:27:21.188  9351  9351 D Donation: getLocationOnly: creating location request
-10-27 22:27:21.190  9351  9351 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:27:21.190  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:27:21.191  9351  9351 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:27:21.191  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:27:22.713  9351  9351 D Donation: Permission already granted
-10-27 22:27:22.713  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:27:22.713  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:27:22.713  9351  9351 D Donation: getLocationOnly: creating location request
-10-27 22:27:22.719  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:27:22.720  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:27:22.720  9351  9351 D Donation: getLocationOnly: creating location request
-10-27 22:27:22.720  9351  9351 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:27:22.720  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:27:22.723  9351  9351 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:27:22.723  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:27:23.796  9351  9351 D Donation: Permission already granted
-10-27 22:27:23.796  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:27:23.796  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:27:23.796  9351  9351 D Donation: getLocationOnly: creating location request
-10-27 22:27:23.803  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:27:23.803  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:27:23.803  9351  9351 D Donation: getLocationOnly: creating location request
-10-27 22:27:23.805  9351  9351 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:27:23.805  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:27:23.807  9351  9351 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:27:23.807  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:29:57.428  9351  9351 D Donation: Permission already granted
-10-27 22:29:57.428  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:29:57.429  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:29:57.429  9351  9351 D Donation: getLocationOnly: creating location request
-10-27 22:29:57.436  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:29:57.436  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:29:57.436  9351  9351 D Donation: getLocationOnly: creating location request
-10-27 22:29:57.437  9351  9351 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:29:57.437  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:29:57.440  9351  9351 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:29:57.440  9351  9351 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:30:04.851 10363 10363 D Donation: Permission already granted
-10-27 22:30:04.851 10363 10363 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:30:04.852 10363 10363 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:30:04.852 10363 10363 D Donation: getLocationOnly: creating location request
-10-27 22:30:04.871 10363 10363 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:30:04.871 10363 10363 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:30:04.871 10363 10363 D Donation: getLocationOnly: creating location request
-10-27 22:30:04.871 10363 10363 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:30:04.871 10363 10363 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:30:04.874 10363 10363 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:30:04.874 10363 10363 D Donation: LaunchedEffect(haslocationpermission): Location received, location = null
-10-27 22:46:56.972 16496 16496 D Donation: Permission already granted!
-10-27 22:46:56.972 16496 16496 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:46:56.972 16496 16496 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:46:56.972 16496 16496 D Donation: getLocationOnly: creating location request
-10-27 22:46:56.990 16496 16496 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:46:56.999 16496 16496 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:46:56.999 16496 16496 D Donation: getLocationOnly: creating location request
-10-27 22:46:56.999 16496 16496 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:46:57.012 16496 16496 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:47:16.006 16496 16496 D Donation: Permission already granted!
-10-27 22:47:16.006 16496 16496 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:47:16.007 16496 16496 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:47:16.007 16496 16496 D Donation: getLocationOnly: creating location request
-10-27 22:47:16.018 16496 16496 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:47:16.018 16496 16496 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:47:16.018 16496 16496 D Donation: getLocationOnly: creating location request
-10-27 22:47:16.019 16496 16496 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:47:16.026 16496 16496 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:48:04.009 17586 17586 D Donation: Permission already granted!
-10-27 22:48:04.009 17586 17586 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:48:04.009 17586 17586 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:48:04.009 17586 17586 D Donation: getLocationOnly: creating location request
-10-27 22:48:04.029 17586 17586 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:48:04.030 17586 17586 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:48:04.030 17586 17586 D Donation: getLocationOnly: creating location request
-10-27 22:48:04.030 17586 17586 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:48:04.050 17586 17586 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:51:26.215 19938 19938 D Donation: Permission already granted!
-10-27 22:51:26.215 19938 19938 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:51:26.215 19938 19938 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:51:26.215 19938 19938 D Donation: getLocationOnly: creating location request
-10-27 22:51:26.234 19938 19938 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
-10-27 22:51:26.234 19938 19938 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
-10-27 22:51:26.234 19938 19938 D Donation: getLocationOnly: creating location request
-10-27 22:51:26.234 19938 19938 D Donation: getLocationOnly: onSuccess result = null
-10-27 22:51:26.237 19938 19938 D Donation: getLocationOnly: onSuccess result = null
+10-28 00:04:53.182  5797  5797 D Donation: getUserLocation: prior to call no permission was given
+10-28 00:04:55.310  5797  5797 D Donation: getUserLocation: prior to call no permission was given
+10-28 00:04:57.638  5797  5797 D Donation: Needs permission permission, taking user to home! 
+10-28 00:04:57.656  5797  5797 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
+10-28 00:05:00.047  5797  5797 D Donation: getUserLocation: prior to call no permission was given
+10-28 00:10:20.238 10669 10669 D Donation: getUserLocation: prior to call no permission was given
+10-28 00:10:24.341 10669 10669 D Donation: Needs permission permission, taking user to home! 
+10-28 00:10:24.367 10669 10669 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
+10-28 00:10:27.060 10669 10669 D Donation: getUserLocation: prior to call no permission was given
+10-28 00:10:28.594 10669 10669 D Donation: getUserLocation: prior to call no permission was given
+10-28 00:10:35.994 10669 10669 D Donation: Needs permission permission, taking user to home! 
+10-28 00:10:36.016 10669 10669 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
+10-28 00:10:48.758 10669 10669 D Donation: getUserLocation: prior to call no permission was given
+10-28 00:10:50.076 10669 10669 D Donation: getUserLocation: prior to call no permission was given
+10-28 00:16:08.467 13236 13236 D Donation: getUserLocation: prior to call no permission was given
+10-28 00:16:49.771 13236 13236 D Donation: Location not enabled according to locationservice, taking user to home!
+10-28 00:16:49.849 13236 13236 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
+10-28 00:26:47.575 17289 17289 D Donation: getUserLocation: prior to call no permission was given
+10-28 00:27:07.367 17289 17289 D Donation: Permission already granted!
+10-28 00:27:07.367 17289 17289 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
+10-28 00:27:07.367 17289 17289 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
+10-28 00:27:07.368 17289 17289 D Donation: getLocationOnly: creating location request
+10-28 00:27:07.427 17289 17289 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
+10-28 00:27:07.428 17289 17289 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
+10-28 00:27:07.428 17289 17289 D Donation: getLocationOnly: creating location request
+10-28 00:27:07.451 17289 17289 D Donation: getLocationOnly: onSuccess result = null
+10-28 00:27:07.453 17289 17289 D Donation: getLocationOnly: onSuccess result = null
+10-28 00:27:51.013 17289 17289 D Donation: Permission already granted!
+10-28 00:27:51.013 17289 17289 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
+10-28 00:27:51.013 17289 17289 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
+10-28 00:27:51.013 17289 17289 D Donation: getLocationOnly: creating location request
+10-28 00:27:51.023 17289 17289 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
+10-28 00:27:51.024 17289 17289 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
+10-28 00:27:51.024 17289 17289 D Donation: getLocationOnly: creating location request
+10-28 00:27:51.024 17289 17289 D Donation: getLocationOnly: onSuccess result = null
+10-28 00:27:51.030 17289 17289 D Donation: getLocationOnly: onSuccess result = null
+10-28 00:28:11.264 18544 18544 D Donation: Permission already granted!
+10-28 00:28:11.264 18544 18544 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
+10-28 00:28:11.264 18544 18544 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
+10-28 00:28:11.265 18544 18544 D Donation: getLocationOnly: creating location request
+10-28 00:28:11.289 18544 18544 D Donation: LaunchedEffect(haslocationpermission): Checking location permission
+10-28 00:28:11.290 18544 18544 D Donation: LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only
+10-28 00:28:11.290 18544 18544 D Donation: getLocationOnly: creating location request
+10-28 00:28:11.290 18544 18544 D Donation: getLocationOnly: onSuccess result = null
+10-28 00:28:11.306 18544 18544 D Donation: getLocationOnly: onSuccess result = null

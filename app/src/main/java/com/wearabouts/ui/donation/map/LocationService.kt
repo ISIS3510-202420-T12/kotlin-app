@@ -54,7 +54,20 @@ class LocationService {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             Log.d("Donation", "getLocationOnly: onSuccess result = $location")
-            onSuccess(location)
+            if (location != null) {
+                onSuccess(location)
+            } else {
+                // Request location updates if lastLocation is null
+                fusedLocationClient.requestLocationUpdates(locationRequest, object : LocationCallback() {
+                    override fun onLocationResult(locationResult: LocationResult) {
+                        fusedLocationClient.removeLocationUpdates(this)
+                        val newLocation = locationResult.lastLocation
+                        Log.d("Donation", "getLocationOnly: onSuccess result from updates = $newLocation")
+                        onSuccess(newLocation)
+                    }
+                }, Looper.getMainLooper())
+            }
+            
         }.addOnFailureListener {
             // Request location updates if lastLocation is null
             fusedLocationClient.requestLocationUpdates(locationRequest, object : LocationCallback() {
@@ -76,22 +89,45 @@ class LocationService {
         // Check and request location permissions
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(context as Activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+            
+            // Request permissions
+            ActivityCompat.requestPermissions(
+                context as Activity,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
             onFailure()
+            Log.d("Donation", "getUserLocation: prior to call no permission was given")
             return
         }
+        
+        Log.d("Donation", "getUserLocation: permission were given already, fetching location")
 
         // Check and request to enable location services
-        requestLocationSettings(context, onSuccess = {
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+            if (location != null) {
+                Log.d("Donation", "getUserLocation: onSuccess result = $location")
                 onSuccess(location)
-            }.addOnFailureListener {
-                onFailure()
+            } else {
+                // Request location updates if lastLocation is null
+                val locationRequest = LocationRequest.create().apply {
+                    priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+                    interval = 0
+                    fastestInterval = 0
+                    numUpdates = 1
+                }
+                fusedLocationClient.requestLocationUpdates(locationRequest, object : LocationCallback() {
+                    override fun onLocationResult(locationResult: LocationResult) {
+                        fusedLocationClient.removeLocationUpdates(this)
+                        val newLocation = locationResult.lastLocation
+                        Log.d("Donation", "getUserLocation: onSuccess result from updates = $newLocation")
+                        onSuccess(newLocation)
+                    }
+                }, Looper.getMainLooper())
             }
-        }, onFailure = {
+        }.addOnFailureListener {
             onFailure()
-        })
+        }
     }
 
     fun requestLocationSettings(

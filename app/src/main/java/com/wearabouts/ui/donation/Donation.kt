@@ -5,6 +5,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import java.lang.Thread
 
+// To ask user to change a setting
+import android.content.Intent
+import android.provider.Settings
+import android.net.Uri
+
 // Debugging
 import android.util.Log
 
@@ -67,20 +72,25 @@ class Donation : BaseContentPage() {
                 // Create an AlertDialog
                 AlertDialog.Builder(context)
                     .setMessage("We need the location permission (either precise or approximate) to display a map with nearby donation places")
-                    .setPositiveButton("OK") { _, _ ->
+                    .setPositiveButton("Go to settings") { dialog, _ ->
+                        // Navigate to app settings
+                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                            data = Uri.fromParts("package", context.packageName, null)
+                        }
+                        dialog.dismiss()
+                        navigate("home")
+                        context.startActivity(intent)
+                    }
+                    .setNegativeButton("Cancel") { dialog, _ ->
+                        dialog.dismiss()
                         navigate("home")
                     }
                     .show()
             } else if (!isLocationEnabled) {
                 // Request permission to turn onlocation
                 Log.d("Donation", "Location not enabled according to locationservice, taking user to home!")
-                // Create an AlertDialog
-                AlertDialog.Builder(context)
-                    .setMessage("We need the location to be activated")
-                    .setPositiveButton("OK") { _, _ ->
-                        navigate("home")
-                    }
-                    .show()
+                Toast.makeText(context, "We need the location to be activated", Toast.LENGTH_LONG).show()
+                navigate("home")
             } else {
                 Log.d("Donation", "Permission already granted!")
                 // Permission is already given
@@ -92,7 +102,8 @@ class Donation : BaseContentPage() {
         LaunchedEffect(hasLocationPermission) {
             Log.d("Donation", "LaunchedEffect(haslocationpermission): Checking location permission")
             isLocationEnabled = locationService.isLocationEnabled(context)
-            if (hasLocationPermission && isLocationEnabled) {
+
+            if (hasLocationPermission) {
                 Log.d("Donation", "LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only")
                 // Check if location settings are enabled
                 locationService.getLocationOnly(
@@ -105,14 +116,6 @@ class Donation : BaseContentPage() {
                         Toast.makeText(context, "Location not received", Toast.LENGTH_LONG).show()
                     }
                 )
-            } else {
-                // Create an AlertDialog
-                AlertDialog.Builder(context)
-                    .setMessage("We need the location permission (either precise or approximate) to display a map with nearby donation places")
-                    .setPositiveButton("OK") { _, _ ->
-                        navigate("home")
-                    }
-                    .show()
             }
         }
 

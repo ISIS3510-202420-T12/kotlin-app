@@ -57,7 +57,7 @@ class HomeViewModel : ViewModel() {
             val fineLocationPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
             val coarseLocationPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
 
-            if (fineLocationPermission != PackageManager.PERMISSION_GRANTED || coarseLocationPermission != PackageManager.PERMISSION_GRANTED) {
+            if (fineLocationPermission != PackageManager.PERMISSION_GRANTED && coarseLocationPermission != PackageManager.PERMISSION_GRANTED) {
                 // Request permission for precise location
                 permissionLauncher.launch(
                     arrayOf(
@@ -65,6 +65,10 @@ class HomeViewModel : ViewModel() {
                         Manifest.permission.ACCESS_COARSE_LOCATION
                     )
                 )
+                locationService.getUserLocation(context, onSuccess = { location -> }, onFailure = {})
+                // Create Toast
+                Toast.makeText(context, "Location permission is required to show nearby donation places", Toast.LENGTH_LONG).show()
+                hasLocationPermission = false
             } else {
                 // Permission is already given
                 hasLocationPermission = true
@@ -73,17 +77,14 @@ class HomeViewModel : ViewModel() {
 
         // Fetch location when permission is granted
         LaunchedEffect(hasLocationPermission) {
+            val fineLocationPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+            val coarseLocationPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+
             if (hasLocationPermission) {
                 // Check if location settings are enabled
                 locationService.requestLocationSettings(context, onSuccess = {}, onFailure = {})
-            } else {
-                // Create an AlertDialog
-                AlertDialog.Builder(context)
-                    .setMessage("We need the location permission (either precise or approximate) to display a map with nearby donation places")
-                    .setPositiveButton("OK") { _, _ ->
-                        locationService.getUserLocation(context, onSuccess = { location -> }, onFailure = {})
-                    }
-                    .show()
+            } else if (fineLocationPermission == PackageManager.PERMISSION_GRANTED || coarseLocationPermission == PackageManager.PERMISSION_GRANTED) {
+                locationService.requestLocationSettings(context, onSuccess = {}, onFailure = {})
             }
         }
     }
