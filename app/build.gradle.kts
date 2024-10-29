@@ -55,6 +55,9 @@ dependencies {
     val activity_version = "1.9.2"
     val play_location = "18.0.0"
 
+    // Material3
+    implementation("androidx.compose.material3:material3:1.3.0")
+
     // Permissions handling
     implementation("androidx.activity:activity-ktx:$activity_version")
     implementation("com.google.android.gms:play-services-location:$play_location")

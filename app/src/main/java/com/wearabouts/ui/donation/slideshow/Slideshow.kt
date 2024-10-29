@@ -1,5 +1,8 @@
 package com.wearabouts.ui.donation.view
 
+// Composables
+import com.wearabouts.ui.donation.view.DonationPlaceCard
+
 // Data model
 import com.wearabouts.models.DonationPlace
 
@@ -14,6 +17,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.Composable
+import androidx.compose.foundation.lazy.LazyRow
+
+// Colors
+import com.wearabouts.ui.theme.IconColor
+import com.wearabouts.ui.theme.Primary
 
 class Slideshow {
 
@@ -31,32 +40,21 @@ class Slideshow {
     }
 
     @Composable
-    override fun display() {
-        Row(
+    fun display() {
+        LazyRow(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Primary)
                 .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+            // flingBehavior = ScrollableDefaults.flingBehavior(),
+            // userScrollEnabled = true
         ) {
-            Text(
-                text = "Slideshow",
-                style = Font.h1,
-                modifier = Modifier.clip(RoundedCornerShape(8.dp))
-            )
-
-            Text(
-                text = "Slideshow",
-                style = Font.h1,
-                modifier = Modifier.clip(RoundedCornerShape(8.dp))
-            )
-
-            Text(
-                text = "Slideshow",
-                style = Font.h1,
-                modifier = Modifier.clip(RoundedCornerShape(8.dp))
-            )
+            var length = donationPlaces.size
+            items(length) { index ->
+                DonationPlaceCard(donationPlaces[index])
+            }
         }
     }
 }

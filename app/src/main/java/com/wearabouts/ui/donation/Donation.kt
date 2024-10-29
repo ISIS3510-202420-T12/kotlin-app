@@ -13,10 +13,11 @@ import android.net.Uri
 // Debugging
 import android.util.Log
 
-// Components
+// Composables
 import com.wearabouts.ui.base.BaseContentPage
 import com.wearabouts.ui.donation.map.LocationService
 import com.wearabouts.ui.donation.map.MapManager
+import com.wearabouts.ui.donation.view.Slideshow
 
 // Material
 import androidx.compose.material3.Text
@@ -56,6 +57,7 @@ class Donation : BaseContentPage() {
         val context = LocalContext.current
         val locationService = LocationService()
         val mapManager = MapManager()
+        val slideshow = Slideshow()
         
         var userLocation by remember { mutableStateOf<Location?>(null) }
         var hasLocationPermission by remember { mutableStateOf(false) }
@@ -152,7 +154,15 @@ class Donation : BaseContentPage() {
                     }
 
                     mapManager.showMap(userLocation!!.longitude, userLocation!!.latitude)
+                }
 
+                Box (
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    slideshow.display()
                 }
 
             } else {
