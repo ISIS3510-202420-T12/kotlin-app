@@ -57,6 +57,7 @@ dependencies {
 
     // Material3
     implementation("androidx.compose.material3:material3:1.3.0")
+    implementation("com.google.android.material:material:1.5.0")
 
     // Permissions handling
     implementation("androidx.activity:activity-ktx:$activity_version")
@@ -84,11 +85,11 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.1.0")
 
     // MapBox API accesss
-    implementation("com.mapbox.maps:android:11.0.0")
-    implementation("com.mapbox.extension:maps-compose:11.0.0")
+    val mapbox_version = "11.0.0"
+    implementation("com.mapbox.maps:android:$mapbox_version")
+    implementation("com.mapbox.extension:maps-compose:$mapbox_version")
 
     // Other core dependencies
-    implementation("com.google.android.material:material:1.5.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

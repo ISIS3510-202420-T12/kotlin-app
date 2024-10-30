@@ -51,7 +51,7 @@ fun NavBar(navController: NavController, currentRoute: String, modifier: Modifie
             modifier = Modifier
                 .fillMaxSize()
                 .padding(start = 10.dp, end = 10.dp),
-            horizontalArrangement = Arrangement.SpaceAround,
+            horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(

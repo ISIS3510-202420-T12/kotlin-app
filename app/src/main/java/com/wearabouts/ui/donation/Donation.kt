@@ -22,7 +22,7 @@ import com.wearabouts.ui.donation.view.Slideshow
 // Material
 import androidx.compose.material3.Text
 
-// Styles
+// Styles & resources
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
@@ -30,6 +30,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import com.wearabouts.R
+import androidx.compose.ui.res.painterResource
 
 // Map
 import androidx.compose.runtime.*
@@ -46,8 +50,12 @@ import android.content.Context
 import android.app.Activity
 
 // Colors
+import androidx.compose.ui.graphics.Color
+import com.wearabouts.ui.theme.IconColor
 import com.wearabouts.ui.theme.Primary
 import com.wearabouts.ui.theme.Font
+import com.wearabouts.ui.theme.White
+import com.wearabouts.ui.theme.Transparent
 
 class Donation : BaseContentPage() {
 
@@ -153,16 +161,61 @@ class Donation : BaseContentPage() {
                         )
                     }
 
-                    mapManager.showMap(userLocation!!.longitude, userLocation!!.latitude)
+                    mapManager.showMap(userLocation!!.longitude, userLocation!!.latitude, mapManager, slideshow.donationPlaces)
                 }
 
                 Box (
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 16.dp),
+                        .fillMaxWidth()
+                        .height(550.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    slideshow.display()
+                    slideshow.display(mapManager)
+                }
+
+                // Go back to current location
+                Box (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Transparent)
+                        .height(220.dp),
+                    contentAlignment = Alignment.BottomCenter
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 20.dp),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Box (
+                            modifier = Modifier
+                                .size(45.dp)
+                                .clip(RoundedCornerShape(45.dp))
+                                .background(White),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            IconButton(
+                                onClick = {
+                                    Log.d("Slideshow", "Clicked on current location button")
+                                    try {
+                                        mapManager.moveCameraToLocation(userLocation!!.longitude, userLocation!!.latitude)
+                                    } catch (e: Exception) {
+                                        Log.d("Slideshow", "Error in moving camera to current location: ${e.message}")
+                                        Toast.makeText(context, "Error in moving camera to current location", Toast.LENGTH_LONG).show()
+                                    }
+                                },
+                                modifier = Modifier
+                                    .size(45.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.location),
+                                    contentDescription = "Go back to current location",
+                                    modifier = Modifier.size(20.dp),
+                                    tint = Color.Black
+                                )
+                            }
+                        }
+                    }
                 }
 
             } else {

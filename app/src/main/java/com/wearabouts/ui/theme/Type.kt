@@ -31,16 +31,19 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
+        letterSpacing = 0.5.sp,
+        color = BlackFont
     ),
     titleLarge = TextStyle(
         fontFamily = Poppins,
         fontWeight = FontWeight.Normal,
-        fontSize = 22.sp
+        fontSize = 22.sp,
+        color = BlackFont
     ),
     titleMedium = TextStyle(
         fontFamily = Poppins,
-        fontWeight = FontWeight.Normal,
-        fontSize = 18.sp
-    ),
+        fontWeight = FontWeight.Medium,
+        fontSize = 10.sp,
+        color = BlackFont
+    )
 )

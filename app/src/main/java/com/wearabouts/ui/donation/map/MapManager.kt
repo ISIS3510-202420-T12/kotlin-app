@@ -1,5 +1,12 @@
 package com.wearabouts.ui.donation.map
 
+// Pop-ups
+import android.widget.Toast
+
+// Debugging
+import android.util.Log
+
+// Styles & layout
 import androidx.compose.material3.Text
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,11 +17,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.background
-
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.Composable
+import com.wearabouts.R
+import androidx.compose.ui.res.painterResource
+
+// Models
+import com.wearabouts.models.DonationPlace
 
 // Map logic
 import androidx.compose.runtime.LaunchedEffect
@@ -28,6 +39,7 @@ import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.dsl.cameraOptions
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
+import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
 import com.mapbox.maps.plugin.animation.MapAnimationOptions
 import com.mapbox.maps.plugin.attribution.generated.AttributionSettings
 import com.mapbox.maps.plugin.compass.generated.CompassSettings
@@ -44,15 +56,60 @@ import com.mapbox.maps.plugin.locationcomponent.location
 import com.mapbox.maps.plugin.PuckBearing
 import com.mapbox.maps.plugin.viewport.data.FollowPuckViewportStateOptions
 
+// Custom pins
+import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
+import androidx.core.content.res.ResourcesCompat
+import android.content.res.Resources
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.graphics.drawable.toBitmap
+import android.graphics.Bitmap
+// import com.mapbox.maps.extension.compose.annotation.rememberIconImage // Requires MapBox >=11.7.0
+
 // Colors
 import com.wearabouts.ui.theme.Primary
 import com.wearabouts.ui.theme.Font
 
-class MapManager {
+class MapManager() {
+    var mapViewportState: MapViewportState? = null
 
     @OptIn(MapboxExperimental::class)
     @Composable
-    fun showMap(long: Double, lat: Double) {
+    fun AddPointer(point:Point) {
+        val context = LocalContext.current
+        val drawable = ResourcesCompat.getDrawable(
+            context.resources,
+            R.drawable.location_pin,
+            null
+        )
+        val bitmap = drawable!!.toBitmap(
+            drawable.intrinsicWidth,
+            drawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        )
+        PointAnnotation(
+            iconImageBitmap = bitmap,
+            iconSize = 0.5,
+            point = point,
+            onClick = {
+                //Toast.makeText(context, "Clicked on Circle Annotation: $it", Toast.LENGTH_LONG).show()
+                true
+            }
+        )
+    }
+
+    fun moveCameraToLocation(long: Double, lat: Double) {
+        mapViewportState?.flyTo(
+                cameraOptions = cameraOptions {
+                    center(Point.fromLngLat(long, lat))
+                    zoom(15.0)
+                },
+                animationOptions = MapAnimationOptions.mapAnimationOptions { duration(5000) },
+        )
+    }
+
+    @OptIn(MapboxExperimental::class)
+    @Composable
+    fun showMap(long: Double, lat: Double, mapManager: MapManager, donationPlaces: List<DonationPlace>) {
         // 77.594566, 12.971599
 
         val mapViewportState = rememberMapViewportState {
@@ -73,7 +130,7 @@ class MapManager {
                 animationOptions = MapAnimationOptions.mapAnimationOptions { duration(5000) },
             )
         }
-    
+
         val mapBoxUiSettings: GesturesSettings by remember {
             mutableStateOf(GesturesSettings {
                 rotateEnabled = true
@@ -81,14 +138,17 @@ class MapManager {
                 pitchEnabled = true
             })
         }
-    
+
         val compassSettings: CompassSettings by remember {
             mutableStateOf(CompassSettings { enabled = true })
         }
-    
+
         val scaleBarSetting: ScaleBarSettings by remember {
             mutableStateOf(ScaleBarSettings { enabled = false })
         }
+
+        // Provide the mapViewportState to MapManager
+        mapManager.mapViewportState = mapViewportState
 
         Box(
             modifier = Modifier.fillMaxWidth()
@@ -112,6 +172,14 @@ class MapManager {
                     enabled = false
                 },
             ) {
+
+                var locationPoint = Point.fromLngLat(long, lat) 
+                // Donation places pins
+                donationPlaces.forEach { donationPlace ->
+                    val point = Point.fromLngLat(donationPlace.longitude, donationPlace.latitude)
+                    AddPointer(point)
+                }
+
                 MapEffect(Unit) { mapView ->
                     mapView.location.updateSettings {
                       locationPuck = createDefault2DPuck(withBearing = true)

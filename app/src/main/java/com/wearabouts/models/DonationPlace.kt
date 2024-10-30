@@ -5,6 +5,5 @@ data class DonationPlace(
     val name: String,
     val imageUrl: String,
     val latitude: Double,
-    val longitude: Double,
-    val description: String
+    val longitude: Double
 )

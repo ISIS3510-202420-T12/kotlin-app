@@ -5,10 +5,13 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.foundation.clickable
 
 // Styles
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.ui.Alignment
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -24,7 +27,7 @@ import com.wearabouts.ui.theme.Typography
 import com.wearabouts.models.DonationPlace
 
 @Composable
-fun DonationPlaceCard(donationPlace: DonationPlace) {
+fun DonationPlaceCard(donationPlace: DonationPlace, onClick: () -> Unit) {
     Card(
         colors = CardDefaults.cardColors(
             // White container color
@@ -32,32 +35,30 @@ fun DonationPlaceCard(donationPlace: DonationPlace) {
         ),
         modifier = Modifier
             .padding(8.dp)
-            .width(200.dp)
-            .height(300.dp),
+            .width(150.dp)
+            .height(120.dp)
+            .clickable { onClick() },
         shape = RoundedCornerShape(16.dp)
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize()
+        Image(
+            painter = rememberImagePainter(donationPlace.imageUrl),
+            contentDescription = donationPlace.name,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .height(100.dp)
+                .fillMaxWidth()
+        )
+        Box (
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White),
+            contentAlignment = Alignment.Center
         ) {
-            Image(
-                painter = rememberImagePainter(donationPlace.imageUrl),
-                contentDescription = donationPlace.name,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .height(150.dp)
-                    .fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = donationPlace.name,
                 style = Typography.titleMedium,
-                modifier = Modifier.padding(horizontal = 8.dp)
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = donationPlace.description,
-                style = Typography.bodyLarge,
-                modifier = Modifier.padding(horizontal = 8.dp)
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
             )
         }
     }
