@@ -1,10 +1,13 @@
 package com.wearabouts.ui.home
 
+// Data state
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+
+// Data model
 import com.wearabouts.models.ClothingItem
 
 // Location request
@@ -22,8 +25,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import android.content.Context
 import android.app.Activity
 import androidx.compose.runtime.Composable
-
-
 
 // Pop-ups
 import android.widget.Toast

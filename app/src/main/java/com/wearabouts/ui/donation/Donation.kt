@@ -5,6 +5,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import java.lang.Thread
 
+// View model
+import androidx.lifecycle.viewmodel.compose.viewModel
+
+// Data fetch
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+
 // To ask user to change a setting
 import android.content.Intent
 import android.provider.Settings
@@ -17,7 +24,7 @@ import android.util.Log
 import com.wearabouts.ui.base.BaseContentPage
 import com.wearabouts.ui.donation.map.LocationService
 import com.wearabouts.ui.donation.map.MapManager
-import com.wearabouts.ui.donation.view.Slideshow
+import com.wearabouts.ui.donation.slideshow.Slideshow
 
 // Material
 import androidx.compose.material3.Text
@@ -61,6 +68,10 @@ class Donation : BaseContentPage() {
 
     @Composable
     override fun Content() {
+
+        // Initialize the ViewModel and collect donationPlaces
+        val donationViewModel: DonationViewModel = viewModel()
+        val donationPlaces by donationViewModel.donationPlaces.collectAsState()
 
         val context = LocalContext.current
         val locationService = LocationService()
@@ -161,7 +172,7 @@ class Donation : BaseContentPage() {
                         )
                     }
 
-                    mapManager.showMap(userLocation!!.longitude, userLocation!!.latitude, mapManager, slideshow.donationPlaces)
+                    mapManager.showMap(userLocation!!.longitude, userLocation!!.latitude, mapManager, donationPlaces)
                 }
 
                 Box (
@@ -170,15 +181,19 @@ class Donation : BaseContentPage() {
                         .height(550.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    slideshow.display(mapManager)
+                    slideshow.display(mapManager, donationPlaces)
                 }
 
-                // Go back to current location
+                // Go back to current location button
+                var goBackToCurrentLocationHeight = 220.dp
+                if (donationPlaces.isEmpty()) {
+                    goBackToCurrentLocationHeight = 500.dp
+                }
                 Box (
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Transparent)
-                        .height(220.dp),
+                        .height(goBackToCurrentLocationHeight),
                     contentAlignment = Alignment.BottomCenter
                 ) {
                     Row(

@@ -110,8 +110,7 @@ class MapManager() {
     @OptIn(MapboxExperimental::class)
     @Composable
     fun showMap(long: Double, lat: Double, mapManager: MapManager, donationPlaces: List<DonationPlace>) {
-        // 77.594566, 12.971599
-
+        
         val mapViewportState = rememberMapViewportState {
             setCameraOptions {
                 center(Point.fromLngLat(long, lat))
@@ -170,10 +169,9 @@ class MapManager() {
                 gesturesSettings = mapBoxUiSettings,
                 attributionSettings = AttributionSettings {
                     enabled = false
-                },
+                }
             ) {
 
-                var locationPoint = Point.fromLngLat(long, lat) 
                 // Donation places pins
                 donationPlaces.forEach { donationPlace ->
                     val point = Point.fromLngLat(donationPlace.longitude, donationPlace.latitude)

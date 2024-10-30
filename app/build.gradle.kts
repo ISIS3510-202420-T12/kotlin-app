@@ -55,6 +55,18 @@ dependencies {
     val activity_version = "1.9.2"
     val play_location = "18.0.0"
 
+    // Import the BoM for the Firebase platform. When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
+
+    // Firebase Authentication
+    implementation("com.google.firebase:firebase-auth:22.1.1")
+    
+    // Firebase Realtime Database
+    implementation("com.google.firebase:firebase-database:20.2.2")
+
+    // Cloud Firestore
+    implementation("com.google.firebase:firebase-firestore")
+
     // Material3
     implementation("androidx.compose.material3:material3:1.3.0")
     implementation("com.google.android.material:material:1.5.0")
@@ -62,11 +74,6 @@ dependencies {
     // Permissions handling
     implementation("androidx.activity:activity-ktx:$activity_version")
     implementation("com.google.android.gms:play-services-location:$play_location")
-
-    // Firebase Authentication
-    implementation("com.google.firebase:firebase-auth:22.1.1")
-    // Firebase Realtime Database
-    implementation("com.google.firebase:firebase-database:20.2.2")
 
     // Jetpack Compose integration
     implementation("androidx.navigation:navigation-compose:$nav_version")
