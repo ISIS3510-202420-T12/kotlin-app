@@ -16,6 +16,7 @@ import com.wearabouts.ui.theme.WearAboutsTheme
 import com.wearabouts.ui.login.Login
 import com.wearabouts.ui.login.Register
 import com.wearabouts.ui.home.Home
+import com.wearabouts.ui.donationMap.DonationMap
 import com.wearabouts.ui.donation.Donation
 
 import androidx.navigation.compose.NavHost
@@ -30,9 +31,10 @@ class MainActivity : ComponentActivity() {
             WearAboutsTheme {
                 val navController = rememberNavController()
                 Scaffold(modifier = Modifier.fillMaxSize()) {
-                    NavHost(navController = navController, startDestination = "home") {
+                    NavHost(navController = navController, startDestination = "login") {
                         composable("login") { Login(navController) }
                         composable("donation") { Donation().Template(navController) }
+                        composable("donationMap") { DonationMap().Template(navController) }
                         composable("home") { Home().Template(navController) }
                         composable("register") { Register(navController) }
 

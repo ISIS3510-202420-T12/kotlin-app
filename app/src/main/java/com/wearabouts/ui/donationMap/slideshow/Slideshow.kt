@@ -1,4 +1,4 @@
-package com.wearabouts.ui.donation.slideshow
+package com.wearabouts.ui.donationMap.slideshow
 
 // View model
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -8,8 +8,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 
 // Composables
-import com.wearabouts.ui.donation.view.DonationPlaceCard
-import com.wearabouts.ui.donation.map.MapManager
+import com.wearabouts.ui.donationMap.view.DonationPlaceCard
+import com.wearabouts.ui.donationMap.map.MapManager
 
 // Data model
 import com.wearabouts.models.DonationPlace

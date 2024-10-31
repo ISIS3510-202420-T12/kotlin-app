@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import com.wearabouts.models.ClothingItem
 
 // Location request
-import com.wearabouts.ui.donation.map.LocationService
+import com.wearabouts.ui.donationMap.map.LocationService
 import androidx.compose.runtime.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.LocalContext

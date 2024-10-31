@@ -37,12 +37,25 @@ import androidx.compose.foundation.shape.CircleShape
 fun NavBar(navController: NavController, currentRoute: String, modifier: Modifier = Modifier) {
 
     Box(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        Box (
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+                .background(Color.White)
+        )
+    }
+
+    Box(
         modifier = modifier
             .width(420.dp) // 350.dp
             .height(155.dp) // 125.dp
             .padding(16.dp)
             .padding(bottom = 25.dp)
-            .border(border = BorderStroke(15.dp, Color.White), shape = CircleShape)
+            .border(border = BorderStroke(10.dp, Color.White), shape = CircleShape)
             .clip(RoundedCornerShape(60.dp))
             .background(Primary)
     ) {

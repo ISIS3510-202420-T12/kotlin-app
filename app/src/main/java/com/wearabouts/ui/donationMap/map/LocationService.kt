@@ -1,4 +1,4 @@
-package com.wearabouts.ui.donation.map
+package com.wearabouts.ui.donationMap.map
 
 // Debugging
 import android.util.Log

@@ -1,4 +1,4 @@
-package com.wearabouts.ui.donation.view
+package com.wearabouts.ui.donationMap.view
 
 // Card & Material
 import androidx.compose.material3.CardDefaults
@@ -56,7 +56,7 @@ fun DonationPlaceCard(donationPlace: DonationPlace, onClick: () -> Unit) {
         ) {
             Text(
                 text = donationPlace.name,
-                style = Typography.titleMedium,
+                style = Typography.titleSmall,
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
             )
