@@ -41,10 +41,11 @@ class Home : BaseContentPage() {
                     .padding(10.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                CategoryButton("Shoes", R.drawable.shoes)
-                CategoryButton("Bottoms", R.drawable.pants)
-                CategoryButton("Tops", R.drawable.tshirt)
-                CategoryButton("Jackets", R.drawable.ic_jacket)
+                // Botones de categoría con filtrado
+                CategoryButton("Shoes", R.drawable.shoes, { homeViewModel.filterItems("Shoes") })
+                CategoryButton("Bottoms", R.drawable.pants, { homeViewModel.filterItems("Bottoms") })
+                CategoryButton("Tops", R.drawable.tshirt, { homeViewModel.filterItems("Tops") })
+                CategoryButton("Jackets", R.drawable.ic_jacket, { homeViewModel.filterItems("Jackets") })
             }
 
             //Text(
@@ -131,9 +132,14 @@ class Home : BaseContentPage() {
     }
 
     @Composable
-    fun CategoryButton(text: String, iconResId: Int, modifier: Modifier = Modifier) {
+    fun CategoryButton(
+        text: String,
+        iconResId: Int,
+        onClick: () -> Unit,
+        modifier: Modifier = Modifier // Asegúrate de que este es el último parámetro
+    ) {
         Button(
-            onClick = { /* Handle category click */ },
+            onClick = onClick,
             modifier = modifier
                 .padding(horizontal = 2.dp)
                 .height(120.dp),
@@ -141,13 +147,12 @@ class Home : BaseContentPage() {
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center // Centra verticalmente los íconos
+                verticalArrangement = Arrangement.Center
             ) {
-                // Ajusta el tamaño de la imagen a un valor fijo
                 Image(
                     painter = painterResource(id = iconResId),
                     contentDescription = text,
-                    modifier = Modifier.size(48.dp) // Tamaño fijo para todos los íconos
+                    modifier = Modifier.size(48.dp)
                 )
                 Text(
                     text = text,
