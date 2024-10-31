@@ -1,0 +1,1 @@
+adb logcat -s CampaignFetch > logs/campaign_logs.txt
