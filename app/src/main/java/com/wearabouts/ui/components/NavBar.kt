@@ -92,7 +92,7 @@ fun NavBar(navController: NavController, currentRoute: String, modifier: Modifie
                 )
             }
             IconButton(
-                onClick = { navController.navigate("donation") },
+                onClick = { navController.navigate("donationMap") },
                 modifier = Modifier
                     .size(56.dp)
             ) {
