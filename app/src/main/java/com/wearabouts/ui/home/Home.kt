@@ -1,33 +1,28 @@
 package com.wearabouts.ui.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.res.colorResource
-import com.wearabouts.ui.base.BaseContentPage
-import com.wearabouts.R
-import androidx.compose.material3.ButtonDefaults
-
-// Location
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.wearabouts.R
+import com.wearabouts.ui.base.BaseContentPage
 
 class Home : BaseContentPage() {
-
-    
 
     @Composable
     override fun Content() {
@@ -38,6 +33,7 @@ class Home : BaseContentPage() {
         homeViewModel.getLocation()
 
         Column(modifier = Modifier.fillMaxSize()) {
+            CustomToolbar()
 
             Row(
                 modifier = Modifier
@@ -45,17 +41,17 @@ class Home : BaseContentPage() {
                     .padding(10.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                CategoryButton("Shoes", R.drawable.shoes, colorResource(id = R.color.app_color2))
-                CategoryButton("Bottoms", R.drawable.pants, colorResource(id = R.color.app_color2))
-                CategoryButton("Tops", R.drawable.tshirt, colorResource(id = R.color.app_color2))
-                CategoryButton("Jackets", R.drawable.scarf, colorResource(id = R.color.app_color2))
+                CategoryButton("Shoes", R.drawable.shoes)
+                CategoryButton("Bottoms", R.drawable.pants)
+                CategoryButton("Tops", R.drawable.tshirt)
+                CategoryButton("Jackets", R.drawable.ic_jacket)
             }
 
-            Text(
-                text = "New Releases",
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.padding(16.dp)
-            )
+            //Text(
+            //    text = "New Releases",
+            //    style = MaterialTheme.typography.headlineSmall,
+            //    modifier = Modifier.padding(16.dp)
+            //)
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
@@ -74,21 +70,92 @@ class Home : BaseContentPage() {
     }
 
     @Composable
-    fun CategoryButton(text: String, iconResId: Int, backgroundColor: Color, modifier: Modifier = Modifier) {
-        Button(
-            onClick = { /* Handle category click */ },
-            modifier = modifier
-                .padding(horizontal = 2.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = backgroundColor) // Establece el color de fondo
+    fun CustomToolbar() {
+
+        Row(
+            modifier = Modifier.padding(top = 40.dp)
+
+        ){}
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .background(colorResource(id = R.color.app_color2))
+                .padding(top = 16.dp), // Asegúrate de añadir un padding superior
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            IconButton(onClick = { /* Handle menu icon click */ }) {
                 Image(
-                    painter = painterResource(id = iconResId),
-                    contentDescription = text,
-                    modifier = Modifier.size(24.dp) // Ajusta el tamaño del ícono
+                    painter = painterResource(id = R.drawable.menu),
+                    contentDescription = "Menu",
+                    modifier = Modifier.size(30.dp)
                 )
-                Text(text)
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            IconButton(onClick = { /* Handle notification icon click */ }) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_notification),
+                    contentDescription = "Notifications",
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Text(
+                text = "WearAbouts",
+                style = MaterialTheme.typography.titleLarge,
+                color = Color.Black
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            IconButton(onClick = { /* Handle search icon click */ }) {
+                Image(
+                    painter = painterResource(id = R.drawable.search),
+                    contentDescription = "Search",
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+
+            IconButton(onClick = { /* Handle cart icon click */ }) {
+                Image(
+                    painter = painterResource(id = R.drawable.shopping_bag),
+                    contentDescription = "Shopping Cart",
+                    modifier = Modifier.size(24.dp)
+                )
             }
         }
     }
+
+    @Composable
+    fun CategoryButton(text: String, iconResId: Int, modifier: Modifier = Modifier) {
+        Button(
+            onClick = { /* Handle category click */ },
+            modifier = modifier
+                .padding(horizontal = 2.dp)
+                .height(120.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center // Centra verticalmente los íconos
+            ) {
+                // Ajusta el tamaño de la imagen a un valor fijo
+                Image(
+                    painter = painterResource(id = iconResId),
+                    contentDescription = text,
+                    modifier = Modifier.size(48.dp) // Tamaño fijo para todos los íconos
+                )
+                Text(
+                    text = text,
+                    color = Color.Black,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
+    }
+
 }
