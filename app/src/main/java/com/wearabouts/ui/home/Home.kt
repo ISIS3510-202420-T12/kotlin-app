@@ -31,7 +31,6 @@ class Home : BaseContentPage() {
 
     @Composable
     override fun Content() {
-        val context = LocalContext.current
         val homeViewModel: HomeViewModel = viewModel()
         val clothingItems by homeViewModel.clothingItems.collectAsState()
 
