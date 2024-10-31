@@ -18,7 +18,19 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.material3.ButtonDefaults
 import com.wearabouts.ui.theme.Primary
 import com.wearabouts.ui.theme.Poppins
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Icon
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.platform.LocalContext
+import android.widget.Toast
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.runtime.remember
 
 import com.wearabouts.R
 import androidx.compose.ui.res.painterResource
@@ -28,6 +40,15 @@ import androidx.compose.foundation.Image
 fun Register(navController: NavController, viewModel: RegisterViewModel = viewModel()) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var showError by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
+
+    val maxUsernameLength = 32
+    val maxPasswordLength = 20
+    val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
     val registerState by viewModel.registerState.collectAsState()
 
     Box(
@@ -48,19 +69,65 @@ fun Register(navController: NavController, viewModel: RegisterViewModel = viewMo
         ) {
             TextField(
                 value = username,
-                onValueChange = { username = it },
-                label = { Text("Username") },
-                modifier = Modifier.fillMaxWidth()
+                onValueChange = { newValue -> 
+                    if (newValue.length <= maxUsernameLength) {
+                        username = newValue
+                        showError = false
+                        viewModel.resetState()
+                    }
+                },                
+                label = { Text("Email (max. 32 characters)") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                isError = username.length >= maxUsernameLength
             )
             TextField(
                 value = password,
-                onValueChange = { password = it },
-                label = { Text("Password") },
-                visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth()
+                onValueChange = { newValue ->
+                    if (newValue.length <= maxPasswordLength) {
+                        password = newValue
+                        showError = false
+                        viewModel.resetState()
+                    }
+                },                
+                label = { Text("Password (min. 6 characters, max. 20)") },
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                isError = password.length >= maxPasswordLength,
+                trailingIcon = {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            imageVector = if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                            contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                        )
+                    }
+                }
+
+
             )
             Button(
-                onClick = { viewModel.register(username, password) },
+                onClick = {
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
+                    when {
+                        username.isEmpty() && password.isEmpty() -> {
+                            showError = true
+                            errorMessage = "Please enter username and password"
+                        }
+                        username.isEmpty() -> {
+                            showError = true
+                            errorMessage = "Please enter username"
+                        }
+                        password.isEmpty() -> {
+                            showError = true
+                            errorMessage = "Please enter password"
+                        }
+                        else -> {
+                            showError = false
+                            viewModel.register(username, password)
+                        }
+                    }
+                },                
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp),
@@ -80,7 +147,12 @@ fun Register(navController: NavController, viewModel: RegisterViewModel = viewMo
             }
 
             when (registerState) {
-                is RegisterViewModel.RegisterState.Loading -> Text("Registering...")
+                is RegisterViewModel.RegisterState.Loading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(36.dp),
+                        color = Primary
+                    )
+                }
                 is RegisterViewModel.RegisterState.Success -> {
                     LaunchedEffect(Unit) {
                         navController.navigate("login") {
@@ -88,9 +160,21 @@ fun Register(navController: NavController, viewModel: RegisterViewModel = viewMo
                         }
                     }
                 }
-                is RegisterViewModel.RegisterState.Error -> Text((registerState as RegisterViewModel.RegisterState.Error).message)
+                is RegisterViewModel.RegisterState.Error -> {
+                    LaunchedEffect(registerState) {
+                        if (registerState is RegisterViewModel.RegisterState.Error && !(registerState as RegisterViewModel.RegisterState.Error).shown) {
+                            showErrorToast(context, (registerState as RegisterViewModel.RegisterState.Error).message)
+                            viewModel.markErrorAsShown()
+                        }
+                    }
+                }
+
                 else -> {}
             }
         }
     }
+}
+
+private fun showErrorToast(context: android.content.Context, message: String) {
+    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }

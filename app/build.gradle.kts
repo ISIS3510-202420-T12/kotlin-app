@@ -60,7 +60,7 @@ dependencies {
 
     // Firebase Authentication
     implementation("com.google.firebase:firebase-auth:22.1.1")
-    
+    implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
     // Firebase Realtime Database
     implementation("com.google.firebase:firebase-database:20.2.2")
 
@@ -97,6 +97,8 @@ dependencies {
     implementation("com.mapbox.extension:maps-compose:$mapbox_version")
 
     // Other core dependencies
+    implementation("com.google.android.material:material:1.5.0")
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
