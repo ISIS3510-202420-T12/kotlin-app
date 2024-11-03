@@ -89,13 +89,12 @@ class HomeViewModel : ViewModel() {
         // Simulate fetching data from a repository
         viewModelScope.launch {
             val items = listOf(
-                ClothingItem(1, "T-Shirt", "https://www.therange.co.uk/media/2/5/1654518853_12_1005.jpg", 19.99, "Tops", "T-Shirt"),
-                ClothingItem(2, "Jeans", "https://img1.exportersindia.com/product_images/bc-full/2019/1/5450192/mens-funny-look-jeans-1547451409-4644396.jpeg", 49.99, "Bottoms", "Bottomss"),
+                ClothingItem(1, "T-Shirt", "https://www.therange.co.uk/media/2/5/1654518853_12_1005.jpg", 19.99, "Tops", "Tops"),
                 ClothingItem(3, "Jacket", "https://m.media-amazon.com/images/I/71zaJkhWPCL._AC_UY1000_.jpg", 89.99, category = "Jackets"),
                 ClothingItem(4, "Skirt", "https://m.media-amazon.com/images/I/71ZJF42-4UL._AC_SX569_.jpg", 69.99, category = "Bottoms"),
                 ClothingItem(5, "Duck Shoes", "https://i.pinimg.com/originals/77/83/62/778362991f15bcc6211a3cd3e9e41533.jpg", 69.99, category = "Shoes"),
                 ClothingItem(6, "Space Pants", "https://canary.contestimg.wish.com/api/webimage/5e981c690ca0dc55df360cfd-2-large.jpg", 69.99, category = "Bottoms"),
-                ClothingItem(7, "Leather Jacket", "https://m.media-amazon.com/images/I/71ZJF42-4UL._AC_SX569_.jpg", 89.99, category = "Jackets"),
+                ClothingItem(7, "Leather Jacket", "https://http2.mlstatic.com/D_NQ_NP_783950-MCO69294314774_052023-O.webp", 89.99, category = "Jackets"),
             )
             _clothingItems.value = items
             _filteredClothingItems.value = items // Inicialmente, todos los ítems son mostrados

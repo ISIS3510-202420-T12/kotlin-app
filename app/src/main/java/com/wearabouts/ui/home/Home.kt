@@ -17,7 +17,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wearabouts.R
 import com.wearabouts.ui.base.BaseContentPage
@@ -28,7 +27,7 @@ class Home : BaseContentPage() {
     override fun Content() {
         val context = LocalContext.current
         val homeViewModel: HomeViewModel = viewModel()
-        val clothingItems by homeViewModel.clothingItems.collectAsState()
+        val clothingItems by homeViewModel.filteredClothingItems.collectAsState()
 
         homeViewModel.getLocation()
 
@@ -41,12 +40,11 @@ class Home : BaseContentPage() {
                     .padding(10.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                // Botones de categoría con filtrado
                 CategoryButton("Shoes", R.drawable.shoes, { homeViewModel.filterItems("Shoes") })
                 CategoryButton("Bottoms", R.drawable.pants, { homeViewModel.filterItems("Bottoms") })
                 CategoryButton("Tops", R.drawable.tshirt, { homeViewModel.filterItems("Tops") })
                 CategoryButton("Jackets", R.drawable.ic_jacket, { homeViewModel.filterItems("Jackets") })
-            }
+        }
 
             //Text(
             //    text = "New Releases",
@@ -72,6 +70,7 @@ class Home : BaseContentPage() {
 
     @Composable
     fun CustomToolbar() {
+
 
         Row(
             modifier = Modifier.padding(top = 40.dp)
@@ -133,13 +132,18 @@ class Home : BaseContentPage() {
 
     @Composable
     fun CategoryButton(
+
         text: String,
         iconResId: Int,
         onClick: () -> Unit,
-        modifier: Modifier = Modifier // Asegúrate de que este es el último parámetro
+        modifier: Modifier = Modifier
     ) {
+
         Button(
-            onClick = onClick,
+            onClick = {
+                println("Category button '$text' clicked")
+                onClick()
+            },
             modifier = modifier
                 .padding(horizontal = 2.dp)
                 .height(120.dp),

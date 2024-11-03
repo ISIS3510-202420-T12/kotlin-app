@@ -22,6 +22,7 @@ import com.wearabouts.ui.donation.view.Donation
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.wearabouts.ui.home.ClothingDetailScreen
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -36,6 +37,9 @@ class MainActivity : ComponentActivity() {
                         composable("login") { Login(navController) }
                         composable("donation") { Donation().Template(navController) }
                         composable("home") { Home().Template(navController) }
+                        composable("clothingDetail"){
+                            //ClothingDetailScreen()
+                        }
                         composable("register") { Register(navController) }
 
                         // Unimplemented
