@@ -44,7 +44,7 @@ class Home : BaseContentPage() {
                 CategoryButton("Bottoms", R.drawable.pants, { homeViewModel.filterItems("Bottoms") })
                 CategoryButton("Tops", R.drawable.tshirt, { homeViewModel.filterItems("Tops") })
                 CategoryButton("Jackets", R.drawable.ic_jacket, { homeViewModel.filterItems("Jackets") })
-        }
+            }
 
             //Text(
             //    text = "New Releases",
