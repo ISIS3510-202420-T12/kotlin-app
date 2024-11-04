@@ -1,5 +1,9 @@
 package com.wearabouts.ui.home
 
+// Firestore
+import com.google.firebase.firestore.firestore
+import com.google.firebase.Firebase
+
 // Data state
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,13 +31,20 @@ import android.app.Activity
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 
-class HomeViewModel : ViewModel() {
+// Log
+import android.util.Log
 
-    private val _clothingItems = MutableStateFlow<List<ClothingItem>>(emptyList())
-    val clothingItems: StateFlow<List<ClothingItem>> = _clothingItems
+class HomeViewModel : ViewModel() {
 
     private val _filteredClothingItems = MutableStateFlow<List<ClothingItem>>(emptyList())
     val filteredClothingItems: StateFlow<List<ClothingItem>> = _filteredClothingItems
+
+    // Firestore fetch
+    private val _clothingItems = MutableStateFlow<List<ClothingItem>>(emptyList())
+    val clothingItems: StateFlow<List<ClothingItem>> = _clothingItems
+    val TAG: String = "ClothingFetch"
+
+    val db = Firebase.firestore
 
     init {
         fetchClothingItems()
@@ -91,26 +102,46 @@ class HomeViewModel : ViewModel() {
     }
 
     private fun fetchClothingItems() {
-        // Simulate fetching data from a repository
-        viewModelScope.launch {
-            val items = listOf(
-                ClothingItem(1, "T-Shirt", "https://www.therange.co.uk/media/2/5/1654518853_12_1005.jpg", 19.99, "Tops", "Tops"),
-                ClothingItem(3, "Jacket", "https://m.media-amazon.com/images/I/71zaJkhWPCL._AC_UY1000_.jpg", 89.99, category = "Jackets"),
-                ClothingItem(4, "Skirt", "https://m.media-amazon.com/images/I/71ZJF42-4UL._AC_SX569_.jpg", 69.99, category = "Bottoms"),
-                ClothingItem(5, "Duck Shoes", "https://i.pinimg.com/originals/77/83/62/778362991f15bcc6211a3cd3e9e41533.jpg", 69.99, category = "Shoes"),
-                ClothingItem(6, "Space Pants", "https://canary.contestimg.wish.com/api/webimage/5e981c690ca0dc55df360cfd-2-large.jpg", 69.99, category = "Bottoms"),
-                ClothingItem(7, "Leather Jacket", "https://http2.mlstatic.com/D_NQ_NP_783950-MCO69294314774_052023-O.webp", 89.99, category = "Jackets"),
-            )
-            _clothingItems.value = items
-            _filteredClothingItems.value = items // Inicialmente, todos los ítems son mostrados
-        }
+        Log.d(TAG, "Starting fetching of clothing items")
+        db.collection("Clothes")
+            .get()
+            .addOnSuccessListener { result ->
+                Log.d(TAG, "Success: fetched ${result.size()} documents")
+                val items = result.mapNotNull { document ->
+                    Log.d(TAG, "${document.id} => ${document.data}")
+                    try {
+                        document.toObject(ClothingItem::class.java)
+                        var clothingItem = document.toObject(ClothingItem::class.java)
+                        Log.d(TAG, "Clothing item: $clothingItem")
+                        clothingItem.id = document.id
+                        Log.d(TAG, "Clothing item with id: $clothingItem")
+                        clothingItem
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error parsing document", e)
+                        null
+                    }
+                }
+                _clothingItems.value = items
+                _filteredClothingItems.value = items
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents.", exception)
+            }
+            .addOnCompleteListener {
+                Log.d(TAG, "Finished fetching of campaings")
+            }
     }
 
     fun filterItems(category: String) {
-        _filteredClothingItems.value = _clothingItems.value.filter { it.category == category }
+        //_filteredClothingItems.value = _clothingItems.value.filter { it.category == category }
+        _filteredClothingItems.value = _clothingItems.value
     }
 
     fun resetFilter() {
         _filteredClothingItems.value = _clothingItems.value
+    }
+
+    fun getItemById(id: String): ClothingItem? {
+        return _clothingItems.value.find { it.id == id }
     }
 }
