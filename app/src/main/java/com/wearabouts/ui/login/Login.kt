@@ -27,6 +27,13 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.runtime.remember
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
+import androidx.compose.material.icons.filled.Fingerprint
+import android.content.Context
+import androidx.compose.ui.layout.ContentScale
 
 import com.wearabouts.R
 import androidx.compose.ui.res.painterResource
@@ -35,12 +42,13 @@ import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
 
 @Composable
-fun Login(navController: NavController, viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+fun Login(navController: NavController, biometricPrompt: BiometricPrompt, promptInfo: BiometricPrompt.PromptInfo, viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var showError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+    var isBiometricAvailable by remember { mutableStateOf(false) }
 
     val maxUsernameLength = 32
     val maxPasswordLength = 20
@@ -49,14 +57,19 @@ fun Login(navController: NavController, viewModel: LoginViewModel = androidx.lif
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
+    LaunchedEffect(Unit) {
+        isBiometricAvailable = viewModel.canAuthenticateWithBiometrics(context)
+    }
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Image(
-            painter = painterResource(id = R.drawable.images),
+            painter = painterResource(id = R.drawable.bground),
             contentDescription = null,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
         )
         Column(
             modifier = Modifier.padding(16.dp).fillMaxWidth(),
@@ -86,7 +99,8 @@ fun Login(navController: NavController, viewModel: LoginViewModel = androidx.lif
                     }
                 },
                 label = { Text("Password") },
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),                singleLine = true,
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),               
+                singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 isError = password.length >= maxPasswordLength,
                 trailingIcon = {
@@ -98,6 +112,41 @@ fun Login(navController: NavController, viewModel: LoginViewModel = androidx.lif
                     }
                 }
             )
+
+            if (isBiometricAvailable) {
+                Button(
+                    onClick = { 
+                        viewModel.authenticateWithBiometrics(biometricPrompt, promptInfo)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Primary,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Fingerprint,
+                            contentDescription = "Fingerprint",
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            "Login with Fingerprint",
+                            style = TextStyle(
+                                fontSize = 18.sp,
+                                fontFamily = Poppins,
+                                textAlign = TextAlign.Center
+                            )
+                        )
+                    }
+                }
+            }
 
             Button(
                 onClick = {
@@ -124,7 +173,7 @@ fun Login(navController: NavController, viewModel: LoginViewModel = androidx.lif
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .padding(top = 8.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Primary,
                     contentColor = Color.White

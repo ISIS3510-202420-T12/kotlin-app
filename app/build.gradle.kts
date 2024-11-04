@@ -55,9 +55,8 @@ dependencies {
     val activity_version = "1.9.2"
     val play_location = "18.0.0"
 
-    // Permissions handling
-    implementation("androidx.activity:activity-ktx:$activity_version")
-    implementation("com.google.android.gms:play-services-location:$play_location")
+    // Import the BoM for the Firebase platform. When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
 
     // Firebase Authentication
     implementation("com.google.firebase:firebase-auth:22.1.1")
@@ -65,12 +64,26 @@ dependencies {
     // Firebase Realtime Database
     implementation("com.google.firebase:firebase-database:20.2.2")
 
+    // Cloud Firestore
+    implementation("com.google.firebase:firebase-firestore")
+
+    // Material3
+    implementation("androidx.compose.material3:material3:1.3.0")
+    implementation("com.google.android.material:material:1.5.0")
+
+    // Biometric handling
+    implementation("androidx.biometric:biometric:1.1.0")
+
+    // Permissions handling
+    implementation("androidx.activity:activity-ktx:$activity_version")
+    implementation("com.google.android.gms:play-services-location:$play_location")
     // Jetpack Compose integration
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
     // Views/Fragments integration
     implementation("androidx.navigation:navigation-fragment:$nav_version")
     implementation("androidx.navigation:navigation-ui:$nav_version")
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
 
     // Feature module support for Fragments
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
@@ -82,8 +95,9 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.1.0")
 
     // MapBox API accesss
-    implementation("com.mapbox.maps:android:11.0.0")
-    implementation("com.mapbox.extension:maps-compose:11.0.0")
+    val mapbox_version = "11.0.0"
+    implementation("com.mapbox.maps:android:$mapbox_version")
+    implementation("com.mapbox.extension:maps-compose:$mapbox_version")
 
     // Other core dependencies
     implementation("com.google.android.material:material:1.5.0")

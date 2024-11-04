@@ -1,0 +1,1 @@
+adb logcat -s DonationFetch > logs/donation_fetch_logs.txt

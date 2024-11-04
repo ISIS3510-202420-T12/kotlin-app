@@ -31,6 +31,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.runtime.remember
+import androidx.compose.ui.layout.ContentScale
 
 import com.wearabouts.R
 import androidx.compose.ui.res.painterResource
@@ -57,9 +58,10 @@ fun Register(navController: NavController, viewModel: RegisterViewModel = viewMo
         contentAlignment = Alignment.Center
     ) {
         Image(
-            painter = painterResource(id = R.drawable.images),
+            painter = painterResource(id = R.drawable.bground),
             contentDescription = null,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
         )
         Column(
             modifier = Modifier
@@ -91,7 +93,8 @@ fun Register(navController: NavController, viewModel: RegisterViewModel = viewMo
                     }
                 },                
                 label = { Text("Password (min. 6 characters, max. 20)") },
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),                modifier = Modifier.fillMaxWidth(),
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),                
+                modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 isError = password.length >= maxPasswordLength,
                 trailingIcon = {

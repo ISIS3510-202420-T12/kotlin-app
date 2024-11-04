@@ -1,13 +1,32 @@
 {
   "project_info": {
-    "project_number": "96734597362",
-    "project_id": "wearabouts-8153b",
-    "storage_bucket": "wearabouts-8153b.appspot.com"
+    "project_number": "476691102242",
+    "project_id": "wearabouts-4b338",
+    "storage_bucket": "wearabouts-4b338.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:96734597362:android:4aa34d0c7269e354db406b",
+        "mobilesdk_app_id": "1:476691102242:android:1f7a3d446dda3b9421e87b",
+        "android_client_info": {
+          "package_name": "com.example.wearabouts"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4voW2_mPn2qMgyF8Vxcf68pgmlEWmmlQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:476691102242:android:73f226e3926f660b21e87b",
         "android_client_info": {
           "package_name": "com.wearabouts"
         }
@@ -15,7 +34,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAqWG3NrkmL91L5xMSdPHTVF6QXSPXe2XM"
+          "current_key": "AIzaSyA4voW2_mPn2qMgyF8Vxcf68pgmlEWmmlQ"
         }
       ],
       "services": {
