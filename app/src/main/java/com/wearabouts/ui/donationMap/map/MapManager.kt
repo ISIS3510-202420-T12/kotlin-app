@@ -107,15 +107,33 @@ class MapManager() {
         )
     }
 
+    fun calculateDistance(
+        userLat: Double,
+        userLong: Double,
+        placeLat: Double,
+        placeLong: Double
+    ): Double {
+        val earthRadius = 6371e3 // meters
+        val dLat = Math.toRadians(placeLat - userLat)
+        val dLon = Math.toRadians(placeLong - userLong)
+        val a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(Math.toRadians(userLat)) * Math.cos(Math.toRadians(placeLat)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2)
+        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+        return earthRadius * c
+    }
+
     @OptIn(MapboxExperimental::class)
     @Composable
     fun showMap(long: Double, lat: Double, mapManager: MapManager, donationPlaces: List<DonationPlace>) {
-        
+
+        var initialPoint = Point.fromLngLat(long, lat)
+
         val mapViewportState = rememberMapViewportState {
             setCameraOptions {
-                center(Point.fromLngLat(long, lat))
-                zoom(1.0)
-                pitch(0.0)
+            center(initialPoint)
+            zoom(15.0)
+            pitch(0.0)
             }
         }
 
@@ -124,7 +142,7 @@ class MapManager() {
             mapViewportState.flyTo(
                 cameraOptions = cameraOptions {
                     center(Point.fromLngLat(long, lat))
-                    zoom(10.0)
+                    zoom(12.0)
                 },
                 animationOptions = MapAnimationOptions.mapAnimationOptions { duration(5000) },
             )
@@ -215,7 +233,8 @@ class MapManager() {
                         )
                     )
             )
-
         }
+
+        
     }
 }
