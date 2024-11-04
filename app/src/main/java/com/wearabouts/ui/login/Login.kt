@@ -33,6 +33,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.compose.material.icons.filled.Fingerprint
 import android.content.Context
+import androidx.compose.ui.layout.ContentScale
 
 import com.wearabouts.R
 import androidx.compose.ui.res.painterResource
@@ -65,9 +66,10 @@ fun Login(navController: NavController, biometricPrompt: BiometricPrompt, prompt
         contentAlignment = Alignment.Center
     ) {
         Image(
-            painter = painterResource(id = R.drawable.images),
+            painter = painterResource(id = R.drawable.bground),
             contentDescription = null,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
         )
         Column(
             modifier = Modifier.padding(16.dp).fillMaxWidth(),
@@ -97,7 +99,8 @@ fun Login(navController: NavController, biometricPrompt: BiometricPrompt, prompt
                     }
                 },
                 label = { Text("Password") },
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),                singleLine = true,
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),               
+                singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 isError = password.length >= maxPasswordLength,
                 trailingIcon = {
@@ -117,7 +120,7 @@ fun Login(navController: NavController, biometricPrompt: BiometricPrompt, prompt
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp),
+                        .padding(top = 16.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Primary,
                         contentColor = Color.White
@@ -170,7 +173,7 @@ fun Login(navController: NavController, biometricPrompt: BiometricPrompt, prompt
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .padding(top = 8.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Primary,
                     contentColor = Color.White

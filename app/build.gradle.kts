@@ -77,7 +77,6 @@ dependencies {
     // Permissions handling
     implementation("androidx.activity:activity-ktx:$activity_version")
     implementation("com.google.android.gms:play-services-location:$play_location")
-
     // Jetpack Compose integration
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
