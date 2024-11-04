@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.clickable
 
 import coil.compose.rememberImagePainter
 
@@ -17,20 +18,21 @@ import androidx.compose.material3.Text
 import coil.compose.rememberAsyncImagePainter
 
 @Composable
-fun ClothingItemCard(item: ClothingItem) {
+fun ClothingItemCard(item: ClothingItem, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
+            .clickable { onClick() }
     ) {
-        Image(
-            painter = rememberAsyncImagePainter(item.imageUrl),
-            contentDescription = item.name,
-            modifier = Modifier
-                .height(150.dp)
-                .fillMaxWidth(),
-            contentScale = ContentScale.Crop
-        )
+        // Image(
+        //     painter = rememberAsyncImagePainter(item.imageUrl),
+        //     contentDescription = item.name,
+        //     modifier = Modifier
+        //         .height(150.dp)
+        //         .fillMaxWidth(),
+        //     contentScale = ContentScale.Crop
+        // )
         Spacer(modifier = Modifier.height(8.dp))
         Text(text = item.name)
         Text(text = "$${item.price}")
