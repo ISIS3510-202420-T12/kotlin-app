@@ -1,10 +1,31 @@
 package com.wearabouts.models
 
+import com.google.firebase.firestore.PropertyName
+
 data class ClothingItem(
-    val id: Int,
-    val name: String,
-    val imageUrl: String,
-    val price: Double,
-    val description: String = "A beautiful piece of clothing",
-    val category: String
+
+    @get:PropertyName("Id") @set:PropertyName("Id")
+    var id: String = "",
+
+    @get:PropertyName("Title") @set:PropertyName("Title")
+    var name: String = "",
+
+    @get:PropertyName("Price") @set:PropertyName("Price")
+    var price: Double = 0.0,
+
+    @get:PropertyName("Description") @set:PropertyName("Description")
+    var description: String = "A beautiful piece of clothing",
+
+    @get:PropertyName("Size") @set:PropertyName("Size")
+    var size: String = "M",
+
+    @get:PropertyName("Rating") @set:PropertyName("Rating")
+    var rating: Double = 0.0,
+
+
+    // var imageUrl: String,
+    // var category: String
+    // var seller: Seller,
+    
 )
+
