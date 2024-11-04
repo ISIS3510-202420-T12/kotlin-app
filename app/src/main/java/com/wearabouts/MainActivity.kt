@@ -1,5 +1,6 @@
 package com.wearabouts
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,12 +28,7 @@ import com.wearabouts.ui.donation.Donation
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-
-import androidx.biometric.BiometricManager
-import androidx.biometric.BiometricPrompt
-import androidx.core.content.ContextCompat
-import androidx.compose.material.icons.filled.Fingerprint
-import android.widget.Toast
+import com.wearabouts.ui.home.ClothingDetailScreen
 
 class MainActivity : FragmentActivity() {
     private lateinit var biometricPrompt: BiometricPrompt
@@ -62,6 +58,9 @@ class MainActivity : FragmentActivity() {
                         composable("donation") { Donation().Template(navController) }
                         composable("donationMap") { DonationMap().Template(navController) }
                         composable("home") { Home().Template(navController) }
+                        composable("clothingDetail"){
+                            //ClothingDetailScreen()
+                        }
                         composable("register") { Register(navController) }
 
                         // Unimplemented

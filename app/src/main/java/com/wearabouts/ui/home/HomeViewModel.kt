@@ -13,10 +13,8 @@ import com.wearabouts.models.ClothingItem
 // Location request
 import com.wearabouts.ui.donationMap.map.LocationService
 import androidx.compose.runtime.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.LocalContext
 import android.location.Location
-import kotlinx.coroutines.launch
 import androidx.core.content.ContextCompat
 import android.Manifest
 import android.content.pm.PackageManager
@@ -24,7 +22,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import android.content.Context
 import android.app.Activity
-import androidx.compose.runtime.Composable
 
 // Pop-ups
 import android.widget.Toast
@@ -34,6 +31,9 @@ class HomeViewModel : ViewModel() {
 
     private val _clothingItems = MutableStateFlow<List<ClothingItem>>(emptyList())
     val clothingItems: StateFlow<List<ClothingItem>> = _clothingItems
+
+    private val _filteredClothingItems = MutableStateFlow<List<ClothingItem>>(emptyList())
+    val filteredClothingItems: StateFlow<List<ClothingItem>> = _filteredClothingItems
 
     init {
         fetchClothingItems()
@@ -50,7 +50,7 @@ class HomeViewModel : ViewModel() {
             contract = ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
             hasLocationPermission = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
-                                    permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+                    permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
         }
 
         // Check and request permission if not granted
@@ -94,18 +94,23 @@ class HomeViewModel : ViewModel() {
         // Simulate fetching data from a repository
         viewModelScope.launch {
             val items = listOf(
-                ClothingItem(1, "T-Shirt", "https://www.therange.co.uk/media/2/5/1654518853_12_1005.jpg", 19.99),
-                ClothingItem(2, "Jeans", "https://img1.exportersindia.com/product_images/bc-full/2019/1/5450192/mens-funny-look-jeans-1547451409-4644396.jpeg", 49.99),
-                ClothingItem(3, "Jacket", "https://m.media-amazon.com/images/I/71zaJkhWPCL._AC_UY1000_.jpg", 89.99),
-                ClothingItem(4, "Skirt", "https://m.media-amazon.com/images/I/71ZJF42-4UL._AC_SX569_.jpg", 69.99),
-                ClothingItem(5, "Duck Shoes", "https://i.pinimg.com/originals/77/83/62/778362991f15bcc6211a3cd3e9e41533.jpg", 69.99),
-                ClothingItem(6, "Space Pants", "https://canary.contestimg.wish.com/api/webimage/5e981c690ca0dc55df360cfd-2-large.jpg", 69.99),
-                ClothingItem(7, "Skirt", "https://m.media-amazon.com/images/I/71ZJF42-4UL._AC_SX569_.jpg", 69.99)
-
-
-
+                ClothingItem(1, "T-Shirt", "https://www.therange.co.uk/media/2/5/1654518853_12_1005.jpg", 19.99, "Tops", "Tops"),
+                ClothingItem(3, "Jacket", "https://m.media-amazon.com/images/I/71zaJkhWPCL._AC_UY1000_.jpg", 89.99, category = "Jackets"),
+                ClothingItem(4, "Skirt", "https://m.media-amazon.com/images/I/71ZJF42-4UL._AC_SX569_.jpg", 69.99, category = "Bottoms"),
+                ClothingItem(5, "Duck Shoes", "https://i.pinimg.com/originals/77/83/62/778362991f15bcc6211a3cd3e9e41533.jpg", 69.99, category = "Shoes"),
+                ClothingItem(6, "Space Pants", "https://canary.contestimg.wish.com/api/webimage/5e981c690ca0dc55df360cfd-2-large.jpg", 69.99, category = "Bottoms"),
+                ClothingItem(7, "Leather Jacket", "https://http2.mlstatic.com/D_NQ_NP_783950-MCO69294314774_052023-O.webp", 89.99, category = "Jackets"),
             )
             _clothingItems.value = items
+            _filteredClothingItems.value = items // Inicialmente, todos los ítems son mostrados
         }
+    }
+
+    fun filterItems(category: String) {
+        _filteredClothingItems.value = _clothingItems.value.filter { it.category == category }
+    }
+
+    fun resetFilter() {
+        _filteredClothingItems.value = _clothingItems.value
     }
 }
