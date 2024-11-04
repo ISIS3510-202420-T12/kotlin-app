@@ -71,6 +71,9 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.3.0")
     implementation("com.google.android.material:material:1.5.0")
 
+    // Biometric handling
+    implementation("androidx.biometric:biometric:1.1.0")
+
     // Permissions handling
     implementation("androidx.activity:activity-ktx:$activity_version")
     implementation("com.google.android.gms:play-services-location:$play_location")
@@ -81,6 +84,7 @@ dependencies {
     // Views/Fragments integration
     implementation("androidx.navigation:navigation-fragment:$nav_version")
     implementation("androidx.navigation:navigation-ui:$nav_version")
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
 
     // Feature module support for Fragments
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
