@@ -92,7 +92,7 @@ fun NavBar(navController: NavController, currentRoute: String, modifier: Modifie
                 )
             }
             IconButton(
-                onClick = { navController.navigate("donationMap") },
+                onClick = { navController.navigate("donation") },
                 modifier = Modifier
                     .size(56.dp)
             ) {
@@ -100,7 +100,7 @@ fun NavBar(navController: NavController, currentRoute: String, modifier: Modifie
                     painter = painterResource(id = R.drawable.donate),
                     contentDescription = "Donation",
                     modifier = Modifier.size(27.dp),
-                    tint = if (currentRoute == "donation") Color.White else IconColor
+                    tint = if (currentRoute == "donation" || currentRoute == "donationMap") Color.White else IconColor
                 )
             }
             IconButton(

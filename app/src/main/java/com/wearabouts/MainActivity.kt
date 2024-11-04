@@ -74,7 +74,6 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-
     private fun setupBiometricPrompt() {
         promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle("Biometric authentication")
@@ -104,4 +103,3 @@ class MainActivity : FragmentActivity() {
         )
     }
 }
-

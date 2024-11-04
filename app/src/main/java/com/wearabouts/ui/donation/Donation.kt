@@ -1,8 +1,9 @@
 package com.wearabouts.ui.donation
 
 // Composables
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import com.wearabouts.ui.base.BaseContentPage
+import com.wearabouts.ui.donation.CampaingCard
 
 // Debugging
 import android.util.Log
@@ -38,162 +39,201 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 // Data fetch
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 
 // Type
 import com.wearabouts.ui.theme.Typography
+
+// Model
+import com.wearabouts.models.Campaing
 
 class Donation : BaseContentPage() {
 
     @Composable
     override fun Content() {
+        val LOG_TAG = "CampaignFetch"
+
+        // Initialize the ViewModel and collect donationPlaces
+        val donationViewModel: DonationViewModel = viewModel()
+        val campaings by donationViewModel.campaings.collectAsState()
+
+        // State for selected campaign
+        var selectedCampaign by remember { mutableStateOf<Campaing?>(null) }
+        val context = LocalContext.current
+
         // Style vars
-        val maxWidth = 420.dp
+        val navbarWidth = 320.dp
 
-    //     Column (
-    //         modifier = Modifier
-    //             .width(maxWidth)
-    //             .fillMaxHeight()
-    //     ) {
-    //         // Text block of impact
-    //         Column (
+        Column (
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 80.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            // Text block of impact
+            Column (
+                modifier = Modifier
+                    .width(navbarWidth)
+                    .clip(RoundedCornerShape(25.dp))
+                    .background(Primary),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Clothes donated text
+                Row (
+                    modifier = Modifier
+                        .padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 0.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // First part
+                    Text (
+                        text = "You have donated",
+                        style = Typography.titleMedium,
+                        color = Font
+                    )
+                    // Highlighted number
+                    Box (
+                        modifier = Modifier
+                            .size(50.dp)
+                            .padding(10.dp)
+                            .clip(RoundedCornerShape(60.dp))
+                            .background(Font),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text (
+                            text = "56",
+                            style = Typography.titleMedium,
+                        )
+                    }
+                    // Second part
+                    Text (
+                        text = "clothes.",
+                        style = Typography.titleMedium,
+                        color = Font
+                    )
+                }
+                // People helped text
+                Row (
+                    modifier = Modifier.padding(10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // First part
+                    Text (
+                        text = "And you've helped",
+                        style = Typography.titleMedium,
+                        color = Font
+                    )
+                    // Highlighted number
+                    Box (
+                        modifier = Modifier
+                            .size(50.dp)
+                            .padding(10.dp)
+                            .clip(RoundedCornerShape(60.dp))
+                            .background(Font),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text (
+                            text = "120",
+                            style = Typography.titleMedium,
+                        )
+                    }
+                    // Second part
+                    Text (
+                        text = "people.",
+                        style = Typography.titleMedium,
+                        color = Font
+                    )
+                }
+            }
 
-    //         ) {
-    //             // Clothes donated text
-    //             Row (
+            // Search bar and map view button
+            Row (
+                modifier = Modifier
+                    .width(navbarWidth)
+                    .padding(top = 20.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                val localHeight = 50.dp
+                // Search bar
+                Row (
+                    modifier = Modifier
+                        .height(localHeight)
+                        .width(navbarWidth - 85.dp)
+                        .clip(RoundedCornerShape(1000.dp))
+                        .background(Primary),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Search icon
+                    Box (
+                        modifier = Modifier.padding(start = 30.dp)
+                    ) {
+                        Icon (
+                            painter = painterResource(id = R.drawable.search),
+                            contentDescription = "Search",
+                            tint = Font,
+                            modifier = Modifier
+                                .size(20.dp)
+                        )
+                    }
+                    // Search bar text
+                    Text (
+                        text = "Search here for NGOs",
+                        style = Typography.titleMedium,
+                        color = Font,
+                        modifier = Modifier.padding(10.dp)
+                    )
+                }
+                // Map view button, onClick = navigate("donationMap")
+                IconButton (
+                    onClick = { navigate("donationMap") },
+                    modifier = Modifier
+                        .size(localHeight)
+                        //.padding(10.dp)
+                        .clip(RoundedCornerShape(10000.dp))
+                        .background(Primary)
+                ) {
+                    // Map icon
+                    Icon (
+                        painter = painterResource(id = R.drawable.donation_map),
+                        contentDescription = "Map view",
+                        tint = Font,
+                        modifier = Modifier.size(30.dp)
+                    )
+                }   
+            }
 
-    //             ) {
-    //                 // First part
-    //                 Text (
+            // Campaings cards
+            Log.d(LOG_TAG, "Campaings: $campaings")
+            if (!campaings.isEmpty()) {
+                Log.d(LOG_TAG, "Campaings is not null, loading lazy column")
+                
+                // Sort campaigns by progress percentage (progress / goal) from smallest to largest
+                val sortedCampaigns = campaings.sortedBy { 
+                    if (it.goal > 0) it.progress / it.goal else 0.0 
+                }
+                
+                LazyColumn (
+                    modifier = Modifier
+                        .width(navbarWidth)
+                        .padding(top = 20.dp)
+                ) {
+                    items(sortedCampaigns.size) { index ->
+                        CampaingCard(sortedCampaigns[index], onClick = { selectedCampaign = sortedCampaigns[index] })
+                    }
+                }
+            }
 
-    //                 )
-    //                 // Highlighted number
-    //                 Box (
-
-    //                 ) {
-    //                     Text (
-
-    //                     )
-    //                 }
-    //                 // Second part
-    //                 Text (
-
-    //                 )
-    //             }
-    //             // People helped text
-    //             Row (
-
-    //             ) {
-    //                 // First part
-    //                 Text (
-
-    //                 )
-    //                 // Highlighted number
-    //                 Box (
-
-    //                 ) {
-    //                     Text (
-
-    //                     )
-    //                 }
-    //                 // Second part
-    //                 Text (
-
-    //                 )
-    //             }
-    //         }
-
-    //         // Search bar and map view button
-    //         Row (
-
-    //         ) {
-    //             // Search bar
-    //             Row (
-
-    //             ) {
-    //                 // Search icon
-    //                 Icon (
-
-    //                 )
-    //                 // Search bar
-    //                 Box (
-
-    //                 ) {
-    //                     // Search bar text
-    //                     Text (
-
-    //                     )
-    //                 }
-    //             }
-    //             // Map view button
-    //             IconButton (
-
-    //             ) {
-    //                 // Map icon, onClick = navigate("donationMap")
-    //                 Icon (
-
-    //                 )
-    //             }   
-    //         }
-
-    //         // Filter buttons
-    //         Row (
-
-    //         ) {
-    //             // Study icon
-    //             IconButton (
-
-    //             ) {
-    //                 Icon (
-
-    //                 )
-    //             }
-    //             // Medic icon
-    //             IconButton (
-
-    //             ) {
-    //                 Icon (
-
-    //                 )
-    //             }
-    //             // Human icon
-    //             IconButton (
-
-    //             ) {
-    //                 Icon (
-
-    //                 )
-    //             }
-    //             // Animals icon
-    //             IconButton (
-
-    //             ) {
-    //                 Icon (
-
-    //                 )
-    //             }
-    //         }
-
-    //         // "Featured" text and See more button
-    //         Row (
-
-    //         ) {
-    //             // Featured text
-    //             Text (
-
-    //             )
-    //             // See more "button" (is a text for now)
-    //             Text (
-
-    //             )
-    //         }
-
-    //         // Campaings cards
-    //         Column (
-
-    //         ) {
-
-    //         }
-
-    //     }
+            // Show DonateDialog if a campaign is selected
+            selectedCampaign?.let { campaign ->
+                DonateDialog(
+                    campaign = campaign,
+                    onDismiss = { selectedCampaign = null },
+                    onDonate = {
+                        donationViewModel.donateToCampaign(campaign, context)
+                        selectedCampaign = null
+                    }
+                )
+            }
+        }
     }
 }

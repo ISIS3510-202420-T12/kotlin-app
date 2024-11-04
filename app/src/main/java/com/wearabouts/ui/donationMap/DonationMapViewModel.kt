@@ -18,7 +18,7 @@ import com.wearabouts.models.DonationPlace
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class DonationViewModel : ViewModel() {
+class DonationMapViewModel : ViewModel() {
     private val _donationPlaces = MutableStateFlow<List<DonationPlace>>(emptyList())
     val donationPlaces: StateFlow<List<DonationPlace>> = _donationPlaces
     val TAG: String = "DonationFetch"

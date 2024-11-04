@@ -70,7 +70,7 @@ class DonationMap : BaseContentPage() {
     override fun Content() {
 
         // Initialize the ViewModel and collect donationPlaces
-        val donationViewModel: DonationViewModel = viewModel()
+        val donationViewModel: DonationMapViewModel = viewModel()
         val donationPlaces by donationViewModel.donationPlaces.collectAsState()
 
         val context = LocalContext.current
