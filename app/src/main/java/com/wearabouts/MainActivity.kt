@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
             WearAboutsTheme {
                 val navController = rememberNavController()
                 Scaffold(modifier = Modifier.fillMaxSize()) {
-                    NavHost(navController = navController, startDestination = "home") {
+                    NavHost(navController = navController, startDestination = "login") {
                         composable("login") { Login(navController) }
                         composable("donation") { Donation().Template(navController) }
                         composable("donationMap") { DonationMap().Template(navController) }
