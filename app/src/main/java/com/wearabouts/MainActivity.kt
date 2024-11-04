@@ -24,20 +24,33 @@ import com.wearabouts.ui.login.LoginViewModel
 import com.wearabouts.ui.home.Home
 import com.wearabouts.ui.donationMap.DonationMap
 import com.wearabouts.ui.donation.Donation
+import com.wearabouts.ui.home.ClothingDetailScreen
 
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.wearabouts.ui.home.ClothingDetailScreen
+
+// Biometrics
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
+import androidx.compose.ui.platform.LocalContext
+
+// ViewModels
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.wearabouts.ui.home.HomeViewModel
+import androidx.activity.viewModels
 
 class MainActivity : FragmentActivity() {
+
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
+    private lateinit var homeViewModel: HomeViewModel
     private lateinit var loginViewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
         loginViewModel = ViewModelProvider(this)[LoginViewModel::class.java]
         setupBiometricPrompt()
 
@@ -46,7 +59,7 @@ class MainActivity : FragmentActivity() {
             WearAboutsTheme {
                 val navController = rememberNavController()
                 Scaffold(modifier = Modifier.fillMaxSize()) {
-                    NavHost(navController = navController, startDestination = "login") {
+                    NavHost(navController = navController, startDestination = "home") {
                         composable("login") { 
                             Login(
                                 navController = navController,
@@ -57,16 +70,23 @@ class MainActivity : FragmentActivity() {
                         }
                         composable("donation") { Donation().Template(navController) }
                         composable("donationMap") { DonationMap().Template(navController) }
-                        composable("home") { Home().Template(navController) }
-                        composable("clothingDetail"){
-                            //ClothingDetailScreen()
+                        composable("home") { Home(homeViewModel).Template(navController) }
+                        
+                        composable("clothingdetail/{itemId}") { backStackEntry ->
+                            val itemId = backStackEntry.arguments?.getString("itemId")
+                            if (itemId != null) {
+                                ClothingDetailScreen(homeViewModel, itemId)
+                            } else {
+                                // Handle the null case, maybe show an error or navigate back
+                            }
                         }
+
                         composable("register") { Register(navController) }
 
                         // Unimplemented
-                        composable("tags") { Home().Template(navController) }
-                        composable("favourites") { Home().Template(navController) }
-                        composable("profile") { Home().Template(navController) }
+                        composable("tags") { Home(homeViewModel).Template(navController) }
+                        composable("favourites") { Home(homeViewModel).Template(navController) }
+                        composable("profile") { Home(homeViewModel).Template(navController) }
                     }
                 }
             }

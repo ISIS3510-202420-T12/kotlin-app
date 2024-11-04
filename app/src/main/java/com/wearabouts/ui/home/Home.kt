@@ -7,9 +7,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,14 +17,27 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wearabouts.R
+
+// Data model
+import com.wearabouts.models.ClothingItem
+
+// Composables
 import com.wearabouts.ui.base.BaseContentPage
 
-class Home : BaseContentPage() {
+// Pop-ups
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+
+class Home(private val homeViewModel: HomeViewModel) : BaseContentPage() {
 
     @Composable
     override fun Content() {
-        val homeViewModel: HomeViewModel = viewModel()
+        
         val clothingItems by homeViewModel.filteredClothingItems.collectAsState()
+
+        // Detail of card selected
+        var selected by remember { mutableStateOf<ClothingItem?>(null) }
+        val context = LocalContext.current
 
         homeViewModel.getLocation()
 
@@ -61,7 +72,16 @@ class Home : BaseContentPage() {
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 items(clothingItems) { item ->
-                    ClothingItemCard(item)
+                    ClothingItemCard(item, onClick = {
+                        selected = item
+                    })
+                }
+            }
+
+            // Detail of card selected
+            LaunchedEffect(selected) {
+                selected?.let {
+                    navigate("clothingdetail/${it.id}")
                 }
             }
         }
