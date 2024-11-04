@@ -7,16 +7,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import coil.compose.rememberImagePainter
 import androidx.compose.ui.unit.dp
 
 // Pop-ups
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.compose.ui.platform.LocalContext
+import coil.compose.rememberAsyncImagePainter
 
 // ViewModels
-import com.wearabouts.ui.home.HomeViewModel
 
 // Data model
 import com.wearabouts.models.ClothingItem
@@ -27,7 +24,6 @@ fun ClothingDetailScreen(homeViewModel: HomeViewModel, itemId: String) {
     val context = LocalContext.current
     var clothingItem: ClothingItem? = homeViewModel.getItemById(itemId)
 
-    // Toast.makeText(context, "ClothingDetailScreen ${clothingItem?.name}", Toast.LENGTH_SHORT).show()
 
     clothingItem?.let {
         Column(
@@ -35,14 +31,17 @@ fun ClothingDetailScreen(homeViewModel: HomeViewModel, itemId: String) {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            // Image(
-            //     painter = rememberImagePainter(clothingItem.imageUrl),
-            //     contentDescription = clothingItem.name,
-            //     modifier = Modifier
-            //         .fillMaxWidth()
-            //         .height(300.dp),
-            //     contentScale = ContentScale.Crop
-            // )
+            // Display the first image from the imageUrls list
+            if (clothingItem.imageUrls.isNotEmpty()) {
+                Image(
+                    painter = rememberAsyncImagePainter(clothingItem.imageUrls[0]),
+                    contentDescription = clothingItem.name,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = clothingItem.name,
