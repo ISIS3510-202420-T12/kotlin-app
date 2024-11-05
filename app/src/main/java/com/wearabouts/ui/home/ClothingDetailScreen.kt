@@ -8,9 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
 
 // Pop-ups
-import androidx.compose.ui.platform.LocalContext
+//import androidx.compose.ui.platform.LocalContext
 import coil.compose.rememberAsyncImagePainter
 
 // ViewModels
@@ -18,12 +19,18 @@ import coil.compose.rememberAsyncImagePainter
 // Data model
 import com.wearabouts.models.ClothingItem
 
+//Imports for caching images
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import coil.size.Size
+import coil.disk.DiskCache
+import coil.memory.MemoryCache
+
 @Composable
 fun ClothingDetailScreen(homeViewModel: HomeViewModel, itemId: String) {
-    // Context
-    val context = LocalContext.current
-    var clothingItem: ClothingItem? = homeViewModel.getItemById(itemId)
 
+    val context = LocalContext.current
+    val clothingItem: ClothingItem? = homeViewModel.getItemById(itemId)
 
     clothingItem?.let {
         Column(
@@ -31,10 +38,19 @@ fun ClothingDetailScreen(homeViewModel: HomeViewModel, itemId: String) {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            // Display the first image from the imageUrls list
+
+
             if (clothingItem.imageUrls.isNotEmpty()) {
                 Image(
-                    painter = rememberAsyncImagePainter(clothingItem.imageUrls[0]),
+                    painter = rememberAsyncImagePainter(
+                        ImageRequest.Builder(LocalContext.current)
+                            .data(clothingItem.imageUrls[0])
+                            .size(Size.ORIGINAL)
+                            .memoryCacheKey(clothingItem.imageUrls[0])
+                            .diskCacheKey(clothingItem.imageUrls[0])
+                            .crossfade(true)
+                            .build()
+                    ),
                     contentDescription = clothingItem.name,
                     modifier = Modifier
                         .fillMaxWidth()
