@@ -53,8 +53,10 @@ class MainActivity : FragmentActivity() {
 
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
-    private lateinit var homeViewModel: HomeViewModel
+    // private lateinit var homeViewModel: HomeViewModel
     private lateinit var loginViewModel: LoginViewModel
+
+    private val homeViewModel: HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +81,7 @@ class MainActivity : FragmentActivity() {
         // Establecer el ImageLoader como predeterminado
         coil.Coil.setImageLoader(imageLoader)
 
-        homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+        // homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
         loginViewModel = ViewModelProvider(this)[LoginViewModel::class.java]
         setupBiometricPrompt()
 
@@ -104,7 +106,7 @@ class MainActivity : FragmentActivity() {
                         composable("clothingdetail/{itemId}") { backStackEntry ->
                             val itemId = backStackEntry.arguments?.getString("itemId")
                             if (itemId != null) {
-                                ClothingDetailScreen(homeViewModel, itemId)
+                                ClothingDetailScreen(homeViewModel, itemId).Template(navController)
                             } else {
                                 // Handle the null case, maybe show an error or navigate back
                             }

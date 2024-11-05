@@ -34,12 +34,25 @@ import androidx.appcompat.app.AlertDialog
 // Log
 import android.util.Log
 
-class HomeViewModel : ViewModel() {
+// Local storage
+import android.content.SharedPreferences
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 
-    private val _filteredClothingItems = MutableStateFlow<List<ClothingItem>>(emptyList())
-    val filteredClothingItems: StateFlow<List<ClothingItem>> = _filteredClothingItems
+class HomeViewModel(application: Application) : AndroidViewModel(application) {
+
+    // Local storage fetch
+    private val _favorites = MutableStateFlow<List<ClothingItem>>(emptyList())
+    val favorites: StateFlow<List<ClothingItem>> = _favorites
+    private val sharedPreferences: SharedPreferences = application.getSharedPreferences("favorites_prefs", Context.MODE_PRIVATE)
+    private val gson = Gson()
+    private val FAVORITES_KEY = "favorite_clothing_items"
 
     // Firestore fetch
+    private val _filteredClothingItems = MutableStateFlow<List<ClothingItem>>(emptyList())
+    val filteredClothingItems: StateFlow<List<ClothingItem>> = _filteredClothingItems
     private val _clothingItems = MutableStateFlow<List<ClothingItem>>(emptyList())
     val clothingItems: StateFlow<List<ClothingItem>> = _clothingItems
     val TAG: String = "ClothingFetch"
@@ -48,6 +61,10 @@ class HomeViewModel : ViewModel() {
 
     init {
         fetchClothingItems()
+        // Initialize local storage
+        viewModelScope.launch {
+            _favorites.value = getFavoriteClothingItems()
+        }
     }
 
     @Composable
@@ -143,5 +160,63 @@ class HomeViewModel : ViewModel() {
 
     fun getItemById(id: String): ClothingItem? {
         return _clothingItems.value.find { it.id == id }
+    }
+
+
+
+    // ~ ~ ~ ~ Local storage ~ ~ ~ ~ //
+
+
+
+    // Local storage functions for favourites
+
+    fun getFavoriteClothingItems(): List<ClothingItem> {
+        val json = sharedPreferences.getString(FAVORITES_KEY, null)
+        return if (json != null) {
+            val type = object : TypeToken<List<ClothingItem>>() {}.type
+            gson.fromJson(json, type)
+        } else {
+            emptyList()
+        }
+    }
+
+    private fun saveFavorites(favorites: List<ClothingItem>) {
+        val editor = sharedPreferences.edit()
+        val json = gson.toJson(favorites)
+        editor.putString(FAVORITES_KEY, json)
+        editor.apply()
+
+        // Update the StateFlow
+        _favorites.value = favorites
+    }
+
+    fun addFavorite(item: ClothingItem) {
+        val currentFavorites = _favorites.value.toMutableList()
+        currentFavorites.add(item)
+        saveFavorites(currentFavorites)
+    }
+
+    fun removeFavorite(item: ClothingItem) {
+        val currentFavorites = _favorites.value.toMutableList()
+        currentFavorites.removeAll { it.id == item.id }
+        saveFavorites(currentFavorites)
+    }
+
+    fun isFavorite(clothingItem: ClothingItem): Boolean {
+        return _favorites.value.any { it.id == clothingItem.id }
+    }
+
+    // High level functions
+    fun toggleFav(clothingItem: ClothingItem) {
+        if (isFavorite(clothingItem)) {
+            removeFavorite(clothingItem)
+        } else {
+            addFavorite(clothingItem)
+        }
+    }
+
+    fun buyItem(clothingItem: ClothingItem) {
+        // TO-DO: Implement buying functionality
+        Toast.makeText(getApplication(), "¡Item bought: ${clothingItem.name}!", Toast.LENGTH_SHORT).show()
     }
 }
