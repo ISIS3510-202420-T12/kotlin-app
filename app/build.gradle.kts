@@ -54,6 +54,13 @@ dependencies {
     val nav_version = "2.8.1"
     val activity_version = "1.9.2"
     val play_location = "18.0.0"
+    val coroutines = "1.9.0"
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines")
+    // Firestore with Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutines")
 
     // Import the BoM for the Firebase platform. When using the BoM, you don't specify versions in Firebase library dependencies
     implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
