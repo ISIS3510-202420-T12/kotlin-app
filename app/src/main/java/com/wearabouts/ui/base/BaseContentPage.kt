@@ -22,6 +22,7 @@ abstract class BaseContentPage {
         this.navController = navController
         val navBackStackEntry = navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry.value?.destination?.route ?: ""
+        val adjustedRoute = if (currentRoute.contains("clothingdetail")) "clothingdetail" else currentRoute
 
         Box(
             modifier = Modifier
@@ -32,7 +33,7 @@ abstract class BaseContentPage {
                 Header()
                 Content()
             }
-            NavBar(navController, currentRoute, modifier = Modifier.align(Alignment.BottomCenter))
+            NavBar(navController, adjustedRoute, modifier = Modifier.align(Alignment.BottomCenter))
         }
     }
 

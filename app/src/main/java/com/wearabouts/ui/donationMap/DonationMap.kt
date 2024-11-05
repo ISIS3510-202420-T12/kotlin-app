@@ -140,6 +140,25 @@ class DonationMap : BaseContentPage() {
             }
         }
 
+        // Sort donation places based on distance
+        val sortedDonationPlaces by remember(userLocation) {
+            derivedStateOf {
+                userLocation?.let { userLoc ->
+                    donationPlaces.sortedBy {
+                        mapManager.calculateDistance(
+                            userLoc.latitude,
+                            userLoc.longitude,
+                            it.latitude,
+                            it.longitude
+                        )
+                    }
+                } ?: donationPlaces
+            }
+        }
+
+        // Get closest donation place
+        val closestDonationPlace = sortedDonationPlaces.firstOrNull()
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -172,7 +191,12 @@ class DonationMap : BaseContentPage() {
                         )
                     }
 
-                    mapManager.showMap(userLocation!!.longitude, userLocation!!.latitude, mapManager, donationPlaces)
+                    // Show map centered on closest donation place
+                    closestDonationPlace?.let {
+                        mapManager.showMap(it.longitude, it.latitude, mapManager, sortedDonationPlaces)
+                    }
+
+                    //mapManager.showMap(userLocation!!.longitude, userLocation!!.latitude, mapManager, sortedDonationPlaces)
                 }
 
                 Box (
@@ -181,7 +205,7 @@ class DonationMap : BaseContentPage() {
                         .height(550.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    slideshow.display(mapManager, donationPlaces)
+                    slideshow.display(mapManager, sortedDonationPlaces)
                 }
 
                 // Go back to current location button
@@ -228,6 +252,9 @@ class DonationMap : BaseContentPage() {
                                     modifier = Modifier.size(20.dp),
                                     tint = Color.Black
                                 )
+
+                                // Fly to closest donation place
+                                //mapManager.moveCameraToLocation(sortedDonationPlaces[0].longitude, sortedDonationPlaces[0].latitude)
                             }
                         }
                     }

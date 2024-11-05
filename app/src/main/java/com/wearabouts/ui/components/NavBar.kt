@@ -76,7 +76,7 @@ fun NavBar(navController: NavController, currentRoute: String, modifier: Modifie
                     painter = painterResource(id = R.drawable.home),
                     contentDescription = "Home",
                     modifier = Modifier.size(24.dp),
-                    tint = if (currentRoute == "home") Color.White else IconColor
+                    tint = if (currentRoute == "home" || currentRoute == "clothingdetail") Color.White else IconColor
                 )
             }
             IconButton(

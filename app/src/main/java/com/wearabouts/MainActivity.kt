@@ -40,17 +40,48 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wearabouts.ui.home.HomeViewModel
 import androidx.activity.viewModels
 
+//Imports for caching images
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import coil.size.Size
+import coil.disk.DiskCache
+import coil.memory.MemoryCache
+import coil.ImageLoader
+
+
 class MainActivity : FragmentActivity() {
 
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
-    private lateinit var homeViewModel: HomeViewModel
+    // private lateinit var homeViewModel: HomeViewModel
     private lateinit var loginViewModel: LoginViewModel
+
+    private val homeViewModel: HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+
+        // Configurar Coil para que use un caché
+        val imageLoader = ImageLoader.Builder(this)
+            .memoryCache {
+                MemoryCache.Builder(this)
+                    .maxSizePercent(0.25)
+                    .build()
+            }
+            .diskCache {
+                DiskCache.Builder()
+                    .directory(this.cacheDir.resolve("image_cache"))
+                    .maxSizePercent(0.02)
+                    .build()
+            }
+            .crossfade(true)
+            .build()
+
+        // Establecer el ImageLoader como predeterminado
+        coil.Coil.setImageLoader(imageLoader)
+
+        // homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
         loginViewModel = ViewModelProvider(this)[LoginViewModel::class.java]
         setupBiometricPrompt()
 
@@ -75,7 +106,7 @@ class MainActivity : FragmentActivity() {
                         composable("clothingdetail/{itemId}") { backStackEntry ->
                             val itemId = backStackEntry.arguments?.getString("itemId")
                             if (itemId != null) {
-                                ClothingDetailScreen(homeViewModel, itemId)
+                                ClothingDetailScreen(homeViewModel, itemId).Template(navController)
                             } else {
                                 // Handle the null case, maybe show an error or navigate back
                             }

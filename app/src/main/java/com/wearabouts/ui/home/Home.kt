@@ -1,5 +1,7 @@
 package com.wearabouts.ui.home
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -27,12 +29,16 @@ import com.wearabouts.ui.base.BaseContentPage
 // Pop-ups
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import coil.annotation.ExperimentalCoilApi
+import coil.imageLoader
 
 class Home(private val homeViewModel: HomeViewModel) : BaseContentPage() {
 
     @Composable
     override fun Content() {
-        
+
+        VerifyCache()
+
         val clothingItems by homeViewModel.filteredClothingItems.collectAsState()
 
         // Detail of card selected
@@ -183,6 +189,26 @@ class Home(private val homeViewModel: HomeViewModel) : BaseContentPage() {
                     style = MaterialTheme.typography.bodySmall
                 )
             }
+        }
+    }
+
+    @OptIn(ExperimentalCoilApi::class)
+    @Composable
+    fun VerifyCache() {
+        val context = LocalContext.current
+        val imageLoader = context.imageLoader
+
+        LaunchedEffect(Unit) {
+            // Estadísticas del caché
+            val memorySize = imageLoader.memoryCache?.size ?: 0
+            val memoryMaxSize = imageLoader.memoryCache?.maxSize ?: 0
+            val diskSize = imageLoader.diskCache?.size ?: 0
+            val diskMaxSize = imageLoader.diskCache?.maxSize ?: 0
+
+            Log.d(TAG, "=== ESTADÍSTICAS DEL CACHÉ ===")
+            Log.d(TAG, "Memoria: $memorySize / $memoryMaxSize bytes")
+            Log.d(TAG, "Disco: $diskSize / $diskMaxSize bytes")
+            Log.d(TAG, "============================")
         }
     }
 

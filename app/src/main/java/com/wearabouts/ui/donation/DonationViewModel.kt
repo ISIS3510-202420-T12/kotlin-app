@@ -18,9 +18,11 @@ import androidx.lifecycle.viewModelScope
 // Model
 import com.wearabouts.models.Campaing
 
-// Data state
+// Data state & coroutines
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.launch
 
 class DonationViewModel : ViewModel() {
 
@@ -34,24 +36,25 @@ class DonationViewModel : ViewModel() {
         fetchCampaings()
     }
 
+    private suspend fun fetchCampaingsSuspend(): List<Campaing> {
+        val result = db.collection("Campaigns").get().await()
+        return result.map { document ->
+            Log.d(TAG, "${document.id} => ${document.data}")
+            document.toObject(Campaing::class.java)
+        }
+    }
+
     private fun fetchCampaings() {
-        Log.d(TAG, "Starting fetching of campaings")
-        db.collection("Campaigns")
-            .get()
-            .addOnSuccessListener { result ->
-                Log.d(TAG, "Success: fetched ${result.size()} documents")
-                val campaings = result.map { document ->
-                    Log.d(TAG, "${document.id} => ${document.data}")
-                    document.toObject(Campaing::class.java)
-                }
+        viewModelScope.launch {
+            try {
+                Log.d(TAG, "Starting fetching of campaings")
+                val campaings = fetchCampaingsSuspend()
+                Log.d(TAG, "Success: fetched ${campaings.size} campaigns")
                 _campaings.value = campaings
+            } catch (e: Exception) {
+                Log.e(TAG, "Error fetching campaings", e)
             }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
-            .addOnCompleteListener {
-                Log.d(TAG, "Finished fetching of campaings")
-            }
+        }
     }
 
     fun donateToCampaign(campaing: Campaing, context: Context) {

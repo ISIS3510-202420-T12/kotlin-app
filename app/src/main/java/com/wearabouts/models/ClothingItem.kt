@@ -24,11 +24,9 @@ data class ClothingItem(
 
     @get:PropertyName("ImagesURLs") @set:PropertyName("ImagesURLs")
     var imageUrls: List<String> = emptyList(),
-
     @get:PropertyName("Labels") @set:PropertyName("Labels")
     var labels: List<String> = emptyList()
 
-    // var category: String
     // var seller: Seller,
     
 )
