@@ -30,6 +30,8 @@ fun ClothingDetailScreen(homeViewModel: HomeViewModel, itemId: String) {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
+
+
             if (clothingItem.imageUrls.isNotEmpty()) {
                 Image(
                     painter = rememberAsyncImagePainter(clothingItem.imageUrls[0]),
