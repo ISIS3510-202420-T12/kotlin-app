@@ -47,6 +47,13 @@ import com.wearabouts.ui.theme.Typography
 // Model
 import com.wearabouts.models.Campaing
 
+// Network
+import com.wearabouts.utils.NetworkUtils
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.WifiOff
+import kotlinx.coroutines.delay
+
 class Donation : BaseContentPage() {
 
     @Composable
@@ -60,6 +67,17 @@ class Donation : BaseContentPage() {
         // State for selected campaign
         var selectedCampaign by remember { mutableStateOf<Campaing?>(null) }
         val context = LocalContext.current
+
+        // Connectivity check
+        var isConnected by remember { mutableStateOf(NetworkUtils.isInternetAvailable(context)) }
+
+        // Effect to update connectivity status
+        LaunchedEffect(Unit) {
+            while(true) {
+                isConnected = NetworkUtils.isInternetAvailable(context)
+                delay(5000)
+            }
+        }
 
         // Style vars
         val navbarWidth = 320.dp
@@ -206,13 +224,49 @@ class Donation : BaseContentPage() {
             Log.d(LOG_TAG, "Campaings: $campaings")
             if (!campaings.isEmpty()) {
                 Log.d(LOG_TAG, "Campaings is not null, loading lazy column")
-                
-                // Sort campaigns by progress percentage (progress / goal) from smallest to largest
+            }
+            
+            if (!isConnected) {
+                // Mensaje de no conexión
+                Column(
+                    modifier = Modifier
+                        .width(navbarWidth)
+                        .padding(top = 20.dp)
+                        .clip(RoundedCornerShape(25.dp))
+                        .background(Primary)
+                        .padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.WifiOff,
+                        contentDescription = "No internet connection",
+                        tint = Font,
+                        modifier = Modifier
+                            .size(50.dp)
+                            .padding(bottom = 10.dp)
+                    )
+                    
+                    Text(
+                        text = "No Internet Connection",
+                        style = Typography.titleLarge,
+                        color = Font,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    
+                    Text(
+                        text = "Please check your internet connection and try again to view available campaigns",
+                        style = Typography.bodyMedium,
+                        color = Font,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            } else if (!campaings.isEmpty()) {
+                // Tu código existente para mostrar campañas
                 val sortedCampaigns = campaings.sortedBy { 
                     if (it.goal > 0) it.progress / it.goal else 0.0 
                 }
                 
-                LazyColumn (
+                LazyColumn(
                     modifier = Modifier
                         .width(navbarWidth)
                         .padding(top = 20.dp)
@@ -222,6 +276,7 @@ class Donation : BaseContentPage() {
                     }
                 }
             }
+            
 
             // Show DonateDialog if a campaign is selected
             selectedCampaign?.let { campaign ->
