@@ -59,7 +59,7 @@ class MainActivity : FragmentActivity() {
             WearAboutsTheme {
                 val navController = rememberNavController()
                 Scaffold(modifier = Modifier.fillMaxSize()) {
-                    NavHost(navController = navController, startDestination = "home") {
+                    NavHost(navController = navController, startDestination = "login") {
                         composable("login") { 
                             Login(
                                 navController = navController,
@@ -82,10 +82,10 @@ class MainActivity : FragmentActivity() {
                         }
 
                         composable("register") { Register(navController) }
+                        composable("favorites") { Home(homeViewModel).Template(navController) }
 
                         // Unimplemented
                         composable("tags") { Home(homeViewModel).Template(navController) }
-                        composable("favourites") { Home(homeViewModel).Template(navController) }
                         composable("profile") { Home(homeViewModel).Template(navController) }
                     }
                 }
