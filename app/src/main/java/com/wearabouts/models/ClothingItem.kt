@@ -22,9 +22,11 @@ data class ClothingItem(
     @get:PropertyName("Rating") @set:PropertyName("Rating")
     var rating: Double = 0.0,
 
+    @get:PropertyName("ImagesURLs") @set:PropertyName("ImagesURLs")
+    var imageUrls: List<String> = emptyList(),
+    @get:PropertyName("Labels") @set:PropertyName("Labels")
+    var labels: List<String> = emptyList()
 
-    // var imageUrl: String,
-    // var category: String
     // var seller: Seller,
     
 )
