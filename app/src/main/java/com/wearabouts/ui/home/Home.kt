@@ -119,6 +119,10 @@ class Home(private val homeViewModel: HomeViewModel) : BaseContentPage() {
                             AlertDialog.Builder(context)
                                 .setTitle("Filter by")
                                 .setItems(labelsArray) { dialog, which ->
+                                    if (which == 0) {
+                                        homeViewModel.resetFilter()
+                                        return@setItems
+                                    }
                                     homeViewModel.filterItems(labels[which])
                                 }
                                 .setNegativeButton("Cancel") { dialog, which ->
