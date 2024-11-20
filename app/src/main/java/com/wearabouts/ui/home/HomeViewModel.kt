@@ -155,11 +155,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun filterItems(category: String) {
-        if (category == "Disable") {
-            Log.d(FILTERTAG, "Disabling filter")
-            resetFilter()
-            return
-        }
         _filteredClothingItems.value = _clothingItems.value.filter { it.labels.contains(category) }
         db.collection("FilterLog")
             .whereEqualTo("name", category)
@@ -190,10 +185,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun resetFilter() {
-        Log.d(FILTERTAG, "Resetting filter")
-        Log.d(FILTERTAG, "Current clothing items: ${_clothingItems.value}")
         _filteredClothingItems.value = _clothingItems.value
-        Log.d(FILTERTAG, "Filtered clothing items after reset: ${_filteredClothingItems.value}")
     }
 
     fun getItemById(id: String): ClothingItem? {
