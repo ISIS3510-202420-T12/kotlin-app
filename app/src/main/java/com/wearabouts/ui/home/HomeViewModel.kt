@@ -55,7 +55,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val filteredClothingItems: StateFlow<List<ClothingItem>> = _filteredClothingItems
     private val _clothingItems = MutableStateFlow<List<ClothingItem>>(emptyList())
     val clothingItems: StateFlow<List<ClothingItem>> = _clothingItems
+    val _labels = MutableStateFlow<List<String>>(emptyList())
+    val labels: StateFlow<List<String>> = _labels
+
     val TAG: String = "ClothingFetch"
+    val FILTERTAG: String = "ClothingFilter"
 
     val db = Firebase.firestore
 
@@ -140,6 +144,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 }
                 _clothingItems.value = items
                 _filteredClothingItems.value = items
+                _labels.value = items.flatMap { it.labels }.distinct()
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents.", exception)
@@ -150,12 +155,45 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun filterItems(category: String) {
-        //_filteredClothingItems.value = _clothingItems.value.filter { it.category == category }
-        _filteredClothingItems.value = _clothingItems.value
+        if (category == "Disable") {
+            Log.d(FILTERTAG, "Disabling filter")
+            resetFilter()
+            return
+        }
+        _filteredClothingItems.value = _clothingItems.value.filter { it.labels.contains(category) }
+        db.collection("FilterLog")
+            .whereEqualTo("name", category)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.isEmpty) {
+                    // Create new document if it doesn't exist
+                    val newLog = hashMapOf(
+                        "name" to category,
+                        "clicked" to 1,
+                        "timesSold" to 0
+                    )
+                    db.collection("FilterLog").add(newLog)
+                } else {
+                    // Update existing document
+                    for (document in documents) {
+                        val currentClicked = document.getLong("clicked") ?: 0
+                        db.collection("FilterLog").document(document.id)
+                            .update("clicked", currentClicked + 1)
+                    }
+                }
+                Toast.makeText(getApplication(), "Filtering by $category!", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(getApplication(), "Couldn't filter by this category :(", Toast.LENGTH_SHORT).show()
+                Log.w(FILTERTAG, "Error updating FilterLog", exception)
+            }
     }
 
     fun resetFilter() {
+        Log.d(FILTERTAG, "Resetting filter")
+        Log.d(FILTERTAG, "Current clothing items: ${_clothingItems.value}")
         _filteredClothingItems.value = _clothingItems.value
+        Log.d(FILTERTAG, "Filtered clothing items after reset: ${_filteredClothingItems.value}")
     }
 
     fun getItemById(id: String): ClothingItem? {
@@ -216,7 +254,34 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun buyItem(clothingItem: ClothingItem) {
-        // TO-DO: Implement buying functionality
-        Toast.makeText(getApplication(), "¡Item bought: ${clothingItem.name}!", Toast.LENGTH_SHORT).show()
+        // For each label
+        for (label in clothingItem.labels) {
+            db.collection("FilterLog")
+                .whereEqualTo("name", label)
+                .get()
+                .addOnSuccessListener { documents ->
+                    if (documents.isEmpty) {
+                        // Create new document if it doesn't exist
+                        val newLog = hashMapOf(
+                            "name" to label,
+                            "clicked" to 0,
+                            "timesSold" to 1
+                        )
+                        db.collection("FilterLog").add(newLog)
+                    } else {
+                        // Update existing document
+                        for (document in documents) {
+                            val currentTimesSold = document.getLong("timesSold") ?: 0
+                            db.collection("FilterLog").document(document.id)
+                                .update("timesSold", currentTimesSold + 1)
+                        }
+                    }
+                    Toast.makeText(getApplication(), "Purchase successful!", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener { exception ->
+                    Toast.makeText(getApplication(), "Purchase not successful :(", Toast.LENGTH_SHORT).show()
+                    Log.w(TAG, "Error updating FilterLog", exception)
+                }
+        }
     }
 }

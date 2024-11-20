@@ -3,22 +3,36 @@ package com.wearabouts.ui.home
 import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+
+// Styles & resources
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import com.wearabouts.R
+import androidx.compose.ui.res.painterResource
+import androidx.compose.foundation.border
+
+// Colors
+import androidx.compose.ui.graphics.Color
+import com.wearabouts.ui.theme.IconColor
+import com.wearabouts.ui.theme.Primary
+import com.wearabouts.ui.theme.Font
+import com.wearabouts.ui.theme.White
+import com.wearabouts.ui.theme.Transparent
 
 // Data model
 import com.wearabouts.models.ClothingItem
@@ -40,12 +54,22 @@ class Home(private val homeViewModel: HomeViewModel) : BaseContentPage() {
         VerifyCache()
 
         val clothingItems by homeViewModel.filteredClothingItems.collectAsState()
+        val labels by homeViewModel.labels.collectAsState()
 
         // Detail of card selected
         var selected by remember { mutableStateOf<ClothingItem?>(null) }
         val context = LocalContext.current
 
         homeViewModel.getLocation()
+
+        // Box (
+        //     modifier = Modifier
+        //         .height(500.dp)
+        //         .background(Transparent)
+        //         .fillMaxWidth(),
+        //     contentAlignment = Alignment.BottomCenter
+        // ) {
+        
 
         Column(modifier = Modifier.fillMaxSize()) {
             CustomToolbar()
@@ -56,10 +80,15 @@ class Home(private val homeViewModel: HomeViewModel) : BaseContentPage() {
                     .padding(10.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                CategoryButton("Shoes", R.drawable.shoes, { homeViewModel.filterItems("Shoes") })
-                CategoryButton("Bottoms", R.drawable.pants, { homeViewModel.filterItems("Bottoms") })
-                CategoryButton("Tops", R.drawable.tshirt, { homeViewModel.filterItems("Tops") })
-                CategoryButton("Jackets", R.drawable.ic_jacket, { homeViewModel.filterItems("Jackets") })
+                // CategoryButton("Shoes", R.drawable.shoes, { homeViewModel.filterItems("shoes") })
+                // CategoryButton("Bottoms", R.drawable.pants, { homeViewModel.filterItems("bottoms") })
+                // CategoryButton("Tops", R.drawable.tshirt, { homeViewModel.filterItems("tops") })
+                // CategoryButton("Jackets", R.drawable.ic_jacket, { homeViewModel.filterItems("jackets") })
+
+                CategoryButton("Shoes", R.drawable.shoes, { })
+                CategoryButton("Bottoms", R.drawable.pants, { })
+                CategoryButton("Tops", R.drawable.tshirt, { })
+                CategoryButton("Jackets", R.drawable.ic_jacket, { })
             }
 
             //Text(
@@ -67,6 +96,48 @@ class Home(private val homeViewModel: HomeViewModel) : BaseContentPage() {
             //    style = MaterialTheme.typography.headlineSmall,
             //    modifier = Modifier.padding(16.dp)
             //)
+
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .padding(end = 20.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Box (
+                    modifier = Modifier
+                        .size(45.dp)
+                        .clip(RoundedCornerShape(45.dp))
+                        .background(White),
+                        //.border(2.dp, Color.Black),
+                    contentAlignment = Alignment.Center
+                ) {
+                    IconButton(
+                        onClick = {
+                            // Show filters
+                            val labelsArray = arrayOf("Disable") + labels.toTypedArray()
+                            AlertDialog.Builder(context)
+                                .setTitle("Filter by")
+                                .setItems(labelsArray) { dialog, which ->
+                                    homeViewModel.filterItems(labels[which])
+                                }
+                                .setNegativeButton("Cancel") { dialog, which ->
+                                    dialog.dismiss()
+                                }
+                                .show()
+                        },
+                        modifier = Modifier
+                            .size(45.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.filter),
+                            contentDescription = "Filter labels",
+                            modifier = Modifier.size(20.dp),
+                            tint = Color.Black
+                        )
+                    }
+                }
+            }
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
@@ -83,6 +154,8 @@ class Home(private val homeViewModel: HomeViewModel) : BaseContentPage() {
                     })
                 }
             }
+
+            
 
             // Detail of card selected
             LaunchedEffect(selected) {
