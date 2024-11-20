@@ -29,10 +29,8 @@ abstract class BaseContentPage {
                 .fillMaxSize()
                 .background(Color.White)
         ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Header()
-                Content()
-            }
+            Header()
+            Content()
             NavBar(navController, adjustedRoute, modifier = Modifier.align(Alignment.BottomCenter))
         }
     }

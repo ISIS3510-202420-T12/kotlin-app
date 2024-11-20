@@ -1,0 +1,1 @@
+adb logcat -s ClothingFilter > logs/clothing_filter_logs.txt
