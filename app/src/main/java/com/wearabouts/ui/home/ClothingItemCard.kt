@@ -1,4 +1,5 @@
 package com.wearabouts.ui.home
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Modifier
@@ -18,6 +19,12 @@ import coil.size.Size
 //import coil.disk.DiskCache
 //import coil.memory.MemoryCache
 
+// Borders
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
 
 @Composable
 fun ClothingItemCard(item: ClothingItem, onClick: () -> Unit) {
@@ -44,7 +51,8 @@ fun ClothingItemCard(item: ClothingItem, onClick: () -> Unit) {
                 contentDescription = item.name,
                 modifier = Modifier
                     .height(150.dp)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(15.dp)),
                 contentScale = ContentScale.Crop
             )
         }

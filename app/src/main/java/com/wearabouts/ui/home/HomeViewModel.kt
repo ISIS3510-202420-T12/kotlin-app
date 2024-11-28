@@ -155,7 +155,16 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun filterItems(category: String) {
-        _filteredClothingItems.value = _clothingItems.value.filter { it.labels.contains(category) }
+        val TAGHOME = "Home"
+        Log.d(TAGHOME, "Filtering items by $category")
+        val filteredItems = _clothingItems.value.filter { it.labels.contains(category) }
+        Log.d(TAGHOME, "Filtered items: $filteredItems")
+        try {
+            _filteredClothingItems.value = filteredItems
+        } catch (e: Exception) {
+            Log.e(TAGHOME, "Error filtering items: ${e.message}")
+        }
+
         db.collection("FilterLog")
             .whereEqualTo("name", category)
             .get()

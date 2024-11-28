@@ -1,0 +1,1 @@
+adb logcat -s Home > logs/home.txt
