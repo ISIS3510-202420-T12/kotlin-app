@@ -43,7 +43,7 @@ import com.wearabouts.ui.theme.Cream
 import com.wearabouts.ui.theme.Typography
 
 // Data model
-import com.wearabouts.models.ClothingItem
+import com.wearabouts.models.Clothe
 
 // Composables
 import com.wearabouts.ui.base.BaseContentPage
@@ -59,7 +59,7 @@ class Home(private val homeViewModel: HomeViewModel) : BaseContentPage() {
     private val TAG = "Home"
 
     @Composable
-    override fun Content() {
+    override fun Content(modifier: Modifier) {
 
         VerifyCache()
 
@@ -67,14 +67,18 @@ class Home(private val homeViewModel: HomeViewModel) : BaseContentPage() {
         val labels by homeViewModel.labels.collectAsState()
 
         // Detail of card selected
-        var selected by remember { mutableStateOf<ClothingItem?>(null) }
+        var selected by remember { mutableStateOf<Clothe?>(null) }
         val context = LocalContext.current
 
         val TAG = "Home"
 
         homeViewModel.getLocation()
 
-        Column(modifier = Modifier.fillMaxSize()) {
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Column(
+            modifier = modifier.fillMaxSize()
+        ) {
 
             Row(
                 modifier = Modifier
@@ -87,6 +91,8 @@ class Home(private val homeViewModel: HomeViewModel) : BaseContentPage() {
                 CategoryButton("Tops", R.drawable.home_tops, { homeViewModel.filterItems("tops") })
                 CategoryButton("Jackets", R.drawable.home_coat, { homeViewModel.filterItems("jackets") })
             }
+
+            Spacer(modifier = Modifier.height(20.dp))
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
@@ -102,6 +108,9 @@ class Home(private val homeViewModel: HomeViewModel) : BaseContentPage() {
                     ClothingItemCard(item, onClick = {
                         selected = item
                     })
+                }
+                item {
+                    Spacer(modifier = Modifier.padding(bottom = 115.dp))
                 }
             }
 
@@ -175,7 +184,7 @@ class Home(private val homeViewModel: HomeViewModel) : BaseContentPage() {
     ) {
         Box (
             modifier = Modifier
-                .offset(x = 310.dp, y = 650.dp)
+                //.offset(x = 310.dp, y = 200.dp)
                 .size(50.dp)
                 .clip(RoundedCornerShape(50.dp))
                 .background(IconColor),

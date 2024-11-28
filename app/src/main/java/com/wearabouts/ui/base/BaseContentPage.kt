@@ -29,14 +29,16 @@ abstract class BaseContentPage {
                 .fillMaxSize()
                 .background(Color.White)
         ) {
-            Header()
-            Content()
+            Column {
+                Header()
+                Content(modifier = Modifier)
+            }
             NavBar(navController, adjustedRoute, modifier = Modifier.align(Alignment.BottomCenter))
         }
     }
 
     @Composable
-    protected abstract fun Content()
+    protected abstract fun Content(modifier: Modifier)
 
     fun navigate(route: String) {
         navController?.navigate(route)

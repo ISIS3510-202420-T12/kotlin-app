@@ -29,6 +29,7 @@ import androidx.compose.material3.IconButton
 
 // Type
 import com.wearabouts.ui.theme.Typography
+import com.wearabouts.ui.theme.Glorify
 
 // Colors
 import com.wearabouts.ui.theme.IconColor
@@ -36,36 +37,49 @@ import com.wearabouts.ui.theme.Primary
 
 @Composable
 fun Header(modifier: Modifier = Modifier) {
-    // val iconSizes = 20.dp
-    // val inconTint = Color.Black
+    val iconSizes = 20.dp
+    val inconTint = Color.Black
 
-    // // Box to make notifications area of the phone visible
-    // Box (
-    //     modifier = Modifier
-    //         .fillMaxWidth()
-    //         .height(28.dp)
-    //         .background(Color.Gray)
-    // )
+    // Box to make notifications area of the phone visible
+    Box (
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(28.dp)
+            .background(Color.Black)
+    )
 
-    // Row(
-    //     modifier = modifier
-    //         .fillMaxWidth()
-    //         .padding(top = 20.dp, start = 16.dp, end = 16.dp),
-    //     horizontalArrangement = Arrangement.SpaceEvenly
-    // ) {
-    //     Icon(
-    //         painter = painterResource(id = R.drawable.menu),
-    //         contentDescription = "Menu Icon",
-    //         tint = inconTint,
-    //         modifier = Modifier.size(iconSizes)
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 30.dp, start = 16.dp, end = 16.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
 
-    //     )
-    //     Spacer(modifier = Modifier.width(16.dp))
-    //     Icon(
-    //         painter = painterResource(id = R.drawable.bell),
-    //         contentDescription = "Bell Icon",
-    //         tint = inconTint,
-    //         modifier = Modifier.size(iconSizes)
-    //     )
-    // }
+        // Bell icon
+        Icon(
+            painter = painterResource(id = R.drawable.bell),
+            contentDescription = "Bell Icon",
+            tint = inconTint,
+            modifier = Modifier.size(iconSizes)
+        )
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        // Title
+        Text(
+            text = "WearAbouts",
+            style = Typography.titleLarge.copy(fontFamily = Glorify),
+            color = Color.Black
+        )
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        // Cart icon
+        Icon(
+            painter = painterResource(id = R.drawable.menu),
+            contentDescription = "Cart Icon",
+            tint = inconTint,
+            modifier = Modifier.size(iconSizes)
+        )
+    }
 }

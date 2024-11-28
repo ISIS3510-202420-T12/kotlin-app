@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.clickable
-import com.wearabouts.models.ClothingItem
+import com.wearabouts.models.Clothe
 import androidx.compose.runtime.Composable
 import androidx.compose.material3.Text
 import androidx.compose.ui.platform.LocalContext
@@ -26,8 +26,22 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.clip
 
+// Type
+import com.wearabouts.ui.theme.Typography
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+
+// Colors
+import androidx.compose.ui.graphics.Color
+import com.wearabouts.ui.theme.IconColor
+import com.wearabouts.ui.theme.Primary
+import com.wearabouts.ui.theme.Font
+import com.wearabouts.ui.theme.White
+import com.wearabouts.ui.theme.Transparent
+import com.wearabouts.ui.theme.Emerald
+
 @Composable
-fun ClothingItemCard(item: ClothingItem, onClick: () -> Unit) {
+fun ClothingItemCard(item: Clothe, onClick: () -> Unit) {
 
     val context = LocalContext.current
 
@@ -37,27 +51,40 @@ fun ClothingItemCard(item: ClothingItem, onClick: () -> Unit) {
             .padding(8.dp)
             .clickable { onClick() }
     ) {
-        if (item.imageUrls.isNotEmpty()) {
+        if (item.images.isNotEmpty()) {
             Image(
                 painter = rememberAsyncImagePainter(
                     ImageRequest.Builder(context)
-                        .data(item.imageUrls[0])
+                        .data(item.images[0])
                         .size(Size.ORIGINAL)
-                        .memoryCacheKey(item.imageUrls[0])
-                        .diskCacheKey(item.imageUrls[0])
+                        .memoryCacheKey(item.images[0])
+                        .diskCacheKey(item.images[0])
                         .crossfade(true)
                         .build()
                 ),
                 contentDescription = item.name,
                 modifier = Modifier
-                    .height(150.dp)
+                    .height(230.dp)
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(15.dp)),
                 contentScale = ContentScale.Crop
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = item.name)
-        Text(text = "$${item.price}")
+        Text(
+            text = item.name,
+            style = Typography.bodyLarge,
+            color = Color.Black,
+            fontSize = 14.sp,
+            modifier = Modifier.padding(start = 4.dp)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "$${item.price}",
+            style = Typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+            color = Emerald,
+            fontSize = 14.sp,
+            modifier = Modifier.padding(start = 4.dp)
+        )
     }
 }

@@ -56,6 +56,10 @@ dependencies {
     val play_location = "18.0.0"
     val coroutines = "1.9.0"
 
+    // Carrousel pages
+    implementation("com.google.accompanist:accompanist-pager:0.23.1")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.23.1")
+
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines")

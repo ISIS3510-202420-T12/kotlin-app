@@ -64,10 +64,10 @@ import com.wearabouts.ui.theme.Font
 import com.wearabouts.ui.theme.White
 import com.wearabouts.ui.theme.Transparent
 
-class DonationMap : BaseContentPage() {
+class DonationMap() : BaseContentPage() {
 
     @Composable
-    override fun Content() {
+    override fun Content(modifier: Modifier) {
 
         // Initialize the ViewModel and collect donationPlaces
         val donationViewModel: DonationMapViewModel = viewModel()

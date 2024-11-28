@@ -57,7 +57,7 @@ import kotlinx.coroutines.delay
 class Donation : BaseContentPage() {
 
     @Composable
-    override fun Content() {
+    override fun Content(modifier: Modifier) {
         val LOG_TAG = "CampaignFetch"
 
         // Initialize the ViewModel and collect donationPlaces
