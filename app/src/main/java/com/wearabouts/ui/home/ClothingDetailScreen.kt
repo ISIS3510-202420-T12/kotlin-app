@@ -110,6 +110,9 @@ class ClothingDetailScreen(
                     .background(Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
+                Spacer(modifier = Modifier.height(60.dp))
+
                 if (clothingItem.images.isNotEmpty()) {
                     Box (  
                         modifier = Modifier

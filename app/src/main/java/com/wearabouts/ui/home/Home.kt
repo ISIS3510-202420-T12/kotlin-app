@@ -74,11 +74,11 @@ class Home(private val homeViewModel: HomeViewModel) : BaseContentPage() {
 
         homeViewModel.getLocation()
 
-        Spacer(modifier = Modifier.height(30.dp))
-
         Column(
             modifier = modifier.fillMaxSize()
         ) {
+
+            Spacer(modifier = Modifier.height(120.dp))
 
             Row(
                 modifier = Modifier
@@ -184,7 +184,7 @@ class Home(private val homeViewModel: HomeViewModel) : BaseContentPage() {
     ) {
         Box (
             modifier = Modifier
-                //.offset(x = 310.dp, y = 200.dp)
+                .offset(x = 310.dp, y = 650.dp)
                 .size(50.dp)
                 .clip(RoundedCornerShape(50.dp))
                 .background(IconColor),

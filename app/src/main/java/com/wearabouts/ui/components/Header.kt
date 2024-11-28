@@ -51,7 +51,7 @@ fun Header(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 30.dp, start = 16.dp, end = 16.dp),
+            .padding(top = 60.dp, start = 16.dp, end = 16.dp),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
 
