@@ -48,16 +48,18 @@ fun Header(modifier: Modifier = Modifier) {
             .background(Color.Black)
     )
 
-    Row(
+    Row (
         modifier = modifier
             .fillMaxWidth()
+            //.height(40.dp)
             .padding(top = 60.dp, start = 16.dp, end = 16.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
     ) {
 
         // Bell icon
         Icon(
-            painter = painterResource(id = R.drawable.bell),
+            painter = painterResource(id = R.drawable.header_bell),
             contentDescription = "Bell Icon",
             tint = inconTint,
             modifier = Modifier.size(iconSizes)
@@ -76,7 +78,7 @@ fun Header(modifier: Modifier = Modifier) {
 
         // Cart icon
         Icon(
-            painter = painterResource(id = R.drawable.menu),
+            painter = painterResource(id = R.drawable.header_shopbag),
             contentDescription = "Cart Icon",
             tint = inconTint,
             modifier = Modifier.size(iconSizes)

@@ -85,7 +85,7 @@ class Donation : BaseContentPage() {
         Column (
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 80.dp),
+                .padding(top = 120.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             // Text block of impact

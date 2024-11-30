@@ -116,7 +116,7 @@ class ClothingDetailScreen(
                 if (clothingItem.images.isNotEmpty()) {
                     Box (  
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .width(220.dp)
                             .height(300.dp)
                             .clip(RoundedCornerShape(16.dp)),
                         contentAlignment = Alignment.Center
@@ -126,14 +126,14 @@ class ClothingDetailScreen(
                             state = pagerState,
                             modifier = Modifier
                                 .height(300.dp)
-                                .fillMaxWidth()
+                                .width(220.dp)
                         ) { page ->
                             Image(
                                 painter = rememberImagePainter(clothingItem.images[page]),
                                 contentDescription = clothingItem.name,
                                 modifier = Modifier
                                     .height(300.dp)
-                                    .fillMaxWidth(),
+                                    .width(220.dp),
                                 contentScale = ContentScale.Crop
                             )
                         }
