@@ -35,8 +35,11 @@ import com.wearabouts.ui.theme.Glorify
 import com.wearabouts.ui.theme.IconColor
 import com.wearabouts.ui.theme.Primary
 
+// Navigation
+import androidx.navigation.NavController
+
 @Composable
-fun Header(modifier: Modifier = Modifier) {
+fun Header(navController: NavController, modifier: Modifier = Modifier) {
     val iconSizes = 20.dp
     val inconTint = Color.Black
 
@@ -58,12 +61,17 @@ fun Header(modifier: Modifier = Modifier) {
     ) {
 
         // Bell icon
-        Icon(
-            painter = painterResource(id = R.drawable.header_bell),
-            contentDescription = "Bell Icon",
-            tint = inconTint,
-            modifier = Modifier.size(iconSizes)
-        )
+        IconButton (
+            onClick = { navController.navigate("notifications") },
+            modifier = Modifier.size(iconSizes * 1.5f)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.header_bell),
+                contentDescription = "Bell Icon",
+                tint = inconTint,
+                modifier = Modifier.size(iconSizes)
+            )
+        }
 
         Spacer(modifier = Modifier.width(16.dp))
 
@@ -77,11 +85,16 @@ fun Header(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.width(16.dp))
 
         // Cart icon
-        Icon(
-            painter = painterResource(id = R.drawable.header_shopbag),
-            contentDescription = "Cart Icon",
-            tint = inconTint,
-            modifier = Modifier.size(iconSizes)
-        )
+        IconButton (
+            onClick = { navController.navigate("buy") },
+            modifier = Modifier.size(iconSizes * 1.5f)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.header_shopbag),
+                contentDescription = "Cart Icon",
+                tint = inconTint,
+                modifier = Modifier.size(iconSizes)
+            )
+        }
     }
 }

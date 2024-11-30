@@ -36,8 +36,6 @@ import com.wearabouts.ui.theme.IconColor
 import com.wearabouts.ui.theme.Primary
 
 @Composable
-fun Notifications () {
-
-    
+fun Notification (
 
 }

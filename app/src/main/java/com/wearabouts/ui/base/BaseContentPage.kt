@@ -29,7 +29,7 @@ abstract class BaseContentPage {
                 .fillMaxSize()
                 .background(Color.White)
         ) {
-            Header()
+            Header(navController)
             Content(modifier = Modifier)
             NavBar(navController, adjustedRoute, modifier = Modifier.align(Alignment.BottomCenter))
         }

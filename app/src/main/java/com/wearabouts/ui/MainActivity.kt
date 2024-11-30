@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import kotlinx.coroutines.launch
 import androidx.lifecycle.viewModelScope
 
+// Pages
 import com.wearabouts.ui.login.Login
 import com.wearabouts.ui.login.Register
 import com.wearabouts.ui.login.LoginViewModel
@@ -25,6 +26,7 @@ import com.wearabouts.ui.home.Home
 import com.wearabouts.ui.donationMap.DonationMap
 import com.wearabouts.ui.donation.Donation
 import com.wearabouts.ui.home.ClothingDetailScreen
+import com.wearabouts.ui.notifications.Notifications
 
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -113,11 +115,12 @@ class MainActivity : FragmentActivity() {
                         }
 
                         composable("register") { Register(navController) }
+                        composable("notifications") { Notifications().Template(navController) }
 
                         // Unimplemented
-                        composable("tags") { Home(homeViewModel).Template(navController) }
                         composable("favourites") { Home(homeViewModel).Template(navController) }
                         composable("profile") { Home(homeViewModel).Template(navController) }
+                        composable("buy") { Home(homeViewModel).Template(navController) }
                     }
                 }
             }

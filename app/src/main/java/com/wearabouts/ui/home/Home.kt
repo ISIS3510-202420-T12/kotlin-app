@@ -51,6 +51,8 @@ import com.wearabouts.ui.base.BaseContentPage
 // Pop-ups
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+
+// Coil
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
 
