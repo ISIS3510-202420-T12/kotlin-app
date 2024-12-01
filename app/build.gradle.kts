@@ -1,9 +1,9 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
-
-    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
@@ -22,9 +22,11 @@ android {
             useSupportLibrary = true
         }
 
+        // Initialize properties object
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+
         // Set value part
-        Properties properties = new Properties()
-        properties.load(project.rootProject.file("local.properties").newDataInputStream())
         buildConfigField("String", "SUPABASE_ANON_KEY", "\"${properties.getProperty("SUPABASE_ANON_KEY")}\"")
         buildConfigField("String", "SECRET", "\"${properties.getProperty("SECRET")}\"")
         buildConfigField("String", "SUPABASE_URL", "\"${properties.getProperty("SUPABASE_URL")}\"")
@@ -48,6 +50,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"

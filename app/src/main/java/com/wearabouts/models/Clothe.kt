@@ -23,7 +23,7 @@ data class Clothe(
     var images: List<String> = emptyList(),
 
     @get:PropertyName("labels") @set:PropertyName("labels")
-    var labels: List<String> = emptyList()
+    var labels: List<String> = emptyList(),
 
     @get:PropertyName("seller") @set:PropertyName("seller")
     var seller: String = "d@d.com"

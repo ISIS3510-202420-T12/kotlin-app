@@ -112,7 +112,7 @@ class Home(private val homeViewModel: HomeViewModel) : BaseContentPage() {
                     })
                 }
                 item {
-                    Spacer(modifier = Modifier.padding(bottom = 115.dp))
+                    Spacer(modifier = Modifier.padding(bottom = 450.dp))
                 }
             }
 
