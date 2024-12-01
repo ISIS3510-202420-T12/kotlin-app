@@ -10,12 +10,19 @@ import com.wearabouts.ui.components.NavBar
 import com.wearabouts.ui.components.Header
 import androidx.compose.ui.graphics.Color
 
+// Android management
+import androidx.compose.ui.platform.LocalContext
+
 // To highlight current page
 import androidx.navigation.compose.currentBackStackEntryAsState
+
+// Objects
+import com.wearabouts.ui.login.SecureStorage
 
 abstract class BaseContentPage {
 
     var navController: NavController? = null
+    var loginInfo: Pair<String, String>? = null
 
     @Composable
     fun Template(navController: NavController) {
@@ -23,6 +30,10 @@ abstract class BaseContentPage {
         val navBackStackEntry = navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry.value?.destination?.route ?: ""
         val adjustedRoute = if (currentRoute.contains("clothingdetail")) "clothingdetail" else currentRoute
+
+        // Login info
+        val context = LocalContext.current
+        loginInfo = SecureStorage.getLoginInfo(context)
 
         Box(
             modifier = Modifier

@@ -50,6 +50,8 @@ import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.ImageLoader
 
+val supabase_url = BuildConfig.SUPABASE_URL
+val supabase_apiKey = BuildConfig.SUPABASE_ANON_KEY
 
 class MainActivity : FragmentActivity() {
 
@@ -115,7 +117,7 @@ class MainActivity : FragmentActivity() {
                         }
 
                         composable("register") { Register(navController) }
-                        composable("notifications") { Notifications().Template(navController) }
+                        composable("notifications") { Notifications() }
 
                         // Unimplemented
                         composable("favourites") { Home(homeViewModel).Template(navController) }
@@ -128,6 +130,7 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun setupBiometricPrompt() {
+
         promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle("Biometric authentication")
             .setSubtitle("Use your fingerprint to login")
@@ -140,7 +143,7 @@ class MainActivity : FragmentActivity() {
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
-                    loginViewModel.onBiometricSuccess()
+                    loginViewModel.onBiometricSuccess(this@MainActivity)
                 }
 
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {

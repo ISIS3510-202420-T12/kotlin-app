@@ -1,10 +1,16 @@
 package com.wearabouts.ui.login
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+
+import android.content.Context
+
+// Objects
+import com.wearabouts.ui.login.SecureStorage
 
 class RegisterViewModel : ViewModel() {
 
@@ -19,13 +25,14 @@ class RegisterViewModel : ViewModel() {
         }
     }
 
-    fun register(username: String, password: String) {
+    fun register(username: String, password: String, context: Context) {
         viewModelScope.launch {
             _registerState.value = RegisterState.Loading
 
             auth.createUserWithEmailAndPassword(username, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
+                        SecureStorage.saveLoginInfo(context, username, password)
                         _registerState.value = RegisterState.Success
                     } else {
                         _registerState.value = RegisterState.Error(task.exception?.message ?: "Unknown error")

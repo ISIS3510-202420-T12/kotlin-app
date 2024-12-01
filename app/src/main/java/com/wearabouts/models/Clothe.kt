@@ -25,5 +25,8 @@ data class Clothe(
     @get:PropertyName("labels") @set:PropertyName("labels")
     var labels: List<String> = emptyList()
 
+    @get:PropertyName("seller") @set:PropertyName("seller")
+    var seller: String = "d@d.com"
+
 )
 

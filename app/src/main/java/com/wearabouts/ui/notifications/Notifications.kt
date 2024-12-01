@@ -35,7 +35,40 @@ import com.wearabouts.ui.theme.Glorify
 import com.wearabouts.ui.theme.IconColor
 import com.wearabouts.ui.theme.Primary
 
+// Android management
+import androidx.compose.ui.platform.LocalContext
+
+// Classes
+import com.wearabouts.ui.login.SecureStorage
+
 @Composable
-fun Notification () {
+fun Notifications () {
+
+    // Login info
+    val context = LocalContext.current
+    var loginInfo = SecureStorage.getLoginInfo(context)
     
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "Login Info:",
+            color = Color.Black,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        Text(
+            text = "Username: ${loginInfo?.first ?: "Not logged in"}",
+            color = Color.Black,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        Text(
+            text = "Password: ${loginInfo?.second ?: "Not logged in"}",
+            color = Color.Black
+        )
+    }
+
 }

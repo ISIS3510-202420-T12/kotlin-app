@@ -1,4 +1,4 @@
-package com.wearabouts.ui.notifications
+package com.wearabouts.ui.user
 
 // Material
 import androidx.compose.material3.Text
@@ -35,9 +35,17 @@ import com.wearabouts.ui.theme.Glorify
 import com.wearabouts.ui.theme.IconColor
 import com.wearabouts.ui.theme.Primary
 
-@Composable
-fun Notifications () {
+// Models & project
+import com.wearabouts.models.User
 
-    
+@Composable
+fun MiniUserView (user: User) {
+
+    Box (
+        modifier = Modifier
+            .fillMaxSize()
+    ) { 
+
+    }
 
 }
