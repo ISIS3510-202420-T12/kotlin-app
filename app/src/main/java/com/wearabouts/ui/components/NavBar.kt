@@ -21,6 +21,10 @@ import androidx.compose.material3.IconButton
 
 import androidx.navigation.NavController
 
+// Images
+import coil.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
+
 // Colors
 import com.wearabouts.ui.theme.IconColor
 import com.wearabouts.ui.theme.Primary
@@ -34,7 +38,7 @@ import androidx.compose.foundation.shape.CircleShape
 // Website to convert SVG to Drawable: https://svg2vector.com/
 
 @Composable
-fun NavBar(navController: NavController, currentRoute: String, modifier: Modifier = Modifier) {
+fun NavBar(navController: NavController, currentRoute: String, modifier: Modifier = Modifier, userurl: String = "") {
 
     Box(
         modifier = Modifier
@@ -121,13 +125,34 @@ fun NavBar(navController: NavController, currentRoute: String, modifier: Modifie
                     modifier = Modifier
                         .size(56.dp)
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.profile),
-                        contentDescription = "Profile",
-                        modifier = Modifier
-                            .size(if (currentRoute == "profile") 38.dp else 40.dp),
-                        tint = Color.Unspecified
-                    )
+                    // Icon(
+                    //     painter = painterResource(id = R.drawable.profile),
+                    //     contentDescription = "Profile",
+                    //     modifier = Modifier
+                    //         .size(if (currentRoute == "profile") 38.dp else 40.dp),
+                    //     tint = Color.Unspecified
+                    // )
+
+                    if (userurl != "" && userurl != null) {
+                        // Load image from URL
+                        AsyncImage(
+                            model = userurl,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(if (currentRoute == "profile") 38.dp else 40.dp)
+                                .clip(CircleShape)
+                                .background(Color.White),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        Icon(
+                            painter = painterResource(id = R.drawable.profile),
+                            contentDescription = "Profile",
+                            modifier = Modifier
+                                .size(if (currentRoute == "profile") 38.dp else 40.dp),
+                            tint = Color.Unspecified
+                        )
+                    }
                 }
             }
         }

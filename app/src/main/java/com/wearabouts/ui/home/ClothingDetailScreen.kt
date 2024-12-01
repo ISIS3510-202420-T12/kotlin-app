@@ -87,17 +87,27 @@ class ClothingDetailScreen (
 
     @Composable
     fun goBack(navController: NavController?) {
-        IconButton(
-            onClick = {
-                navController?.navigate("home")
-            }
+        Box (
+            modifier = Modifier
+                .offset(x = 17.dp, y = 50.dp)
+                .size(40.dp)
+                .clip(RoundedCornerShape(50.dp))
+                .background(Color.Gray.copy(alpha = 0.1f)),
+            contentAlignment = Alignment.Center
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.home),
-                contentDescription = "Back",
-                tint = IconColor,
-                modifier = Modifier.size(30.dp)
-            )
+            IconButton(
+                onClick = {
+                    navController?.navigate("home")
+                },
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.back),
+                    contentDescription = "Back",
+                    tint = Color.Black,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
         }
     }
 
@@ -127,6 +137,8 @@ class ClothingDetailScreen (
                     .background(Color.Black)
             )
 
+            Spacer(modifier = Modifier.height(15.dp))
+
             // Content
             Box (
                 modifier = Modifier
@@ -147,26 +159,36 @@ class ClothingDetailScreen (
                         if (clothingItem.images.isNotEmpty()) {
                             Box (  
                                 modifier = Modifier
-                                    .width(220.dp)
-                                    .height(300.dp)
+                                    .width(260.dp)
+                                    .height(340.dp)
                                     .clip(RoundedCornerShape(16.dp)),
                                 contentAlignment = Alignment.Center
                             ) {
                                 HorizontalPager(
                                     count = clothingItem.images.size,
                                     state = pagerState,
-                                    modifier = Modifier
-                                        .height(300.dp)
-                                        .width(220.dp)
+                                    modifier = Modifier.fillMaxSize()
                                 ) { page ->
-                                    Image(
-                                        painter = rememberImagePainter(clothingItem.images[page]),
-                                        contentDescription = clothingItem.name,
-                                        modifier = Modifier
-                                            .height(300.dp)
-                                            .width(220.dp),
-                                        contentScale = ContentScale.Crop
-                                    )
+                                        Image(
+                                            painter = rememberImagePainter(clothingItem.images[page]),
+                                            contentDescription = clothingItem.name,
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentScale = ContentScale.Crop
+                                        )
+                                        Box(
+                                            modifier = Modifier
+                                                .align(Alignment.BottomEnd)
+                                                .padding(8.dp)
+                                                .background(Color.Black, shape = RoundedCornerShape(8.dp))
+                                                .padding(horizontal = 8.dp, vertical = 4.dp)
+                                        ) {
+                                            Text(
+                                                text = "${page + 1}/${clothingItem.images.size}",
+                                                style = Typography.bodyLarge,
+                                                color = Color.White,
+                                                fontSize = 10.sp
+                                            )
+                                        }
                                 }
                             }
                         }
@@ -177,7 +199,7 @@ class ClothingDetailScreen (
                         Box (
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(330.dp)
+                                .height(280.dp)
                         ) {
                             LazyColumn(
                                 modifier = Modifier.fillMaxWidth(),
@@ -206,17 +228,19 @@ class ClothingDetailScreen (
                                     Text(
                                         text = "Size: ${clothingItem.size}",
                                         style = Typography.bodyLarge,
-                                        color = Color.Black
+                                        color = Color.Black,
+                                        fontSize = 13.sp
                                     )
 
-                                    Spacer(modifier = Modifier.height(15.dp))
+                                    Spacer(modifier = Modifier.height(20.dp))
 
                                     // Labels
                                     Text(
-                                        text = "Labels: ${clothingItem.labels.joinToString()}",
+                                        text = clothingItem.labels.joinToString(separator = "     "),
                                         style = Typography.bodyLarge,
-                                        color = Color.Black,
-                                        textAlign = TextAlign.Center
+                                        color = Color.Gray,
+                                        textAlign = TextAlign.Center,
+                                        fontSize = 12.sp
                                     )
 
                                     // Mini user view of seller
@@ -249,9 +273,7 @@ class ClothingDetailScreen (
             }
         }
 
-        
-
-        
+        goBack(navController)
     }
 
     @Composable
@@ -268,8 +290,8 @@ class ClothingDetailScreen (
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Buy",
-                style = Typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                text = "Add to bag",
+                style = Typography.bodyLarge,
                 color = White
             )
         }

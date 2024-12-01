@@ -203,7 +203,7 @@ class Home(private val homeViewModel: HomeViewModel) : BaseContentPage() {
                                 homeViewModel.resetFilter()
                                 return@setItems
                             }
-                            homeViewModel.filterItems(labels[which])
+                            homeViewModel.filterItems(labels[which-1])
                         }
                         .setNegativeButton("Cancel") { dialog, which ->
                             dialog.dismiss()

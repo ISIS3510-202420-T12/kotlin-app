@@ -25,6 +25,7 @@ abstract class BaseContentPage {
     var navController: NavController? = null
     var loginInfo: Pair<String, String>? = null
     var users: List<User> = emptyList()
+    var user: User? = null
 
     @Composable
     fun Template(navController: NavController, users: List<User>) {
@@ -38,6 +39,7 @@ abstract class BaseContentPage {
         // Login info
         val context = LocalContext.current
         loginInfo = SecureStorage.getLoginInfo(context)
+        user = users.find { it.email == loginInfo?.first }
 
         Box(
             modifier = Modifier
@@ -46,7 +48,7 @@ abstract class BaseContentPage {
         ) {
             Header(navController)
             Content(modifier = Modifier)
-            NavBar(navController, adjustedRoute, modifier = Modifier.align(Alignment.BottomCenter))
+            NavBar(navController, adjustedRoute, modifier = Modifier.align(Alignment.BottomCenter), userurl = user?.icon ?: "")
         }
     }
 
