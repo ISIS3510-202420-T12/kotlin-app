@@ -29,7 +29,6 @@ import androidx.compose.material3.IconButton
 
 // Type
 import com.wearabouts.ui.theme.Typography
-import com.wearabouts.ui.theme.Glorify
 
 // Colors
 import com.wearabouts.ui.theme.IconColor
@@ -39,12 +38,18 @@ import com.wearabouts.ui.theme.Primary
 import com.wearabouts.models.User
 
 @Composable
-fun MiniUserView (user: User) {
+fun MiniUserView (user: User?) {
 
-    Box (
-        modifier = Modifier
-            .fillMaxSize()
-    ) { 
+    if (user != null) {
+
+        Box (
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Text(
+                text = user.name
+            )
+        }
 
     }
 

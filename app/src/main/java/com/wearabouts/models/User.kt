@@ -5,9 +5,6 @@ import com.google.firebase.firestore.PropertyName
 data class User(
 
     @get:PropertyName("Id") @set:PropertyName("Id")
-    var id: String = "",
-
-    @get:PropertyName("email") @set:PropertyName("email")
     var email: String = "",
 
     @get:PropertyName("name") @set:PropertyName("name")

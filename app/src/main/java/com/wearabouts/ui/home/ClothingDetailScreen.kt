@@ -4,6 +4,10 @@ package com.wearabouts.ui.home
 import androidx.compose.runtime.*
 import com.wearabouts.ui.base.BaseContentPage
 import com.wearabouts.ui.donation.CampaingCard
+import com.wearabouts.ui.user.MiniUserView
+
+// ViewModels
+import com.wearabouts.ui.user.UserViewModel
 
 // Debugging
 import android.util.Log
@@ -50,10 +54,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.style.TextAlign
 
-// Data model
+// Data models
 import com.wearabouts.models.Clothe
+import com.wearabouts.models.User
 
-//Imports for caching images
+// Image caching
 import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
@@ -71,16 +76,20 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.pager.PagerState
 
-class ClothingDetailScreen(
+// Page naviagtion
+import androidx.navigation.NavController
+
+class ClothingDetailScreen (
     private val homeViewModel: HomeViewModel,
-    private val itemId: String
-) : BaseContentPage() {
+    private val itemId: String,
+    private val users: List<User>
+) {
 
     @Composable
-    fun goBack() {
+    fun goBack(navController: NavController?) {
         IconButton(
             onClick = {
-                navigate("home")
+                navController?.navigate("home")
             }
         ) {
             Icon(
@@ -94,141 +103,190 @@ class ClothingDetailScreen(
 
     @OptIn(ExperimentalPagerApi::class)
     @Composable
-    override fun Content(modifier: Modifier) {
+    fun Content(navController: NavController) {
         val pagerState = rememberPagerState()
 
         val clothingItem: Clothe? = homeViewModel.getItemById(itemId)
+        val user: User? = users.find { it.email == clothingItem?.seller }
 
         // Local state for favorite status
         var isFavorite by remember { mutableStateOf(homeViewModel.isFavorite(clothingItem!!)) }
 
-        clothingItem?.let {
-            Column(
+        // Container
+        Column (
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Box to make notifications area of the phone visible
+            Box (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(28.dp)
+                    .background(Color.Black)
+            )
+
+            // Content
+            Box (
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top=35.dp, bottom=30.dp, start=30.dp, end=30.dp)
-                    .background(Color.White),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .background(Color.White)
             ) {
-
-                Spacer(modifier = Modifier.height(60.dp))
-
-                if (clothingItem.images.isNotEmpty()) {
-                    Box (  
+                clothingItem?.let {
+                    Column(
                         modifier = Modifier
-                            .width(220.dp)
-                            .height(300.dp)
-                            .clip(RoundedCornerShape(16.dp)),
-                        contentAlignment = Alignment.Center
+                            .fillMaxSize()
+                            .padding(bottom=30.dp, start=30.dp, end=30.dp)
+                            .background(Color.White),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        HorizontalPager(
-                            count = clothingItem.images.size,
-                            state = pagerState,
-                            modifier = Modifier
-                                .height(300.dp)
-                                .width(220.dp)
-                        ) { page ->
-                            Image(
-                                painter = rememberImagePainter(clothingItem.images[page]),
-                                contentDescription = clothingItem.name,
+
+                        Spacer(modifier = Modifier.height(40.dp))
+
+                        if (clothingItem.images.isNotEmpty()) {
+                            Box (  
                                 modifier = Modifier
+                                    .width(220.dp)
                                     .height(300.dp)
-                                    .width(220.dp),
-                                contentScale = ContentScale.Crop
-                            )
+                                    .clip(RoundedCornerShape(16.dp)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                HorizontalPager(
+                                    count = clothingItem.images.size,
+                                    state = pagerState,
+                                    modifier = Modifier
+                                        .height(300.dp)
+                                        .width(220.dp)
+                                ) { page ->
+                                    Image(
+                                        painter = rememberImagePainter(clothingItem.images[page]),
+                                        contentDescription = clothingItem.name,
+                                        modifier = Modifier
+                                            .height(300.dp)
+                                            .width(220.dp),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                }
+                            }
                         }
+
+                        Spacer(modifier = Modifier.height(30.dp))
+
+                        // Column of item data
+                        Box (
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(330.dp)
+                        ) {
+                            LazyColumn(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                item {
+                                    // Title
+                                    Text(
+                                        text = clothingItem.name,
+                                        style = Typography.titleLarge,
+                                        color = Color.Black
+                                    )
+
+                                    Spacer(modifier = Modifier.height(15.dp))
+
+                                    // Price
+                                    Text(
+                                        text = "$${clothingItem.price}",
+                                        style = Typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                                        color = Emerald
+                                    )
+
+                                    Spacer(modifier = Modifier.height(15.dp))
+
+                                    // Size
+                                    Text(
+                                        text = "Size: ${clothingItem.size}",
+                                        style = Typography.bodyLarge,
+                                        color = Color.Black
+                                    )
+
+                                    Spacer(modifier = Modifier.height(15.dp))
+
+                                    // Labels
+                                    Text(
+                                        text = "Labels: ${clothingItem.labels.joinToString()}",
+                                        style = Typography.bodyLarge,
+                                        color = Color.Black,
+                                        textAlign = TextAlign.Center
+                                    )
+
+                                    // Mini user view of seller
+                                    MiniUserView(user)
+                                }
+                            }   
+                        }   
+
+                        Spacer(modifier = Modifier.height(15.dp))
+
+                        // Buttons
+                        Row (
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Spacer(modifier = Modifier.width(20.dp))
+                            // Fav button
+                            favButton({ 
+                                isFavorite = !isFavorite
+                                homeViewModel.toggleFav(clothingItem)
+                            }, isFavorite)
+                            Spacer(modifier = Modifier.width(40.dp))
+                            // Buy button with text
+                            buyButton(clothingItem)
+                        }          
                     }
                 }
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(185.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                        // Title
-                        Text(
-                            text = clothingItem.name,
-                            style = Typography.titleLarge,
-                            color = Color.Black
-                        )
-
-                        Spacer(modifier = Modifier.height(15.dp))
-
-                        // Price
-                        Text(
-                            text = "$${clothingItem.price}",
-                            style = Typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                            color = Emerald
-                        )
-
-                        Spacer(modifier = Modifier.height(15.dp))
-
-                        // Size
-                        Text(
-                            text = "Size: ${clothingItem.size}",
-                            style = Typography.bodyLarge,
-                            color = Color.Black
-                        )
-
-                        Spacer(modifier = Modifier.height(15.dp))
-
-                        // Labels
-                        Text(
-                            text = "Labels: ${clothingItem.labels.joinToString()}",
-                            style = Typography.bodyLarge,
-                            color = Color.Black,
-                            textAlign = TextAlign.Center
-                        )
-                    
-                }      
-
-                Spacer(modifier = Modifier.height(15.dp))
-
-                // Buttons
-                Row (
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Spacer(modifier = Modifier.width(20.dp))
-                    // Fav button
-                    IconButton(
-                        onClick = {
-                            // Update both local state and ViewModel
-                            isFavorite = !isFavorite
-                            homeViewModel.toggleFav(clothingItem)
-                        } 
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.heart),
-                            contentDescription = "Add to cart",
-                            tint = if (isFavorite) Color.Red else Color.Gray,
-                            modifier = Modifier.size(30.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(40.dp))
-                    // Buy button with text
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(60.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(Primary)
-                            .clickable {
-                                homeViewModel.buyItem(clothingItem)
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "Buy",
-                            style = Typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                            color = White
-                        )
-                    }
-                }          
             }
         }
+
+        
+
+        
     }
+
+    @Composable
+    fun buyButton (clothingItem: Clothe) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(Primary)
+                .clickable {
+                    //homeViewModel.buyItem(clothingItem)
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Buy",
+                style = Typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                color = White
+            )
+        }
+    }
+
+    @Composable
+    fun favButton (onClickFunction: () -> Unit, isFavorite: Boolean) {
+        IconButton(
+            onClick = { onClickFunction() }
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.heart),
+                contentDescription = "Add to cart",
+                tint = if (isFavorite) Color.Red else Color.Gray,
+                modifier = Modifier.size(30.dp)
+            )
+        }
+    }
+
 }

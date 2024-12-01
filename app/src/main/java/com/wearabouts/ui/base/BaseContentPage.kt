@@ -18,15 +18,19 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 
 // Objects
 import com.wearabouts.ui.login.SecureStorage
+import com.wearabouts.models.User
 
 abstract class BaseContentPage {
 
     var navController: NavController? = null
     var loginInfo: Pair<String, String>? = null
+    var users: List<User> = emptyList()
 
     @Composable
-    fun Template(navController: NavController) {
+    fun Template(navController: NavController, users: List<User>) {
         this.navController = navController
+        this.users = users
+        
         val navBackStackEntry = navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry.value?.destination?.route ?: ""
         val adjustedRoute = if (currentRoute.contains("clothingdetail")) "clothingdetail" else currentRoute
