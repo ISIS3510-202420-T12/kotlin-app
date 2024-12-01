@@ -27,7 +27,7 @@ import com.wearabouts.ui.donationMap.DonationMap
 import com.wearabouts.ui.donation.Donation
 import com.wearabouts.ui.home.ClothingDetailScreen
 import com.wearabouts.ui.notifications.Notifications
-import com.wearabouts.ui.user.UserViewModel
+import com.wearabouts.ui.profile.Profile
 
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -42,6 +42,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wearabouts.ui.home.HomeViewModel
 import androidx.activity.viewModels
+import com.wearabouts.ui.user.UserViewModel
 
 //Imports for caching images
 import coil.compose.rememberAsyncImagePainter
@@ -125,11 +126,11 @@ class MainActivity : FragmentActivity() {
 
                         composable("register") { Register(navController) }
                         composable("notifications") { Notifications() }
+                        composable("profile") { Profile(userViewModel).Template(navController, users) }
 
                         // Unimplemented
                         composable("favourites") { Home(homeViewModel).Template(navController, users) }
-                        composable("profile") { Home(homeViewModel).Template(navController, users) }
-                        composable("buy") { Home(homeViewModel).Template(navController, users) }
+                        composable("buybag") { Home(homeViewModel).Template(navController, users) }
                     }
                 }
             }
