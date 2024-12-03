@@ -1,1 +1,0 @@
-adb logcat -s Donation > logs/donation_logs.txt

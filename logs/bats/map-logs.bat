@@ -1,1 +1,0 @@
-adb logcat -s map > logs/map_logs.txt

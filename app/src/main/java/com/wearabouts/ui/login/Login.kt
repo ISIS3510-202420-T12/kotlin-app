@@ -41,6 +41,8 @@ import androidx.compose.foundation.Image
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
 
+
+
 @Composable
 fun Login(navController: NavController, biometricPrompt: BiometricPrompt, promptInfo: BiometricPrompt.PromptInfo, viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
     var username by remember { mutableStateOf("") }
@@ -116,7 +118,7 @@ fun Login(navController: NavController, biometricPrompt: BiometricPrompt, prompt
             if (isBiometricAvailable) {
                 Button(
                     onClick = { 
-                        viewModel.authenticateWithBiometrics(biometricPrompt, promptInfo)
+                        viewModel.authenticateWithBiometrics(biometricPrompt, promptInfo, context)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -167,7 +169,7 @@ fun Login(navController: NavController, biometricPrompt: BiometricPrompt, prompt
                         }
                         else -> {
                             showError = false
-                            viewModel.login(username, password)
+                            viewModel.login(username, password, context)
                         }
                     }
                 },

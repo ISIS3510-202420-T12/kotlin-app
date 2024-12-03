@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 // Data model
-import com.wearabouts.models.ClothingItem
+import com.wearabouts.models.Clothe
 
 // Location request
 import com.wearabouts.ui.donationMap.map.LocationService
@@ -44,17 +44,17 @@ import androidx.lifecycle.AndroidViewModel
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     // Local storage fetch
-    private val _favorites = MutableStateFlow<List<ClothingItem>>(emptyList())
-    val favorites: StateFlow<List<ClothingItem>> = _favorites
+    private val _favorites = MutableStateFlow<List<Clothe>>(emptyList())
+    val favorites: StateFlow<List<Clothe>> = _favorites
     private val sharedPreferences: SharedPreferences = application.getSharedPreferences("favorites_prefs", Context.MODE_PRIVATE)
     private val gson = Gson()
     private val FAVORITES_KEY = "favorite_clothing_items"
 
     // Firestore fetch
-    private val _filteredClothingItems = MutableStateFlow<List<ClothingItem>>(emptyList())
-    val filteredClothingItems: StateFlow<List<ClothingItem>> = _filteredClothingItems
-    private val _clothingItems = MutableStateFlow<List<ClothingItem>>(emptyList())
-    val clothingItems: StateFlow<List<ClothingItem>> = _clothingItems
+    private val _filteredClothingItems = MutableStateFlow<List<Clothe>>(emptyList())
+    val filteredClothingItems: StateFlow<List<Clothe>> = _filteredClothingItems
+    private val _clothingItems = MutableStateFlow<List<Clothe>>(emptyList())
+    val clothingItems: StateFlow<List<Clothe>> = _clothingItems
     val _labels = MutableStateFlow<List<String>>(emptyList())
     val labels: StateFlow<List<String>> = _labels
 
@@ -124,15 +124,15 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun fetchClothingItems() {
         Log.d(TAG, "Starting fetching of clothing items")
-        db.collection("Clothes")
+        db.collection("CleanClothes")
             .get()
             .addOnSuccessListener { result ->
                 Log.d(TAG, "Success: fetched ${result.size()} documents")
                 val items = result.mapNotNull { document ->
                     Log.d(TAG, "${document.id} => ${document.data}")
                     try {
-                        document.toObject(ClothingItem::class.java)
-                        var clothingItem = document.toObject(ClothingItem::class.java)
+                        document.toObject(Clothe::class.java)
+                        var clothingItem = document.toObject(Clothe::class.java)
                         Log.d(TAG, "Clothing item: $clothingItem")
                         clothingItem.id = document.id
                         Log.d(TAG, "Clothing item with id: $clothingItem")
@@ -155,28 +155,45 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun filterItems(category: String) {
-        _filteredClothingItems.value = _clothingItems.value.filter { it.labels.contains(category) }
-        db.collection("FilterLog")
-            .whereEqualTo("name", category)
+        val TAGHOME = "Home"
+        Log.d(TAGHOME, "Filtering items by $category")
+        val filteredItems = _clothingItems.value.filter { it.labels.contains(category) }
+        Log.d(TAGHOME, "Filtered items: $filteredItems")
+        try {
+            _filteredClothingItems.value = filteredItems
+        } catch (e: Exception) {
+            Log.e(TAGHOME, "Error filtering items: ${e.message}")
+        }
+
+        try {
+            logLabelFilter(category)
+        } catch (e: Exception) {
+            Log.e(FILTERTAG, "Error logging filter: ${e.message}")
+        }
+    }
+
+    fun logLabelFilter (label: String) {
+        db.collection("Labels")
+            .whereEqualTo("name", label)
             .get()
             .addOnSuccessListener { documents ->
                 if (documents.isEmpty) {
                     // Create new document if it doesn't exist
                     val newLog = hashMapOf(
-                        "name" to category,
+                        "name" to label,
                         "clicked" to 1,
                         "timesSold" to 0
                     )
-                    db.collection("FilterLog").add(newLog)
+                    db.collection("Labels").add(newLog)
                 } else {
                     // Update existing document
                     for (document in documents) {
                         val currentClicked = document.getLong("clicked") ?: 0
-                        db.collection("FilterLog").document(document.id)
+                        db.collection("Labels").document(document.id)
                             .update("clicked", currentClicked + 1)
                     }
                 }
-                Toast.makeText(getApplication(), "Filtering by $category!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(getApplication(), "Filtering by $label!", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener { exception ->
                 Toast.makeText(getApplication(), "Couldn't filter by this category :(", Toast.LENGTH_SHORT).show()
@@ -188,7 +205,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         _filteredClothingItems.value = _clothingItems.value
     }
 
-    fun getItemById(id: String): ClothingItem? {
+    fun getItemById(id: String): Clothe? {
         return _clothingItems.value.find { it.id == id }
     }
 
@@ -200,17 +217,17 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     // Local storage functions for favourites
 
-    fun getFavoriteClothingItems(): List<ClothingItem> {
+    fun getFavoriteClothingItems(): List<Clothe> {
         val json = sharedPreferences.getString(FAVORITES_KEY, null)
         return if (json != null) {
-            val type = object : TypeToken<List<ClothingItem>>() {}.type
+            val type = object : TypeToken<List<Clothe>>() {}.type
             gson.fromJson(json, type)
         } else {
             emptyList()
         }
     }
 
-    private fun saveFavorites(favorites: List<ClothingItem>) {
+    private fun saveFavorites(favorites: List<Clothe>) {
         val editor = sharedPreferences.edit()
         val json = gson.toJson(favorites)
         editor.putString(FAVORITES_KEY, json)
@@ -220,24 +237,24 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         _favorites.value = favorites
     }
 
-    fun addFavorite(item: ClothingItem) {
+    fun addFavorite(item: Clothe) {
         val currentFavorites = _favorites.value.toMutableList()
         currentFavorites.add(item)
         saveFavorites(currentFavorites)
     }
 
-    fun removeFavorite(item: ClothingItem) {
+    fun removeFavorite(item: Clothe) {
         val currentFavorites = _favorites.value.toMutableList()
         currentFavorites.removeAll { it.id == item.id }
         saveFavorites(currentFavorites)
     }
 
-    fun isFavorite(clothingItem: ClothingItem): Boolean {
+    fun isFavorite(clothingItem: Clothe): Boolean {
         return _favorites.value.any { it.id == clothingItem.id }
     }
 
     // High level functions
-    fun toggleFav(clothingItem: ClothingItem) {
+    fun toggleFav(clothingItem: Clothe) {
         if (isFavorite(clothingItem)) {
             removeFavorite(clothingItem)
         } else {
@@ -245,35 +262,43 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun buyItem(clothingItem: ClothingItem) {
+    fun buyItem(clothingItem: Clothe) {
         // For each label
         for (label in clothingItem.labels) {
-            db.collection("FilterLog")
-                .whereEqualTo("name", label)
-                .get()
-                .addOnSuccessListener { documents ->
-                    if (documents.isEmpty) {
-                        // Create new document if it doesn't exist
-                        val newLog = hashMapOf(
-                            "name" to label,
-                            "clicked" to 0,
-                            "timesSold" to 1
-                        )
-                        db.collection("FilterLog").add(newLog)
-                    } else {
-                        // Update existing document
-                        for (document in documents) {
-                            val currentTimesSold = document.getLong("timesSold") ?: 0
-                            db.collection("FilterLog").document(document.id)
-                                .update("timesSold", currentTimesSold + 1)
-                        }
-                    }
-                    Toast.makeText(getApplication(), "Purchase successful!", Toast.LENGTH_SHORT).show()
-                }
-                .addOnFailureListener { exception ->
-                    Toast.makeText(getApplication(), "Purchase not successful :(", Toast.LENGTH_SHORT).show()
-                    Log.w(TAG, "Error updating FilterLog", exception)
-                }
+            try {
+                logLabelPucharse(label)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error logging purchase: ${e.message}")
+            }
         }
+    }
+
+    fun logLabelPucharse (label: String) {
+        db.collection("Labels")
+            .whereEqualTo("name", label)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.isEmpty) {
+                    // Create new document if it doesn't exist
+                    val newLog = hashMapOf(
+                        "name" to label,
+                        "clicked" to 0,
+                        "timesSold" to 1
+                    )
+                    db.collection("Labels").add(newLog)
+                } else {
+                    // Update existing document
+                    for (document in documents) {
+                        val currentTimesSold = document.getLong("timesSold") ?: 0
+                        db.collection("Labels").document(document.id)
+                            .update("timesSold", currentTimesSold + 1)
+                    }
+                }
+                Toast.makeText(getApplication(), "Purchase successful!", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(getApplication(), "Purchase not successful :(", Toast.LENGTH_SHORT).show()
+                Log.w(TAG, "Error updating Labels", exception)
+            }
     }
 }
