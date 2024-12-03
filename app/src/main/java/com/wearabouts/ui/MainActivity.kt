@@ -56,6 +56,7 @@ import coil.ImageLoader
 // Data fetch
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.wearabouts.ui.cart.CartScreen
 
 class MainActivity : FragmentActivity() {
 
@@ -68,6 +69,7 @@ class MainActivity : FragmentActivity() {
 
     private lateinit var supabaseViewModel: SupabaseViewModel
 
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -135,9 +137,12 @@ class MainActivity : FragmentActivity() {
                             ).Template(navController, users)
                         }
 
+                        composable("cart") { CartScreen()
+                        }
+
+
                         // Unimplemented
                         composable("favourites") { Home(homeViewModel).Template(navController, users) }
-                        composable("buy") { Home(homeViewModel).Template(navController, users) }
                     }
                 }
             }
