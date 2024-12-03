@@ -97,7 +97,7 @@ class ClothingDetailScreen (
         ) {
             IconButton(
                 onClick = {
-                    navController?.navigate("home")
+                    navController?.popBackStack()
                 },
                 modifier = Modifier.fillMaxSize()
             ) {

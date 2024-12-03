@@ -1,1 +1,1 @@
-adb logcat -s Home > logs/home.txt
+adb logcat -s supabase > logs/supabase.txt

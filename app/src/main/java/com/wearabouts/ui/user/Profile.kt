@@ -36,18 +36,25 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.graphics.Color
 import com.wearabouts.ui.theme.Yellow
 import com.wearabouts.ui.theme.Cream
+import com.wearabouts.ui.theme.Emerald
 
 // Type
 import com.wearabouts.ui.theme.Typography
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.wearabouts.ui.theme.Glorify
 
 // Data model
 import com.wearabouts.models.User
+import com.wearabouts.models.Clothe
 import com.wearabouts.ui.user.UserViewModel
+import com.wearabouts.ui.home.HomeViewModel
+import com.wearabouts.storage.SupabaseViewModel
+import com.wearabouts.BuildConfig
 
 // Composables
 import com.wearabouts.ui.base.BaseContentPage
+import com.wearabouts.ui.home.ClothingItemCard
 
 // Pop-ups
 import android.widget.Toast
@@ -57,94 +64,183 @@ import androidx.appcompat.app.AlertDialog
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
 
-class Profile (userViewModel: UserViewModel) : BaseContentPage() {
+// Carrousel
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+
+class Profile (userViewModel: UserViewModel, private val homeViewModel: HomeViewModel, private val supabaseViewModel: SupabaseViewModel) : BaseContentPage() {
 
     // The current user logged in is defined in BaseContentPage class already, with var name "user":User?
 
-    private val TAG = "Profile"
+    private val TAG = "supabase"
+
+    fun getUrl (id: Int): String {
+        return "https://zoinycbesbrgjevnkomf.supabase.co/storage/v1/object/public/backgrounds/illustrations/image%20$id.png"
+    }
 
     @Composable
     override fun Content(modifier: Modifier) {
 
-        val context = LocalContext.current
-
-        if (user == null) {
-            Log.d(TAG, "User is null")
-            Toast.makeText(context, "User is null", Toast.LENGTH_SHORT).show()
-            return
-        }
+        Log.d(TAG, "Supabase URL: ${BuildConfig.SUPABASE_URL}")
+        Log.d(TAG, "Supabase Key: ${BuildConfig.SUPABASE_ANON_KEY}")
 
         val currentUser = user!!
+
+        // DONT CALL IT AS IT DOESNT WORK FOR NOW
+        // supabaseViewModel.fetchBackgrounds()
+        // val backgrounds by supabaseViewModel.backgrounds.collectAsState()
+
+        // Background
+        val startBackgroundId = 1
+        val endBackgroundId = 19
+
+        val backgrounds = (startBackgroundId..endBackgroundId).map { getUrl(it) }
+
+        // Current background will depend on the user background
+        val defualtBackground = getUrl(18) // Default background
+        val currentBackground = defualtBackground
+        // ~ ~ ~ ~ ~ ~
+
+        // Clothing items
+        val clothingItems by homeViewModel.filteredClothingItems.collectAsState()
+
+        // Get the clothes that the user sells, clothe.seller == user.email
+        val userClothes = clothingItems.filter { it.seller == currentUser?.email }
+
+        // Selected item to switch to detail view
+        var selectedItem by remember { mutableStateOf<Clothe?>(null) }
+        // ~ ~ ~ ~ ~ ~ ~ ~
+
+        val context = LocalContext.current
+
         if (currentUser != null) {
-            Box (
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp),
-                contentAlignment = Alignment.Center
+            Column (
+                modifier = modifier
+                    .fillMaxSize()
+                    .background(Color.White),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(70.dp))
+                backgroundImage(currentBackground)
+                Spacer(modifier = Modifier.height(55.dp))
+                // Name
+                Text(
+                    text = currentUser.name,
+                    style = Typography.titleLarge.copy(fontFamily = Glorify),
+                    color = Color.Black,
+                    fontSize = 20.sp
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                // Rating
                 Row (
                     modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.White),
-                    verticalAlignment = Alignment.CenterVertically
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Spacer(modifier = Modifier.width(75.dp))
-                    // Load image from URL
-                    currentUser.icon?.let { iconUrl ->
-                        AsyncImage(
-                            model = iconUrl,
-                            contentDescription = null,
+                    Icon(
+                        painter = painterResource(id = R.drawable.star),
+                        contentDescription = null,
+                        tint = Yellow,
+                        modifier = Modifier.size(40.dp)
+                    )
+                    Spacer(modifier = Modifier.width(7.dp))
+                    Text(
+                        text = "${currentUser.rating}",
+                        style = Typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                        color = Emerald,
+                        fontSize = 13.sp
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(5.dp))
+
+                // Text indicating the user is a seller
+                Text(
+                    text = "Sells",
+                    style = Typography.bodyLarge,
+                    color = Color.Gray,
+                    fontSize = 13.sp
+                ) 
+
+                // Items carrousel
+                Spacer(modifier = Modifier.height(5.dp))
+                
+                // Horizontal pager of clothing item cards
+                LazyRow(
+                    modifier = Modifier
+                        .width(320.dp)
+                        .height(220.dp)
+                        .background(Color.White)
+                ) { 
+                    items(userClothes) { item ->
+                        // Card container
+                        val cardHeight = 270.dp
+                        val cardWidth = 100.dp
+                        Box (
                             modifier = Modifier
-                                .size(70.dp)
-                                .clip(CircleShape)
-                                .background(Color.White)
-                                .border(BorderStroke(0.5.dp, Color.Gray), CircleShape),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.width(25.dp))
-
-                    Column {
-                        // Vendor
-                        Text(
-                            text = "Vendor",
-                            style = Typography.bodyLarge,
-                            color = Color.Gray,
-                            fontSize = 12.sp
-                        ) 
-                        Spacer(modifier = Modifier.height(3.dp))
-                        // Name
-                        Text(
-                            text = currentUser.name,
-                            style = Typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                            color = Color.Black,
-                            fontSize = 14.sp
-                        )
-
-                        // Rating
-                        Row (
-                            verticalAlignment = Alignment.CenterVertically
+                                .width(150.dp)
+                                .height(265.dp),
+                            contentAlignment = Alignment.Center
                         ) {
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Icon(
-                                painter = painterResource(id = R.drawable.star),
-                                contentDescription = null,
-                                tint = Yellow,
-                                modifier = Modifier.size(25.dp)
-                            )
-                            Spacer(modifier = Modifier.width(7.dp))
-                            Text(
-                                text = "${currentUser.rating}",
-                                style = Typography.bodyLarge,
-                                color = Color.Black,
-                                fontSize = 12.sp
-                            )
+                            ClothingItemCard(item = item, onClick = {
+                                selectedItem = item
+                            })
                         }
                     }
                 }
+
+                LaunchedEffect(selectedItem) {
+                    selectedItem?.let {
+                        navigate("clothingdetail/${it.id}")
+                    }
+                }
             }
+            floatingIcon(currentUser.icon)
         }
     }
+
+    @Composable
+    fun backgroundImage (currentBackground: String) {
+        val backgroundHeight = 340.dp
+        // Background
+        AsyncImage(
+            model = currentBackground,
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(backgroundHeight)
+                .background(Color.White)
+                .clip(RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp)),
+            contentScale = ContentScale.Crop
+        )
+    }
+
+    @Composable
+    fun floatingIcon (icon: String) {
+        val iconSize = 100.dp
+        val yOffset = 285.dp
+        // User icon
+        Row (
+            modifier = Modifier
+                .offset(y = yOffset)
+                .fillMaxWidth()
+                .height(iconSize),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.Bottom
+        ) {
+            AsyncImage(
+                model = icon,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(iconSize)
+                    .clip(CircleShape)
+                    .background(Color.White)
+                    .border(BorderStroke(5.dp, Color.White), CircleShape),
+                contentScale = ContentScale.Crop
+            )
+        }   
+    }
+
 }
