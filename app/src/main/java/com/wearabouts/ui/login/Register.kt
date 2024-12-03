@@ -127,7 +127,7 @@ fun Register(navController: NavController, viewModel: RegisterViewModel = viewMo
                         }
                         else -> {
                             showError = false
-                            viewModel.register(username, password)
+                            viewModel.register(username, password, context)
                         }
                     }
                 },                
@@ -158,7 +158,7 @@ fun Register(navController: NavController, viewModel: RegisterViewModel = viewMo
                 }
                 is RegisterViewModel.RegisterState.Success -> {
                     LaunchedEffect(Unit) {
-                        navController.navigate("login") {
+                        navController.navigate("home") {
                             popUpTo("register") { inclusive = true }
                         }
                     }

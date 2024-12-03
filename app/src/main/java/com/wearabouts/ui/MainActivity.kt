@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import kotlinx.coroutines.launch
 import androidx.lifecycle.viewModelScope
 
+// Pages
 import com.wearabouts.ui.login.Login
 import com.wearabouts.ui.login.Register
 import com.wearabouts.ui.login.LoginViewModel
@@ -25,6 +26,8 @@ import com.wearabouts.ui.home.Home
 import com.wearabouts.ui.donationMap.DonationMap
 import com.wearabouts.ui.donation.Donation
 import com.wearabouts.ui.home.ClothingDetailScreen
+import com.wearabouts.ui.notifications.Notifications
+import com.wearabouts.ui.profile.Profile
 
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -39,6 +42,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wearabouts.ui.home.HomeViewModel
 import androidx.activity.viewModels
+import com.wearabouts.ui.user.UserViewModel
+import com.wearabouts.storage.SupabaseViewModel
 
 //Imports for caching images
 import coil.compose.rememberAsyncImagePainter
@@ -48,15 +53,20 @@ import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.ImageLoader
 
+// Data fetch
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 
 class MainActivity : FragmentActivity() {
 
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
-    // private lateinit var homeViewModel: HomeViewModel
     private lateinit var loginViewModel: LoginViewModel
 
     private val homeViewModel: HomeViewModel by viewModels()
+    private lateinit var userViewModel: UserViewModel
+
+    private lateinit var supabaseViewModel: SupabaseViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,14 +91,17 @@ class MainActivity : FragmentActivity() {
         // Establecer el ImageLoader como predeterminado
         coil.Coil.setImageLoader(imageLoader)
 
-        // homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
         loginViewModel = ViewModelProvider(this)[LoginViewModel::class.java]
         setupBiometricPrompt()
+
+        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
+        supabaseViewModel = ViewModelProvider(this)[SupabaseViewModel::class.java]
 
         enableEdgeToEdge()
         setContent {
             WearAboutsTheme {
                 val navController = rememberNavController()
+                val users by userViewModel.users.collectAsState(initial = emptyList())
                 Scaffold(modifier = Modifier.fillMaxSize()) {
                     NavHost(navController = navController, startDestination = "login") {
                         composable("login") { 
@@ -99,25 +112,32 @@ class MainActivity : FragmentActivity() {
                                 viewModel = loginViewModel
                             ) 
                         }
-                        composable("donation") { Donation().Template(navController) }
-                        composable("donationMap") { DonationMap().Template(navController) }
-                        composable("home") { Home(homeViewModel).Template(navController) }
+                        composable("donation") { Donation().Template(navController, users) }
+                        composable("donationMap") { DonationMap().Template(navController, users) }
+                        composable("home") { Home(homeViewModel).Template(navController, users) }
                         
                         composable("clothingdetail/{itemId}") { backStackEntry ->
                             val itemId = backStackEntry.arguments?.getString("itemId")
                             if (itemId != null) {
-                                ClothingDetailScreen(homeViewModel, itemId).Template(navController)
+                                ClothingDetailScreen(homeViewModel, itemId, users).Content(navController)
                             } else {
                                 // Handle the null case, maybe show an error or navigate back
                             }
                         }
 
                         composable("register") { Register(navController) }
+                        composable("notifications") { Notifications() }
+                        composable("profile") { 
+                            Profile(
+                                userViewModel = userViewModel,
+                                homeViewModel = homeViewModel,
+                                supabaseViewModel = supabaseViewModel
+                            ).Template(navController, users)
+                        }
 
                         // Unimplemented
-                        composable("tags") { Home(homeViewModel).Template(navController) }
-                        composable("favourites") { Home(homeViewModel).Template(navController) }
-                        composable("profile") { Home(homeViewModel).Template(navController) }
+                        composable("favourites") { Home(homeViewModel).Template(navController, users) }
+                        composable("buy") { Home(homeViewModel).Template(navController, users) }
                     }
                 }
             }
@@ -125,6 +145,7 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun setupBiometricPrompt() {
+
         promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle("Biometric authentication")
             .setSubtitle("Use your fingerprint to login")
@@ -137,7 +158,7 @@ class MainActivity : FragmentActivity() {
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
-                    loginViewModel.onBiometricSuccess()
+                    loginViewModel.onBiometricSuccess(this@MainActivity)
                 }
 
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {

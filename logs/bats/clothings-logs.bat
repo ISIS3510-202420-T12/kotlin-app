@@ -1,1 +1,0 @@
-adb logcat -s ClothingFetch > logs/clothing_fetch_logs.txt

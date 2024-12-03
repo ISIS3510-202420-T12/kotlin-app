@@ -1,6 +1,5 @@
 package com.wearabouts.ui.home
 
-import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -11,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import android.content.Context
 
 // Styles & resources
 import androidx.compose.ui.Modifier
@@ -19,12 +19,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
 import androidx.compose.ui.draw.clip
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import com.wearabouts.R
 import androidx.compose.ui.res.painterResource
+
+// Borders
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 
 // Colors
 import androidx.compose.ui.graphics.Color
@@ -33,9 +37,13 @@ import com.wearabouts.ui.theme.Primary
 import com.wearabouts.ui.theme.Font
 import com.wearabouts.ui.theme.White
 import com.wearabouts.ui.theme.Transparent
+import com.wearabouts.ui.theme.Cream
+
+// Type
+import com.wearabouts.ui.theme.Typography
 
 // Data model
-import com.wearabouts.models.ClothingItem
+import com.wearabouts.models.Clothe
 
 // Composables
 import com.wearabouts.ui.base.BaseContentPage
@@ -43,13 +51,17 @@ import com.wearabouts.ui.base.BaseContentPage
 // Pop-ups
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+
+// Coil
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
 
 class Home(private val homeViewModel: HomeViewModel) : BaseContentPage() {
 
+    private val TAG = "Home"
+
     @Composable
-    override fun Content() {
+    override fun Content(modifier: Modifier) {
 
         VerifyCache()
 
@@ -57,22 +69,18 @@ class Home(private val homeViewModel: HomeViewModel) : BaseContentPage() {
         val labels by homeViewModel.labels.collectAsState()
 
         // Detail of card selected
-        var selected by remember { mutableStateOf<ClothingItem?>(null) }
+        var selected by remember { mutableStateOf<Clothe?>(null) }
         val context = LocalContext.current
+
+        val TAG = "Home"
 
         homeViewModel.getLocation()
 
-        // Box (
-        //     modifier = Modifier
-        //         .height(500.dp)
-        //         .background(Transparent)
-        //         .fillMaxWidth(),
-        //     contentAlignment = Alignment.BottomCenter
-        // ) {
-        
+        Column(
+            modifier = modifier.fillMaxSize()
+        ) {
 
-        Column(modifier = Modifier.fillMaxSize()) {
-            CustomToolbar()
+            Spacer(modifier = Modifier.height(120.dp))
 
             Row(
                 modifier = Modifier
@@ -80,74 +88,20 @@ class Home(private val homeViewModel: HomeViewModel) : BaseContentPage() {
                     .padding(10.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                // CategoryButton("Shoes", R.drawable.shoes, { homeViewModel.filterItems("shoes") })
-                // CategoryButton("Bottoms", R.drawable.pants, { homeViewModel.filterItems("bottoms") })
-                // CategoryButton("Tops", R.drawable.tshirt, { homeViewModel.filterItems("tops") })
-                // CategoryButton("Jackets", R.drawable.ic_jacket, { homeViewModel.filterItems("jackets") })
-
-                CategoryButton("Shoes", R.drawable.shoes, { })
-                CategoryButton("Bottoms", R.drawable.pants, { })
-                CategoryButton("Tops", R.drawable.tshirt, { })
-                CategoryButton("Jackets", R.drawable.ic_jacket, { })
+                CategoryButton("Shoes", R.drawable.home_shoes, { homeViewModel.filterItems("shoes") })
+                CategoryButton("Bottoms", R.drawable.home_shorts, { homeViewModel.filterItems("bottoms") })
+                CategoryButton("Tops", R.drawable.home_tops, { homeViewModel.filterItems("tops") })
+                CategoryButton("Jackets", R.drawable.home_coat, { homeViewModel.filterItems("jackets") })
             }
 
-            //Text(
-            //    text = "New Releases",
-            //    style = MaterialTheme.typography.headlineSmall,
-            //    modifier = Modifier.padding(16.dp)
-            //)
-
-            Row (
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .padding(end = 20.dp),
-                horizontalArrangement = Arrangement.End
-            ) {
-                Box (
-                    modifier = Modifier
-                        .size(45.dp)
-                        .clip(RoundedCornerShape(45.dp))
-                        .background(White),
-                        //.border(2.dp, Color.Black),
-                    contentAlignment = Alignment.Center
-                ) {
-                    IconButton(
-                        onClick = {
-                            // Show filters
-                            val labelsArray = arrayOf("Disable") + labels.toTypedArray()
-                            AlertDialog.Builder(context)
-                                .setTitle("Filter by")
-                                .setItems(labelsArray) { dialog, which ->
-                                    if (which == 0) {
-                                        homeViewModel.resetFilter()
-                                        return@setItems
-                                    }
-                                    homeViewModel.filterItems(labels[which])
-                                }
-                                .setNegativeButton("Cancel") { dialog, which ->
-                                    dialog.dismiss()
-                                }
-                                .show()
-                        },
-                        modifier = Modifier
-                            .size(45.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.filter),
-                            contentDescription = "Filter labels",
-                            modifier = Modifier.size(20.dp),
-                            tint = Color.Black
-                        )
-                    }
-                }
-            }
+            Spacer(modifier = Modifier.height(20.dp))
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(15.dp)),
                 contentPadding = PaddingValues(10.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -157,9 +111,10 @@ class Home(private val homeViewModel: HomeViewModel) : BaseContentPage() {
                         selected = item
                     })
                 }
+                item {
+                    Spacer(modifier = Modifier.padding(bottom = 450.dp))
+                }
             }
-
-            
 
             // Detail of card selected
             LaunchedEffect(selected) {
@@ -168,102 +123,101 @@ class Home(private val homeViewModel: HomeViewModel) : BaseContentPage() {
                 }
             }
         }
-    }
 
-    @Composable
-    fun CustomToolbar() {
+        filterButton(labels, context)
 
-
-        Row(
-            modifier = Modifier.padding(top = 40.dp)
-
-        ){}
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .background(colorResource(id = R.color.app_color2))
-                .padding(top = 16.dp), // Asegúrate de añadir un padding superior
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = { /* Handle menu icon click */ }) {
-                Image(
-                    painter = painterResource(id = R.drawable.menu),
-                    contentDescription = "Menu",
-                    modifier = Modifier.size(30.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            IconButton(onClick = { /* Handle notification icon click */ }) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_notification),
-                    contentDescription = "Notifications",
-                    modifier = Modifier.size(28.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Text(
-                text = "WearAbouts",
-                style = MaterialTheme.typography.titleLarge,
-                color = Color.Black
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            IconButton(onClick = { /* Handle search icon click */ }) {
-                Image(
-                    painter = painterResource(id = R.drawable.search),
-                    contentDescription = "Search",
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-
-            IconButton(onClick = { /* Handle cart icon click */ }) {
-                Image(
-                    painter = painterResource(id = R.drawable.shopping_bag),
-                    contentDescription = "Shopping Cart",
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-        }
     }
 
     @Composable
     fun CategoryButton(
-
         text: String,
         iconResId: Int,
-        onClick: () -> Unit,
+        onClickFun: () -> Unit,
         modifier: Modifier = Modifier
     ) {
-
-        Button(
-            onClick = {
-                println("Category button '$text' clicked")
-                onClick()
-            },
-            modifier = modifier
-                .padding(horizontal = 2.dp)
-                .height(120.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+        Column (
+            modifier = Modifier
+                .size(80.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+            Box (
+                modifier = Modifier
+                    .size(60.dp)
+                    .clip(RoundedCornerShape(50.dp))
+                    .background(IconColor),
+                contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(id = iconResId),
-                    contentDescription = text,
-                    modifier = Modifier.size(48.dp)
-                )
-                Text(
-                    text = text,
-                    color = Color.Black,
-                    style = MaterialTheme.typography.bodySmall
+                IconButton (
+                    onClick = { 
+                        try {
+                            onClickFun()
+                            Log.d(TAG, "Items filtered")
+                        }
+                        catch (e: Exception) {
+                            Log.e(TAG, "Error filtering items: ${e.message}")
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    Icon(
+                        painter = painterResource(id = iconResId),
+                        contentDescription = text,
+                        modifier = Modifier.size(30.dp),
+                        tint = Cream
+                    )
+                }
+            }
+            
+            Text(
+                text = text,
+                style = Typography.titleSmall,
+                color = Color.Black,
+                modifier = Modifier
+            )
+        }
+    }
+
+    @Composable
+    fun filterButton(
+        labels: List<String>,
+        context: Context,
+        modifier: Modifier = Modifier
+    ) {
+        Box (
+            modifier = Modifier
+                .offset(x = 310.dp, y = 650.dp)
+                .size(50.dp)
+                .clip(RoundedCornerShape(50.dp))
+                .background(IconColor),
+            contentAlignment = Alignment.Center
+        ) {
+            IconButton(
+                onClick = {
+                    // Show filters
+                    val labelsArray = arrayOf("Disable") + labels.toTypedArray()
+                    AlertDialog.Builder(context)
+                        .setTitle("Filter by")
+                        .setItems(labelsArray) { dialog, which ->
+                            if (which == 0) {
+                                homeViewModel.resetFilter()
+                                return@setItems
+                            }
+                            homeViewModel.filterItems(labels[which-1])
+                        }
+                        .setNegativeButton("Cancel") { dialog, which ->
+                            dialog.dismiss()
+                        }
+                        .show()
+                },
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.filter),
+                    contentDescription = "Filter labels",
+                    modifier = Modifier.size(15.dp),
+                    tint = Cream
                 )
             }
         }

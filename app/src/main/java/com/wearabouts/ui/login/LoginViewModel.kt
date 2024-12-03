@@ -16,6 +16,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.compose.material.icons.filled.Fingerprint
 import android.content.Context
 
+// Objects
+import com.wearabouts.ui.login.SecureStorage
+
 class LoginViewModel : ViewModel() {
 
     private val _loginState = MutableStateFlow<LoginState>(LoginState.Idle)
@@ -29,15 +32,26 @@ class LoginViewModel : ViewModel() {
 
     fun authenticateWithBiometrics(
         biometricPrompt: BiometricPrompt,
-        promptInfo: BiometricPrompt.PromptInfo
+        promptInfo: BiometricPrompt.PromptInfo,
+        context: Context
     ) {
-        _loginState.value = LoginState.Loading
-        biometricPrompt.authenticate(promptInfo)
+        val loginInfo = SecureStorage.getLoginInfo(context)
+        if (loginInfo != null) {
+            _loginState.value = LoginState.Loading
+            biometricPrompt.authenticate(promptInfo)
+        } else {
+            _loginState.value = LoginState.Error("No login information found")
+        }
     }
 
-    fun onBiometricSuccess() {
-        viewModelScope.launch {
-            _loginState.value = LoginState.Success
+    fun onBiometricSuccess(context: Context) {
+       viewModelScope.launch {
+            val loginInfo = SecureStorage.getLoginInfo(context)
+            if (loginInfo != null) {
+                _loginState.value = LoginState.Success
+            } else {
+                _loginState.value = LoginState.Error("No login information found")
+            }
         }
     }
 
@@ -54,13 +68,14 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    fun login(username: String, password: String) {
+    fun login(username: String, password: String, context: Context) {
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
 
             auth.signInWithEmailAndPassword(username, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
+                        SecureStorage.saveLoginInfo(context, username, password)
                         _loginState.value = LoginState.Success
                     } else {
                         val errorMessage = when (val exception = task.exception) {
