@@ -22,5 +22,8 @@ data class User(
     @get:PropertyName("rating") @set:PropertyName("rating")
     var rating: Double = 0.0,
 
+    @get:PropertyName("phrase") @set:PropertyName("phrase")
+    var phrase: String = "",
+
 )
 
