@@ -69,6 +69,8 @@ class DonationMap() : BaseContentPage() {
     @Composable
     override fun Content(modifier: Modifier) {
 
+        val TAG = "donation"
+
         // Initialize the ViewModel and collect donationPlaces
         val donationViewModel: DonationMapViewModel = viewModel()
         val donationPlaces by donationViewModel.donationPlaces.collectAsState()
@@ -89,7 +91,7 @@ class DonationMap() : BaseContentPage() {
 
             if (fineLocationPermission != PackageManager.PERMISSION_GRANTED && coarseLocationPermission != PackageManager.PERMISSION_GRANTED) {
                 // Request permission for precise location
-                Log.d("Donation", "Needs permission permission, taking user to home! ")
+                Log.d(TAG, "Needs permission permission, taking user to home! ")
                 // Create an AlertDialog
                 AlertDialog.Builder(context)
                     .setMessage("We need the location permission (either precise or approximate) to display a map with nearby donation places")
@@ -109,11 +111,11 @@ class DonationMap() : BaseContentPage() {
                     .show()
             } else if (!isLocationEnabled) {
                 // Request permission to turn onlocation
-                Log.d("Donation", "Location not enabled according to locationservice, taking user to home!")
+                Log.d(TAG, "Location not enabled according to locationservice, taking user to home!")
                 Toast.makeText(context, "We need the location to be activated", Toast.LENGTH_LONG).show()
                 navigate("home")
             } else {
-                Log.d("Donation", "Permission already granted!")
+                Log.d(TAG, "Permission already granted!")
                 // Permission is already given
                 hasLocationPermission = true
             }
@@ -121,11 +123,11 @@ class DonationMap() : BaseContentPage() {
 
         // Fetch location when permission is granted
         LaunchedEffect(hasLocationPermission) {
-            Log.d("Donation", "LaunchedEffect(haslocationpermission): Checking location permission")
+            Log.d(TAG, "LaunchedEffect(haslocationpermission): Checking location permission")
             isLocationEnabled = locationService.isLocationEnabled(context)
 
             if (hasLocationPermission) {
-                Log.d("Donation", "LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only")
+                Log.d(TAG, "LaunchedEffect(haslocationpermission): Location permission granted and its turned on, getting location only")
                 // Check if location settings are enabled
                 locationService.getLocationOnly(
                     context,
@@ -193,7 +195,8 @@ class DonationMap() : BaseContentPage() {
 
                     // Show map centered on closest donation place
                     closestDonationPlace?.let {
-                        mapManager.showMap(it.longitude, it.latitude, mapManager, sortedDonationPlaces)
+                        Log.d(TAG, "Showing map centered on closest donation place")
+                        //mapManager.showMap(it.longitude, it.latitude, mapManager, sortedDonationPlaces)
                     }
 
                     //mapManager.showMap(userLocation!!.longitude, userLocation!!.latitude, mapManager, sortedDonationPlaces)
@@ -235,11 +238,11 @@ class DonationMap() : BaseContentPage() {
                         ) {
                             IconButton(
                                 onClick = {
-                                    Log.d("Slideshow", "Clicked on current location button")
+                                    Log.d(TAG, "Clicked on current location button")
                                     try {
                                         mapManager.moveCameraToLocation(userLocation!!.longitude, userLocation!!.latitude)
                                     } catch (e: Exception) {
-                                        Log.d("Slideshow", "Error in moving camera to current location: ${e.message}")
+                                        Log.d(TAG, "Error in moving camera to current location: ${e.message}")
                                         Toast.makeText(context, "Error in moving camera to current location", Toast.LENGTH_LONG).show()
                                     }
                                 },

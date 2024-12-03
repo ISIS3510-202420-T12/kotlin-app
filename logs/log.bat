@@ -1,1 +1,1 @@
-adb logcat -s supabase > logs/supabase.txt
+adb logcat -s donation > logs/donation.txt

@@ -137,7 +137,7 @@ class MainActivity : FragmentActivity() {
 
                         // Unimplemented
                         composable("favourites") { Home(homeViewModel).Template(navController, users) }
-                        composable("buybag") { Home(homeViewModel).Template(navController, users) }
+                        composable("buy") { Home(homeViewModel).Template(navController, users) }
                     }
                 }
             }

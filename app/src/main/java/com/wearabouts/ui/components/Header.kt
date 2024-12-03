@@ -86,7 +86,9 @@ fun Header(navController: NavController, modifier: Modifier = Modifier) {
 
         // Cart icon
         IconButton (
-            onClick = { navController.navigate("buy") },
+            onClick = {
+                navController.navigate("buy")
+            },
             modifier = Modifier.size(iconSizes * 1.5f)
         ) {
             Icon(

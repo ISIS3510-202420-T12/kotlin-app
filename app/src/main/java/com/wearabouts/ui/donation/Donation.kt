@@ -60,6 +60,8 @@ class Donation : BaseContentPage() {
     override fun Content(modifier: Modifier) {
         val LOG_TAG = "CampaignFetch"
 
+        val TAG = "donation"
+
         // Initialize the ViewModel and collect donationPlaces
         val donationViewModel: DonationViewModel = viewModel()
         val campaings by donationViewModel.campaings.collectAsState()
@@ -203,7 +205,10 @@ class Donation : BaseContentPage() {
                 }
                 // Map view button, onClick = navigate("donationMap")
                 IconButton (
-                    onClick = { navigate("donationMap") },
+                    onClick = {
+                        Log.d(TAG, "Navigating to donationMap")
+                        navigate("donationMap")
+                    },
                     modifier = Modifier
                         .size(localHeight)
                         //.padding(10.dp)
