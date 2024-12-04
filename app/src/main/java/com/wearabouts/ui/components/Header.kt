@@ -1,6 +1,8 @@
 package com.wearabouts.ui.components
 
 // Material
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.compose.material3.Text
 
 // Layout
@@ -87,7 +89,8 @@ fun Header(navController: NavController, modifier: Modifier = Modifier) {
         // Cart icon
         IconButton (
             onClick = {
-                navController.navigate("buy")
+                navController.navigate("cart")
+                Log.d(TAG, "Navigating to buy screen")
             },
             modifier = Modifier.size(iconSizes * 1.5f)
         ) {

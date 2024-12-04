@@ -13,9 +13,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 
-import androidx.compose.material3.Text
-import androidx.compose.material3.Button
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 
@@ -96,7 +93,7 @@ fun NavBar(navController: NavController, currentRoute: String, modifier: Modifie
                 )
             }
             IconButton(
-                onClick = { navController.navigate("favourites") },
+                onClick = { navController.navigate("favorites") },
                 modifier = Modifier
                     .size(56.dp)
             ) {

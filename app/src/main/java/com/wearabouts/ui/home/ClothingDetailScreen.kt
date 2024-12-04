@@ -1,20 +1,19 @@
 package com.wearabouts.ui.home
 
-// Composables
+// Composable
+import android.widget.Toast
 import androidx.compose.runtime.*
-import com.wearabouts.ui.base.BaseContentPage
-import com.wearabouts.ui.donation.CampaingCard
 import com.wearabouts.ui.user.MiniUserView
 
 // ViewModels
-import com.wearabouts.ui.user.UserViewModel
+//import com.wearabouts.ui.user.UserViewModel
 
 // Debugging
-import android.util.Log
+//import android.util.Log
 
 // Material
 import androidx.compose.material3.Text
-import androidx.compose.material3.MaterialTheme
+//import androidx.compose.material3.MaterialTheme
 
 // Styles & resources
 import com.wearabouts.R
@@ -31,21 +30,19 @@ import androidx.compose.material3.IconButton
 import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
+//import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.clickable
 
 // Grids & lazy layouts
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.GridCells
+//import androidx.compose.foundation.lazy.LazyColumn
+//import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+//import androidx.compose.foundation.lazy.grid.GridCells
 
 // Colors
 import androidx.compose.ui.graphics.Color
-import com.wearabouts.ui.theme.IconColor
+import androidx.compose.ui.platform.LocalContext
 import com.wearabouts.ui.theme.Primary
-import com.wearabouts.ui.theme.Font
 import com.wearabouts.ui.theme.White
-import com.wearabouts.ui.theme.Transparent
 import com.wearabouts.ui.theme.Emerald
 
 // Type
@@ -59,24 +56,24 @@ import com.wearabouts.models.Clothe
 import com.wearabouts.models.User
 
 // Image caching
-import coil.compose.rememberAsyncImagePainter
+//import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
-import coil.request.ImageRequest
-import coil.size.Size
-import coil.disk.DiskCache
-import coil.memory.MemoryCache
+//import coil.request.ImageRequest
+//import coil.size.Size
+//import coil.disk.DiskCache
+//import coil.memory.MemoryCache
 
 // Pop-ups
-import android.widget.Toast
+//import android.widget.Toast
 
 // Pager for carrousel
-import androidx.compose.foundation.ExperimentalFoundationApi
+//import androidx.compose.foundation.ExperimentalFoundationApi
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
-import com.google.accompanist.pager.PagerState
+//import com.google.accompanist.pager.PagerState
 
-// Page naviagtion
+// Page navigation
 import androidx.navigation.NavController
 
 class ClothingDetailScreen (
@@ -86,7 +83,7 @@ class ClothingDetailScreen (
 ) {
 
     @Composable
-    fun goBack(navController: NavController?) {
+    fun GoBack(navController: NavController?) {
         Box (
             modifier = Modifier
                 .offset(x = 17.dp, y = 50.dp)
@@ -260,24 +257,27 @@ class ClothingDetailScreen (
                         ) {
                             Spacer(modifier = Modifier.width(20.dp))
                             // Fav button
-                            favButton({ 
+                            FavButton({
                                 isFavorite = !isFavorite
                                 homeViewModel.toggleFav(clothingItem)
                             }, isFavorite)
                             Spacer(modifier = Modifier.width(40.dp))
                             // Buy button with text
-                            buyButton(clothingItem)
+                            BuyButton(clothingItem)
                         }          
                     }
                 }
             }
         }
 
-        goBack(navController)
+        GoBack(navController)
     }
 
     @Composable
-    fun buyButton (clothingItem: Clothe) {
+    fun BuyButton (clothingItem: Clothe) {
+
+        val context = LocalContext.current
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -285,7 +285,11 @@ class ClothingDetailScreen (
                 .clip(RoundedCornerShape(16.dp))
                 .background(Primary)
                 .clickable {
+
+                    homeViewModel.addToCart(clothingItem)
                     //homeViewModel.buyItem(clothingItem)
+                    Toast.makeText(context, "Añadido al carrito con éxito", Toast.LENGTH_SHORT).show()
+
                 },
             contentAlignment = Alignment.Center
         ) {
@@ -298,9 +302,19 @@ class ClothingDetailScreen (
     }
 
     @Composable
-    fun favButton (onClickFunction: () -> Unit, isFavorite: Boolean) {
+    fun FavButton (onClickFunction: () -> Unit, isFavorite: Boolean) {
+        val context = LocalContext.current
+
         IconButton(
-            onClick = { onClickFunction() }
+            onClick = {
+                onClickFunction()
+                val message = if (isFavorite) {
+                    "Eliminado de favoritos con éxito"
+                } else {
+                    "Añadido a favoritos con éxito"
+                }
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            },
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.heart),
