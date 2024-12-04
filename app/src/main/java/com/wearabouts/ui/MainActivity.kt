@@ -137,8 +137,7 @@ class MainActivity : FragmentActivity() {
                             ).Template(navController, users)
                         }
 
-                        composable("cart") { CartScreen()
-                        }
+                        composable("cart") { CartScreen().Content(navController) }
 
 
                         // Unimplemented

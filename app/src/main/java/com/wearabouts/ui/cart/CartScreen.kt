@@ -1,6 +1,8 @@
 // Archivo: app/src/main/java/com/wearabouts/ui/cart/CartScreen.kt
 package com.wearabouts.ui.cart
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,19 +14,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.wearabouts.R
 import com.wearabouts.models.Clothe
+import com.wearabouts.ui.theme.Glorify
 import com.wearabouts.ui.theme.Typography
 
 
 class CartScreen() {
 
+    val iconSizes = 20.dp
+
     @Composable
     fun goBack(navController: NavController?) {
-        Box (
+        Box(
             modifier = Modifier
                 .offset(x = 17.dp, y = 50.dp)
                 .size(40.dp)
@@ -49,18 +55,36 @@ class CartScreen() {
     }
 
     @Composable
-    fun Content(navController: NavController){
-        Column(
+    fun Content(navController: NavController) {
+        Box (
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
+                .fillMaxWidth()
+                .height(28.dp)
+                .background(Color.Black)
+        )
+
+        Row (
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 60.dp, start = 16.dp, end = 16.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
         ) {
+
+            Spacer(modifier = Modifier.width(16.dp))
+
             Text(
                 text = "Carrito de Compras",
-                style = Typography.titleLarge,
-                modifier = Modifier.padding(bottom = 16.dp)
+                style = Typography.titleLarge.copy(fontFamily = Glorify),
+                color = Color.Black
             )
 
-            goBack(navController)
+            Spacer(modifier = Modifier.width(16.dp))
+
         }
+
+        goBack(navController)
+
     }
+
+}
