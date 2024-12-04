@@ -1,8 +1,5 @@
-// Archivo: app/src/main/java/com/wearabouts/ui/cart/CartScreen.kt
 package com.wearabouts.ui.cart
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,17 +16,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.wearabouts.R
-import com.wearabouts.models.Clothe
 import com.wearabouts.ui.theme.Glorify
 import com.wearabouts.ui.theme.Typography
 
 
-class CartScreen() {
-
-    val iconSizes = 20.dp
+class CartScreen {
 
     @Composable
-    fun goBack(navController: NavController?) {
+    fun GoBack(navController: NavController?) {
         Box(
             modifier = Modifier
                 .offset(x = 17.dp, y = 50.dp)
@@ -83,7 +77,7 @@ class CartScreen() {
 
         }
 
-        goBack(navController)
+        GoBack(navController)
 
     }
 
