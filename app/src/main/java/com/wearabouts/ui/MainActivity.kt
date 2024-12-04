@@ -45,6 +45,7 @@ import coil.ImageLoader
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.wearabouts.ui.cart.CartScreen
+import com.wearabouts.ui.favorites.FavoritesScreen
 
 class MainActivity : FragmentActivity() {
 
@@ -93,7 +94,7 @@ class MainActivity : FragmentActivity() {
                 val navController = rememberNavController()
                 val users by userViewModel.users.collectAsState(initial = emptyList())
                 Scaffold(modifier = Modifier.fillMaxSize()) {
-                    NavHost(navController = navController, startDestination = "home") {
+                    NavHost(navController = navController, startDestination = "login") {
                         composable("login") { 
                             Login(
                                 navController = navController,
@@ -126,10 +127,7 @@ class MainActivity : FragmentActivity() {
                         }
 
                         composable("cart") { CartScreen().Content(navController, homeViewModel.cartItems) }
-
-
-                        // Unimplemented
-                        composable("favourites") { Home(homeViewModel).Template(navController, users) }
+                        composable("favorites") { FavoritesScreen().Content(navController, homeViewModel.favorites) }
                     }
                 }
             }

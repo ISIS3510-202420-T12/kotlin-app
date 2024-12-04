@@ -303,8 +303,18 @@ class ClothingDetailScreen (
 
     @Composable
     fun FavButton (onClickFunction: () -> Unit, isFavorite: Boolean) {
+        val context = LocalContext.current
+
         IconButton(
-            onClick = { onClickFunction() }
+            onClick = {
+                onClickFunction()
+                val message = if (isFavorite) {
+                    "Eliminado de favoritos con éxito"
+                } else {
+                    "Añadido a favoritos con éxito"
+                }
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            },
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.heart),
