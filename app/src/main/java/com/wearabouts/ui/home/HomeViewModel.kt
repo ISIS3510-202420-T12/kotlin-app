@@ -63,6 +63,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     //Cart items
     private val _cartItems = mutableStateListOf<Clothe>()
     val cartItems: List<Clothe> get() = _cartItems
+    private val CART_ITEMS_KEY = "cart_items"
+
 
 
     init {
@@ -70,6 +72,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         // Initialize local storage
         viewModelScope.launch {
             _favorites.value = getFavoriteClothingItems()
+            _cartItems.addAll(fetchCartItemsFromStorage())
         }
     }
 
@@ -214,6 +217,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     // Cart functions
     fun addToCart(item: Clothe) {
         _cartItems.add(item)
+        saveCartItems(_cartItems)
         Log.d(TAG, "Added item to cart: $item")
     }
 
@@ -302,11 +306,30 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                             .update("timesSold", currentTimesSold + 1)
                     }
                 }
-                Toast.makeText(getApplication(), "Purchase successful!", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(getApplication(), "Purchase successful!", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener { exception ->
                 Toast.makeText(getApplication(), "Purchase not successful :(", Toast.LENGTH_SHORT).show()
                 Log.w(TAG, "Error updating Labels", exception)
             }
     }
+
+    // Storage functions for cart items
+    private fun saveCartItems(cartItems: List<Clothe>) {
+        val editor = sharedPreferences.edit()
+        val json = gson.toJson(cartItems)
+        editor.putString(CART_ITEMS_KEY, json)
+        editor.apply()
+    }
+
+    private fun fetchCartItemsFromStorage(): List<Clothe> {
+        val json = sharedPreferences.getString(CART_ITEMS_KEY, null)
+        return if (json != null) {
+            val type = object : TypeToken<List<Clothe>>() {}.type
+            gson.fromJson(json, type)
+        } else {
+            emptyList()
+        }
+    }
+
 }

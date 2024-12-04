@@ -287,7 +287,7 @@ class ClothingDetailScreen (
                 .clickable {
 
                     homeViewModel.addToCart(clothingItem)
-                    //homeViewModel.buyItem(clothingItem)
+                    homeViewModel.buyItem(clothingItem)
                     Toast.makeText(context, "Añadido al carrito con éxito", Toast.LENGTH_SHORT).show()
 
                 },

@@ -1,6 +1,8 @@
 package com.wearabouts.ui.cart
 
+import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -19,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -27,7 +30,10 @@ import com.wearabouts.R
 import com.wearabouts.models.Clothe
 import com.wearabouts.ui.home.ClothingItemCard
 import com.wearabouts.ui.theme.Glorify
+import com.wearabouts.ui.theme.Primary
 import com.wearabouts.ui.theme.Typography
+import com.wearabouts.ui.theme.White
+import com.wearabouts.utils.NetworkUtils.isInternetAvailable
 
 
 class CartScreen {
@@ -78,7 +84,7 @@ class CartScreen {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Text(
-                    text = "Carrito",
+                    text = "Shopping Cart",
                     style = Typography.titleLarge.copy(fontFamily = Glorify),
                     color = Color.Black
                 )
@@ -123,6 +129,20 @@ class CartScreen {
                 }
             }
 
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+
+                    horizontalArrangement = Arrangement.Center,
+                     verticalAlignment = Alignment.CenterVertically
+            ) {
+                Spacer(modifier = Modifier.width(10.dp))
+                // Buy button with text
+                BuyButton()
+            }
+
+
             // Detail of card selected
             LaunchedEffect(selected) {
                 selected?.let {
@@ -134,5 +154,37 @@ class CartScreen {
         GoBack(navController)
 
     }
+
+    @Composable
+    fun BuyButton () {
+
+        val context = LocalContext.current
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .height(60.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(Primary)
+                .clickable {
+                    if (isInternetAvailable(context)) {
+                        Toast.makeText(context, "Se puede realizar la compra", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, "No hay conexión a internet", Toast.LENGTH_SHORT).show()
+                    }
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Go to pay",
+                style = Typography.bodyLarge,
+                color = White
+            )
+        }
+    }
+
+
+
+
 
 }
