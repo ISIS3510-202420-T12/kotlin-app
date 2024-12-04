@@ -5,7 +5,6 @@ import com.google.firebase.firestore.firestore
 import com.google.firebase.Firebase
 
 // Data state
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,18 +17,15 @@ import com.wearabouts.models.Clothe
 import com.wearabouts.ui.donationMap.map.LocationService
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
-import android.location.Location
 import androidx.core.content.ContextCompat
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import android.content.Context
-import android.app.Activity
 
 // Pop-ups
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 
 // Log
 import android.util.Log
@@ -62,6 +58,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val FILTERTAG: String = "ClothingFilter"
 
     val db = Firebase.firestore
+
+
+    //Cart items
+    private val _cartItems = mutableStateListOf<Clothe>()
+    val cartItems: List<Clothe> get() = _cartItems
+
 
     init {
         fetchClothingItems()
@@ -172,7 +174,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun logLabelFilter (label: String) {
+    private fun logLabelFilter (label: String) {
         db.collection("Labels")
             .whereEqualTo("name", label)
             .get()
@@ -209,6 +211,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         return _clothingItems.value.find { it.id == id }
     }
 
+    // Cart functions
+    fun addToCart(item: Clothe) {
+        _cartItems.add(item)
+        Log.d(TAG, "Added item to cart: $item")
+    }
+
 
 
     // ~ ~ ~ ~ Local storage ~ ~ ~ ~ //
@@ -217,7 +225,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     // Local storage functions for favourites
 
-    fun getFavoriteClothingItems(): List<Clothe> {
+    private fun getFavoriteClothingItems(): List<Clothe> {
         val json = sharedPreferences.getString(FAVORITES_KEY, null)
         return if (json != null) {
             val type = object : TypeToken<List<Clothe>>() {}.type
@@ -237,13 +245,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         _favorites.value = favorites
     }
 
-    fun addFavorite(item: Clothe) {
+    private fun addFavorite(item: Clothe) {
         val currentFavorites = _favorites.value.toMutableList()
         currentFavorites.add(item)
         saveFavorites(currentFavorites)
     }
 
-    fun removeFavorite(item: Clothe) {
+    private fun removeFavorite(item: Clothe) {
         val currentFavorites = _favorites.value.toMutableList()
         currentFavorites.removeAll { it.id == item.id }
         saveFavorites(currentFavorites)
@@ -266,14 +274,14 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         // For each label
         for (label in clothingItem.labels) {
             try {
-                logLabelPucharse(label)
+                logLabelPurchase(label)
             } catch (e: Exception) {
                 Log.e(TAG, "Error logging purchase: ${e.message}")
             }
         }
     }
 
-    fun logLabelPucharse (label: String) {
+    private fun logLabelPurchase (label: String) {
         db.collection("Labels")
             .whereEqualTo("name", label)
             .get()

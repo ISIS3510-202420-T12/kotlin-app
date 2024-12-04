@@ -1,22 +1,15 @@
-package com.wearabouts
+package com.wearabouts.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.wearabouts.ui.theme.WearAboutsTheme
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
-import kotlinx.coroutines.launch
-import androidx.lifecycle.viewModelScope
 
 // Pages
 import com.wearabouts.ui.login.Login
@@ -36,19 +29,14 @@ import androidx.navigation.compose.rememberNavController
 // Biometrics
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
-import androidx.compose.ui.platform.LocalContext
 
 // ViewModels
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wearabouts.ui.home.HomeViewModel
 import androidx.activity.viewModels
 import com.wearabouts.ui.user.UserViewModel
 import com.wearabouts.storage.SupabaseViewModel
 
 //Imports for caching images
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import coil.size.Size
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.ImageLoader
@@ -105,7 +93,7 @@ class MainActivity : FragmentActivity() {
                 val navController = rememberNavController()
                 val users by userViewModel.users.collectAsState(initial = emptyList())
                 Scaffold(modifier = Modifier.fillMaxSize()) {
-                    NavHost(navController = navController, startDestination = "login") {
+                    NavHost(navController = navController, startDestination = "home") {
                         composable("login") { 
                             Login(
                                 navController = navController,
@@ -137,7 +125,7 @@ class MainActivity : FragmentActivity() {
                             ).Template(navController, users)
                         }
 
-                        composable("cart") { CartScreen().Content(navController) }
+                        composable("cart") { CartScreen().Content(navController, homeViewModel.cartItems) }
 
 
                         // Unimplemented
